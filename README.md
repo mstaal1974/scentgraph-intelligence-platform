@@ -1,22 +1,37 @@
 # ScentGraph Intelligence Platform
 
-ScentGraph is a standalone, API-first fragrance intelligence platform for retailers, brands, and white-label experiences. It turns sourced fragrance facts into governed taxonomies, comparable scent vectors, clone intelligence, recommendations, and customer Scentprints.
+ScentGraph Intelligence Platform is an open-source project for building graph-based tools that organize, connect, and analyze fragrance knowledge.
 
-Maison Obsidian is the first intended customer, not a code or data dependency. Every consumer integrates through the same versionable API contract.
+## Project status
 
-## Quick start
+This repository is at the beginning of its development. The initial documentation and project structure are being established before implementation begins.
+
+## Goals
+
+- Model relationships among fragrances, ingredients, accords, brands, and perfumers.
+- Make fragrance data easier to explore and analyze.
+- Support reusable data-processing, search, and recommendation workflows.
+- Provide a foundation for applications and research built on fragrance knowledge graphs.
+
+## Getting started
+
+Application setup and development instructions will be added as the implementation takes shape.
+
+To prepare a local copy in the meantime:
 
 ```bash
-cp .env.example .env
-docker compose up -d postgres
-python -m venv .venv && source .venv/bin/activate
-pip install -e '.[dev]'
-pytest
-uvicorn scentgraph.main:app --reload
+git clone https://github.com/mstaal1974/scentgraph-intelligence-platform.git
+cd scentgraph-intelligence-platform
 ```
 
-Interactive OpenAPI documentation is available at `http://localhost:8000/docs`.
+## Contributing
 
-## Status
+Contributions are welcome. Before submitting a change, please open an issue to discuss significant features or architectural changes. Keep pull requests focused, document new behavior, and include relevant tests when executable code is added.
 
-This repository contains the foundation only: domain schema, small illustrative datasets, import/validation scaffolding, API contracts, and deterministic service boundaries. Authentication, billing, production deployment, retailer connectors, and UI are intentionally deferred.
+## Security
+
+Do not commit credentials, API keys, private datasets, or other sensitive information. Report security concerns privately to the repository maintainers rather than through a public issue.
+
+## License
+
+This project is available under the [MIT License](LICENSE.md).
