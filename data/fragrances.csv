@@ -1,0 +1,3 @@
+id,brand_id,name,slug,concentration,description,family,gender,release_year,perfumer,verified,source_confidence,created_at,updated_at
+1,1,Lost Cherry,lost-cherry,eau de parfum,,amber floral,,,Tom Ford,false,0.5,,
+2,2,Baccarat Rouge 540,baccarat-rouge-540,eau de parfum,,amber floral,,,,false,0.5,,
