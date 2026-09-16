@@ -24,3 +24,7 @@ Run `python scripts/export_maison_catalogue.py`. The command reads `catalogue_fr
 ## Website and licensing path
 
 A future Maison website change can call these contracts through a small server-side client and cache catalogue exports; no storefront code is part of this change. A future multi-retailer layer can add tenant-scoped keys, field tiers, quotas, and audit logs around the same projection without sharing supplier data or moving intelligence into retailer repositories.
+
+## Product SKU integration
+
+The separate `/products` surface exposes approved product, variant, bundle, and storefront-export projections without exposing supplier or margin inputs. See [Maison product SKU catalogue](maison-product-sku-catalogue.md). Existing `/maison` fragrance-intelligence endpoints remain unchanged.
