@@ -53,3 +53,7 @@ Export a safe report with
 ## Final completion gate
 
 Run `python scripts/complete_platform_readiness.py` before intake. Repository completion is not pilot completion: real inputs must remain under `data/private/`, credentials must be injected at runtime, and every human review gate remains mandatory. See [final platform completion](final-platform-completion.md).
+
+## Hosted staging prerequisite
+
+For a hosted pilot, first satisfy `docs/staging-deployment-readiness.md`. Upload approved private inputs directly to the protected runtime mount after deployment—never commit them—and retain all existing review gates.

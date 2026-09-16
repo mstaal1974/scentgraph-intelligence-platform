@@ -139,3 +139,7 @@ The focused execution layer is documented in [Private supplier pilot execution](
 ## Platform completion (internal/private)
 
 Authenticated `/platform-completion` endpoints expose health, public-safe task summaries, safe/demo runs, readiness, blockers, private report export, and audit status. Responses contain statuses, bands, counts, summaries, and next actions only; operational records and private supplier, seller, or consumer fields are excluded. Export writes detailed output beneath `data/private/reports/`.
+
+## Deployment diagnostics
+
+`GET /deployment/health` returns only service status and version. `GET /deployment/readiness`, `GET /deployment/environment`, `POST /deployment/readiness/check`, and `GET /deployment/audit` require private authentication outside local mode. Their contracts expose status, masked path indicators, counts, warnings, and operator actions only; they never return credentials, private records, or commercial data.

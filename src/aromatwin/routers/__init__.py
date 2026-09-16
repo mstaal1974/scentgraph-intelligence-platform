@@ -5,6 +5,7 @@ from aromatwin.routers import (
     catalogue,
     clone_matches,
     consumer_scent,
+    deployment,
     enrichment_reviews,
     fragrances,
     health,
@@ -34,6 +35,7 @@ supplier_items = private_supplier_workflow
 
 ROUTERS = (
     health.router,
+    deployment.router,
     admin_review.router,
     maison.router,
     product_catalogue.router,
