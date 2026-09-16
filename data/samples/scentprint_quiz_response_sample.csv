@@ -1,0 +1,16 @@
+scentprint_public_alias,question_id,selected_option_ids
+quiz_demo001,family,"[""citrus"", ""woody""]"
+quiz_demo001,intensity,balanced
+quiz_demo001,fresh_warm,fresh
+quiz_demo001,sweetness,2
+quiz_demo001,woody,"[""dry_woods""]"
+quiz_demo001,floral,"[""soft_floral""]"
+quiz_demo001,citrus,"[""bright_citrus""]"
+quiz_demo001,gourmand,"[""none""]"
+quiz_demo001,occasion,"[""everyday"", ""outdoors""]"
+quiz_demo001,season,"[""spring"", ""summer""]"
+quiz_demo001,mood,"[""bright"", ""calm""]"
+quiz_demo001,projection,balanced
+quiz_demo001,longevity,moderate
+quiz_demo001,discovery,balanced
+quiz_demo001,avoid,"[""smoky""]"

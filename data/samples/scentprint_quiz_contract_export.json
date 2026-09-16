@@ -1,0 +1,611 @@
+{
+  "contract": {
+    "contract_id": "scentprint-quiz",
+    "quiz_contract_version": "1.0.0",
+    "title": "Scentprint Preference Quiz",
+    "purpose": "Anonymous scent-preference guidance only; not identity or diagnosis.",
+    "questions": [
+      {
+        "question_id": "family",
+        "section": "scent_family_preference",
+        "question_text": "Which scent families appeal to you?",
+        "answer_type": "multi_choice",
+        "options": [
+          {
+            "option_id": "citrus",
+            "label": "Citrus"
+          },
+          {
+            "option_id": "floral",
+            "label": "Floral"
+          },
+          {
+            "option_id": "woody",
+            "label": "Woody"
+          },
+          {
+            "option_id": "amber",
+            "label": "Amber"
+          },
+          {
+            "option_id": "fresh",
+            "label": "Fresh"
+          },
+          {
+            "option_id": "gourmand",
+            "label": "Gourmand"
+          }
+        ],
+        "scoring_dimensions": [
+          "scent_family_weights"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "intensity",
+        "section": "intensity_preference",
+        "question_text": "Which scent intensity do you prefer?",
+        "answer_type": "single_choice",
+        "options": [
+          {
+            "option_id": "light",
+            "label": "Light"
+          },
+          {
+            "option_id": "balanced",
+            "label": "Balanced"
+          },
+          {
+            "option_id": "bold",
+            "label": "Bold"
+          }
+        ],
+        "scoring_dimensions": [
+          "intensity_band"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "fresh_warm",
+        "section": "freshness_warmth_preference",
+        "question_text": "Where is your preferred balance?",
+        "answer_type": "single_choice",
+        "options": [
+          {
+            "option_id": "fresh",
+            "label": "Fresh"
+          },
+          {
+            "option_id": "balanced",
+            "label": "Balanced"
+          },
+          {
+            "option_id": "warm",
+            "label": "Warm"
+          }
+        ],
+        "scoring_dimensions": [
+          "freshness_band",
+          "warmth_band"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "sweetness",
+        "section": "sweetness_preference",
+        "question_text": "How sweet should the scent profile feel?",
+        "answer_type": "scale",
+        "options": [
+          {
+            "option_id": "1",
+            "label": "1"
+          },
+          {
+            "option_id": "2",
+            "label": "2"
+          },
+          {
+            "option_id": "3",
+            "label": "3"
+          },
+          {
+            "option_id": "4",
+            "label": "4"
+          },
+          {
+            "option_id": "5",
+            "label": "5"
+          }
+        ],
+        "scoring_dimensions": [
+          "sweetness_band"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "woody",
+        "section": "woody_resinous_preference",
+        "question_text": "Which woody or resinous styles appeal?",
+        "answer_type": "multi_choice",
+        "options": [
+          {
+            "option_id": "dry_woods",
+            "label": "Dry Woods"
+          },
+          {
+            "option_id": "soft_woods",
+            "label": "Soft Woods"
+          },
+          {
+            "option_id": "resinous",
+            "label": "Resinous"
+          },
+          {
+            "option_id": "none",
+            "label": "None"
+          }
+        ],
+        "scoring_dimensions": [
+          "note_family_weights",
+          "accord_weights"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "floral",
+        "section": "floral_preference",
+        "question_text": "Which floral styles appeal?",
+        "answer_type": "multi_choice",
+        "options": [
+          {
+            "option_id": "soft_floral",
+            "label": "Soft Floral"
+          },
+          {
+            "option_id": "white_floral",
+            "label": "White Floral"
+          },
+          {
+            "option_id": "rose_style",
+            "label": "Rose Style"
+          },
+          {
+            "option_id": "none",
+            "label": "None"
+          }
+        ],
+        "scoring_dimensions": [
+          "note_family_weights",
+          "accord_weights"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "citrus",
+        "section": "citrus_fresh_preference",
+        "question_text": "Which citrus or fresh styles appeal?",
+        "answer_type": "multi_choice",
+        "options": [
+          {
+            "option_id": "bright_citrus",
+            "label": "Bright Citrus"
+          },
+          {
+            "option_id": "green_fresh",
+            "label": "Green Fresh"
+          },
+          {
+            "option_id": "aquatic_fresh",
+            "label": "Aquatic Fresh"
+          },
+          {
+            "option_id": "none",
+            "label": "None"
+          }
+        ],
+        "scoring_dimensions": [
+          "note_family_weights",
+          "accord_weights"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "gourmand",
+        "section": "gourmand_preference",
+        "question_text": "Which gourmand styles appeal?",
+        "answer_type": "multi_choice",
+        "options": [
+          {
+            "option_id": "vanilla_style",
+            "label": "Vanilla Style"
+          },
+          {
+            "option_id": "cocoa_style",
+            "label": "Cocoa Style"
+          },
+          {
+            "option_id": "caramel_style",
+            "label": "Caramel Style"
+          },
+          {
+            "option_id": "none",
+            "label": "None"
+          }
+        ],
+        "scoring_dimensions": [
+          "note_family_weights",
+          "accord_weights"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "occasion",
+        "section": "occasion_preference",
+        "question_text": "When would you most like to wear the scent?",
+        "answer_type": "ranked_choice",
+        "options": [
+          {
+            "option_id": "everyday",
+            "label": "Everyday"
+          },
+          {
+            "option_id": "evening",
+            "label": "Evening"
+          },
+          {
+            "option_id": "special_occasion",
+            "label": "Special Occasion"
+          },
+          {
+            "option_id": "outdoors",
+            "label": "Outdoors"
+          }
+        ],
+        "scoring_dimensions": [
+          "occasion_weights"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "season",
+        "section": "season_preference",
+        "question_text": "Which seasons should the scent complement?",
+        "answer_type": "multi_choice",
+        "options": [
+          {
+            "option_id": "spring",
+            "label": "Spring"
+          },
+          {
+            "option_id": "summer",
+            "label": "Summer"
+          },
+          {
+            "option_id": "autumn",
+            "label": "Autumn"
+          },
+          {
+            "option_id": "winter",
+            "label": "Winter"
+          }
+        ],
+        "scoring_dimensions": [
+          "season_weights"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "mood",
+        "section": "mood_preference",
+        "question_text": "Which scent moods appeal to you?",
+        "answer_type": "multi_choice",
+        "options": [
+          {
+            "option_id": "bright",
+            "label": "Bright"
+          },
+          {
+            "option_id": "calm",
+            "label": "Calm"
+          },
+          {
+            "option_id": "cosy",
+            "label": "Cosy"
+          },
+          {
+            "option_id": "elegant",
+            "label": "Elegant"
+          },
+          {
+            "option_id": "adventurous",
+            "label": "Adventurous"
+          }
+        ],
+        "scoring_dimensions": [
+          "mood_weights"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "projection",
+        "section": "projection_preference",
+        "question_text": "How noticeable should the scent be nearby?",
+        "answer_type": "single_choice",
+        "options": [
+          {
+            "option_id": "close",
+            "label": "Close"
+          },
+          {
+            "option_id": "balanced",
+            "label": "Balanced"
+          },
+          {
+            "option_id": "noticeable",
+            "label": "Noticeable"
+          }
+        ],
+        "scoring_dimensions": [
+          "projection_band"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "longevity",
+        "section": "longevity_preference",
+        "question_text": "What wear-duration preference should guide matches?",
+        "answer_type": "single_choice",
+        "options": [
+          {
+            "option_id": "short",
+            "label": "Short"
+          },
+          {
+            "option_id": "moderate",
+            "label": "Moderate"
+          },
+          {
+            "option_id": "long",
+            "label": "Long"
+          }
+        ],
+        "scoring_dimensions": [
+          "longevity_band"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "discovery",
+        "section": "discovery_style",
+        "question_text": "How familiar or exploratory should suggestions be?",
+        "answer_type": "single_choice",
+        "options": [
+          {
+            "option_id": "familiar",
+            "label": "Familiar"
+          },
+          {
+            "option_id": "balanced",
+            "label": "Balanced"
+          },
+          {
+            "option_id": "exploratory",
+            "label": "Exploratory"
+          }
+        ],
+        "scoring_dimensions": [
+          "discovery_preference_band"
+        ],
+        "required": true,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      },
+      {
+        "question_id": "avoid",
+        "section": "avoid_notes",
+        "question_text": "Which listed note families should suggestions avoid?",
+        "answer_type": "multi_choice",
+        "options": [
+          {
+            "option_id": "smoky",
+            "label": "Smoky"
+          },
+          {
+            "option_id": "powdery",
+            "label": "Powdery"
+          },
+          {
+            "option_id": "animalic",
+            "label": "Animalic"
+          },
+          {
+            "option_id": "gourmand",
+            "label": "Gourmand"
+          },
+          {
+            "option_id": "none",
+            "label": "None"
+          }
+        ],
+        "scoring_dimensions": [
+          "avoid_note_families"
+        ],
+        "required": false,
+        "public_safe_hint": "Choose only from the listed scent-preference options.",
+        "privacy_note": "No identity, contact, demographic, or open-ended response is requested."
+      }
+    ],
+    "privacy_status": "public_safe_anonymous"
+  },
+  "response_example": {
+    "scentprint_public_alias": "quiz_demo001",
+    "responses": [
+      {
+        "question_id": "family",
+        "selected_option_ids": [
+          "citrus",
+          "woody"
+        ]
+      },
+      {
+        "question_id": "intensity",
+        "selected_option_ids": "balanced"
+      },
+      {
+        "question_id": "fresh_warm",
+        "selected_option_ids": "fresh"
+      },
+      {
+        "question_id": "sweetness",
+        "selected_option_ids": "2"
+      },
+      {
+        "question_id": "woody",
+        "selected_option_ids": [
+          "dry_woods"
+        ]
+      },
+      {
+        "question_id": "floral",
+        "selected_option_ids": [
+          "soft_floral"
+        ]
+      },
+      {
+        "question_id": "citrus",
+        "selected_option_ids": [
+          "bright_citrus"
+        ]
+      },
+      {
+        "question_id": "gourmand",
+        "selected_option_ids": [
+          "none"
+        ]
+      },
+      {
+        "question_id": "occasion",
+        "selected_option_ids": [
+          "everyday",
+          "outdoors"
+        ]
+      },
+      {
+        "question_id": "season",
+        "selected_option_ids": [
+          "spring",
+          "summer"
+        ]
+      },
+      {
+        "question_id": "mood",
+        "selected_option_ids": [
+          "bright",
+          "calm"
+        ]
+      },
+      {
+        "question_id": "projection",
+        "selected_option_ids": "balanced"
+      },
+      {
+        "question_id": "longevity",
+        "selected_option_ids": "moderate"
+      },
+      {
+        "question_id": "discovery",
+        "selected_option_ids": "balanced"
+      },
+      {
+        "question_id": "avoid",
+        "selected_option_ids": [
+          "smoky"
+        ]
+      }
+    ]
+  },
+  "result_example": {
+    "scentprint_quiz_id": "spq_4d487b88b72c",
+    "scentprint_public_alias": "quiz_demo001",
+    "result_title": "Your Scentprint Preference Guide",
+    "result_summary": "Your selections currently lean toward citrus, woody scent families.",
+    "dominant_families": [
+      "citrus",
+      "woody"
+    ],
+    "preferred_accords": [
+      "bright_citrus",
+      "dry_woods",
+      "soft_floral"
+    ],
+    "preferred_moods": [
+      "bright",
+      "calm"
+    ],
+    "preferred_occasions": [
+      "everyday",
+      "outdoors"
+    ],
+    "preferred_seasons": [
+      "spring",
+      "summer"
+    ],
+    "avoid_note_families": [
+      "smoky"
+    ],
+    "recommended_product_matches": [
+      {
+        "product_id": "demo-product-001",
+        "product_title": "Fictional Horizon",
+        "product_format": "sample",
+        "match_score_band": "strong",
+        "match_reason": "Shares selected scent-preference categories.",
+        "shared_families": [
+          "citrus",
+          "woody"
+        ],
+        "shared_accords": [
+          "bright_citrus",
+          "dry_woods"
+        ],
+        "shared_moods": [
+          "bright",
+          "calm"
+        ],
+        "public_safe_explanation": "This fictional demo match reflects only the selected scent families, accords, and moods."
+      }
+    ],
+    "recommendation_explanations": [
+      "This fictional demo match reflects only the selected scent families, accords, and moods."
+    ],
+    "confidence_band": "high",
+    "review_status": "demo_only",
+    "privacy_status": "public_safe_anonymous"
+  }
+}

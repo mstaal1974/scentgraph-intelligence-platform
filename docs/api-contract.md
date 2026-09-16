@@ -153,3 +153,11 @@ Authenticated `/platform-completion` endpoints expose health, public-safe task s
 The Maison readiness pack consumes only approved, public-safe summaries through allow-listed contracts.
 It does not change existing generation, pilot, review, persistence, or staging workflows and never
 performs an external sync. See [Maison integration readiness](maison-integration-readiness.md).
+# Scentprint quiz (public-safe, stateless)
+
+The `/scentprint-quiz` surface provides health, contract, questions, scoring, fictional demo
+results, and contract-audit endpoints. Requests use a generated public alias and selected option
+IDs only. Responses contain scent-preference weights, bands, counts, summaries, and safe match
+explanations. The API neither persists submissions nor accepts identity, contact, sensitive-trait,
+or open-ended fields. See [`scentprint-quiz-contract.md`](scentprint-quiz-contract.md) for the full
+boundary.
