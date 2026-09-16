@@ -123,3 +123,11 @@ This module may supply non-mutating readiness evidence to the [private pilot wor
 ## Internal operations API
 
 Authenticated `/operations` endpoints return public-safe operational projections for persisted runs, stages, artifacts, review items, launch candidates, provenance, and audit events. Although responses are allow-listed, the endpoints remain private/internal and require the private API boundary outside local mode.
+
+## Human review workflow
+
+Human review gates now provide private, audit-oriented queues and explicit decisions. Approval is
+only permission for a next internal stage; it never publishes records, creates catalogue products
+or SKUs, starts launch execution, or generates campaigns. Default API projections contain only
+safe identifiers, bands, statuses, role labels, summaries, and aggregate readiness counts. See
+[Human review gates workflow](human-review-gates-workflow.md).

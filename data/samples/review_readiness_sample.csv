@@ -1,0 +1,2 @@
+queue_id,total_items,queued_count,approved_count,blocked_count,high_priority_count,urgent_count,readiness_status,next_actions
+fictional-review-queue,2,2,0,1,1,1,blocked_by_missing_data,Resolve blocked reviews before internal progression.

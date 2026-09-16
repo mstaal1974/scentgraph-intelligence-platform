@@ -76,3 +76,11 @@ This module may supply non-mutating readiness evidence to the [private pilot wor
 ## Production persistence and audit trail
 
 The focused operational persistence boundary is now available for progressive pilot integration: durable run/review state, provenance, public-safe projections, and privacy-bounded audit events. Workflow replacement, storefront work, campaign generation, and automatic approval remain out of scope.
+
+## Human review workflow
+
+Human review gates now provide private, audit-oriented queues and explicit decisions. Approval is
+only permission for a next internal stage; it never publishes records, creates catalogue products
+or SKUs, starts launch execution, or generates campaigns. Default API projections contain only
+safe identifiers, bands, statuses, role labels, summaries, and aggregate readiness counts. See
+[Human review gates workflow](human-review-gates-workflow.md).

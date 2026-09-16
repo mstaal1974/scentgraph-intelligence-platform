@@ -31,3 +31,11 @@ Migration reads manifest/readiness summaries through explicit allow lists, store
 ## API and review operations
 
 Authenticated `/operations` routes provide health, run/stage/artifact summaries, review items, launch candidates, provenance, audit events, and audit reports. They are internal workflow endpoints even though their responses are public-safe. Review decisions remain human-controlled. Public-safe persistence does not replace the private pilot manifest or source workflow output and does not mutate either.
+
+## Human review workflow
+
+Human review gates now provide private, audit-oriented queues and explicit decisions. Approval is
+only permission for a next internal stage; it never publishes records, creates catalogue products
+or SKUs, starts launch execution, or generates campaigns. Default API projections contain only
+safe identifiers, bands, statuses, role labels, summaries, and aggregate readiness counts. See
+[Human review gates workflow](human-review-gates-workflow.md).
