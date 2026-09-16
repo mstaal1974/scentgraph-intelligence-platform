@@ -7,7 +7,8 @@ The foundation exposes JSON and OpenAPI at `/docs` and `/openapi.json`.
 - Matching: `GET /match-candidates`, `GET /match-candidates/{id}`, `POST /match-candidates/generate`
 - Enrichment: `GET /enrichment-reviews`, `GET /enrichment-reviews/{id}`, `POST /enrichment-reviews/{id}/approve`, `POST /enrichment-reviews/{id}/reject`
 - Profile drafts: `GET /profile-drafts`, `GET /profile-drafts/{id}`, `POST /profile-drafts/generate`, `POST /profile-drafts/{id}/approve`, `POST /profile-drafts/{id}/reject`
-- Catalogue: `GET /brands`, `GET /fragrances`, `GET /fragrances/{id}`, `GET /notes`, `GET /accords`, `GET /search?q=`
+- Catalogue promotion: `GET /catalogue/brands`, `GET /catalogue/brands/{id}`, `GET /catalogue/fragrances`, `GET /catalogue/fragrances/{id}`, `POST /catalogue/promote`
+- Legacy catalogue discovery: `GET /brands`, `GET /fragrances`, `GET /fragrances/{id}`, `GET /notes`, `GET /accords`, `GET /search?q=`
 - Intelligence: `GET /similar/{fragrance_id}`, `POST /recommend`, `POST /scentprint`, `GET /clone-matches/{fragrance_id}`
 
 Foundation workflow endpoints may use in-memory previews until repositories are wired, but all requests and responses remain typed. Approved catalogue routes must never expose unapproved enrichment or restricted source content.
@@ -30,3 +31,11 @@ Rejection requires a reason, which is retained on the draft.
 
 Enrichment responses omit prices, supplier/CN codes, stock, quantities, commercial terms, and
 third-party descriptions, reviews, ratings, images, comments, or UGC.
+
+## Catalogue promotion
+
+`POST /catalogue/promote` accepts only an `enrichment_review_id`. The referenced review must have
+status `approved_for_catalogue`, human attribution, sufficient provenance and confidence, acceptable
+licensing risk, and no restricted copied content or supplier-private values. A successful response
+contains a decision and public-safe fragrance. Repeating it safely returns the existing promotion.
+The `/catalogue` GET operations expose only this allowlisted projection.

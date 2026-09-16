@@ -1,8 +1,8 @@
 # Roadmap
 
 1. **Foundation:** supplier-first ingestion, layered schema, matching, review workflow, licensing guardrails, typed API, and tests.
-   The review-only fragrance profile draft builder is available; catalogue promotion and Maison
-   Obsidian consumption of approved catalogue profiles remain future work.
+   The review-only fragrance profile draft builder and guarded catalogue promotion are available;
+   Maison Obsidian consumption of approved catalogue profiles remains future work.
 2. **Data operations:** Alembic revisions, persistent repositories, curator queues, taxonomy governance, and dataset versioning.
 3. **Intelligence:** calibrated vectors, reviewed clone estimates, contextual recommendations, Scentprint feedback, and layering research.
 4. **Commercial API:** tenant identity, scoped keys, quotas, metering, audit logs, data tiers, and SLAs.
@@ -12,5 +12,5 @@
 ## Current enrichment-review boundary
 
 The independent enrichment review queue now generates original, provenance-linked review records
-and enforces human readiness, licensing, confidence, and copied-content checks. Catalogue promotion
-and Maison Obsidian catalogue consumption remain explicitly future work.
+and enforces human readiness, licensing, confidence, and copied-content checks. Only reviews marked
+`approved_for_catalogue` cross the promotion boundary. Maison Obsidian consumption remains future.

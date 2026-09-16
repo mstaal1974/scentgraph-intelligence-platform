@@ -1,5 +1,6 @@
 from aromatwin.routers import (
     brands,
+    catalogue,
     clone_matches,
     enrichment_reviews,
     fragrances,
@@ -18,6 +19,7 @@ ROUTERS = (
     supplier_items.router,
     match_candidates.router,
     enrichment_reviews.router,
+    catalogue.router,
     brands.router,
     fragrances.router,
     notes.router,
