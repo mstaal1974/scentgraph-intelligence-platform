@@ -6,6 +6,8 @@
 
 `profile_drafts` links one supplier item and match candidate to an original placeholder profile,
 provenance note, bounded confidence, and review decision. Drafts begin as `needs_human_review` and
-contain no supplier commercial fields; approval does not create a catalogue record.
+contain no supplier commercial fields or third-party descriptive/media fields; approval does not
+create a catalogue record. A future promotion boundary may create catalogue records only after
+independent review and provenance checks.
 
 Foreign keys, bounded scores, immutable raw values, status checks, and guarded promotion prevent reference data from becoming commercial catalogue content by accident.

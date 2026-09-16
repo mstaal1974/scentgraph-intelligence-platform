@@ -2,6 +2,8 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class ProfileDraftCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     supplier_item_id: int
     match_candidate_id: int
     brand: str = Field(min_length=1)
@@ -14,6 +16,8 @@ class ProfileDraftCreate(BaseModel):
 
 
 class ProfileDraftUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     brand: str | None = Field(default=None, min_length=1)
     fragrance_name: str | None = Field(default=None, min_length=1)
     concentration: str | None = None
@@ -23,7 +27,7 @@ class ProfileDraftUpdate(BaseModel):
 
 
 class ProfileDraftRead(ProfileDraftCreate):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, extra="forbid")
 
     id: int
     review_status: str
@@ -31,6 +35,8 @@ class ProfileDraftRead(ProfileDraftCreate):
 
 
 class ProfileDraftGenerateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     supplier_item_id: int
     match_candidate_id: int
     supplier_brand: str = Field(min_length=1)
@@ -44,6 +50,7 @@ class ProfileDraftGenerateRequest(BaseModel):
 
 
 class ProfileDraftDecisionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     reviewer: str = Field(min_length=1)
     reason: str | None = None
-
