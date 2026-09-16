@@ -70,3 +70,7 @@ safe identifiers, bands, statuses, role labels, summaries, and aggregate readine
 ## Private supplier pilot execution pack
 
 The focused execution layer is documented in [Private supplier pilot execution](private-supplier-pilot-execution.md). It adds path-safe intake, explicit preflight plans, private run boundaries, aggregate acceptance evidence, privacy auditing, and mandatory human review without changing the underlying intelligence workflow or permitting publication.
+
+## Completion handoff
+
+The final orchestrator reports whether this workflow is repository-ready without reading real inputs. A private-data blocker is expected until authorised files exist in private runtime storage; it must not be overridden or represented as completed.

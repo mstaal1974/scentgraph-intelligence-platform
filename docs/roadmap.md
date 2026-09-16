@@ -88,3 +88,38 @@ safe identifiers, bands, statuses, role labels, summaries, and aggregate readine
 ## Private supplier pilot execution pack
 
 The focused execution layer is documented in [Private supplier pilot execution](private-supplier-pilot-execution.md). It adds path-safe intake, explicit preflight plans, private run boundaries, aggregate acceptance evidence, privacy auditing, and mandatory human review without changing the underlying intelligence workflow or permitting publication.
+
+## Final backend completion status
+
+Completed backend platform layers:
+
+- supplier import
+- matching
+- sourcing/margins
+- profile generation
+- enrichment queue
+- product catalogue
+- seller demand matching
+- consumer scent intelligence
+- launch intelligence
+- private pilot workflow
+- persistence/audit
+- review gates
+- private supplier pilot execution
+- final completion orchestrator
+
+“Completed” here means the repository layer exists and passes its repository evidence gates; it does not mean external or human work has occurred.
+
+Remaining manual/external tasks:
+
+- place real supplier files in private runtime storage
+- configure production secrets
+- connect production database
+- deploy staging API
+- run private pilot
+- perform human review
+- approve profiles
+- connect Maison Obsidian
+- build consumer-facing quiz/UI
+- later integrate MicroPromote
+- define SaaS pricing and commercial packaging

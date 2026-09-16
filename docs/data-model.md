@@ -103,3 +103,7 @@ safe identifiers, bands, statuses, role labels, summaries, and aggregate readine
 ## Private supplier pilot execution pack
 
 The focused execution layer is documented in [Private supplier pilot execution](private-supplier-pilot-execution.md). It adds path-safe intake, explicit preflight plans, private run boundaries, aggregate acceptance evidence, privacy auditing, and mandatory human review without changing the underlying intelligence workflow or permitting publication.
+
+## Completion models
+
+`CompletionTaskRead` records evidence requirements and exactly one readiness status. `CompletionTaskPublicSummary` is the status-only projection. `PlatformCompletionResult`, `CompletionBlockerRead`, `CompletionReadinessReport`, and `CompletionAuditReport` provide run totals, blocker classifications, sectioned readiness, and privacy results. These are orchestration DTOs rather than new fragrance or commercial entities, and no private operational record is persisted in their public projection.

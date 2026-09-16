@@ -49,3 +49,7 @@ reviews, ratings, images, comments, or user-generated content.
 ## Private supplier pilot execution pack
 
 The focused execution layer is documented in [Private supplier pilot execution](private-supplier-pilot-execution.md). It adds path-safe intake, explicit preflight plans, private run boundaries, aggregate acceptance evidence, privacy auditing, and mandatory human review without changing the underlying intelligence workflow or permitting publication.
+
+## Completion handoff
+
+The completion orchestrator validates that review-gate code exists but separately reports outstanding human decisions as blocked. It never converts readiness evidence into approval and never publishes or creates products.

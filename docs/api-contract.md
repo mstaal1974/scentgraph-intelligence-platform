@@ -135,3 +135,7 @@ safe identifiers, bands, statuses, role labels, summaries, and aggregate readine
 ## Private supplier pilot execution pack
 
 The focused execution layer is documented in [Private supplier pilot execution](private-supplier-pilot-execution.md). It adds path-safe intake, explicit preflight plans, private run boundaries, aggregate acceptance evidence, privacy auditing, and mandatory human review without changing the underlying intelligence workflow or permitting publication.
+
+## Platform completion (internal/private)
+
+Authenticated `/platform-completion` endpoints expose health, public-safe task summaries, safe/demo runs, readiness, blockers, private report export, and audit status. Responses contain statuses, bands, counts, summaries, and next actions only; operational records and private supplier, seller, or consumer fields are excluded. Export writes detailed output beneath `data/private/reports/`.
