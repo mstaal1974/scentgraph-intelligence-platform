@@ -1,0 +1,3 @@
+launch_candidate_id,canonical_brand,canonical_fragrance_name,launch_priority_band,launch_status,supplier_availability_band,margin_suitability_band,seller_demand_band,consumer_interest_band,recommended_next_action,public_safe_summary
+fictional-launch-001,Northstar Atelier,Quiet Ember,priority,launch_now,high,strong,strong,high,Submit candidate for human launch review.,Fictional candidate has strong aggregated readiness signals and remains subject to review.
+fictional-launch-002,Northstar Atelier,Clear Horizon,moderate,launch_after_profile_enrichment,moderate,moderate,moderate,unknown,Complete enrichment and human review.,Fictional candidate requires reviewed profile enrichment before launch consideration.

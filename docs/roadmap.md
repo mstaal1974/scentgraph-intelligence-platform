@@ -64,3 +64,7 @@ The internal demand-brief matcher and anonymised supplier-opportunity summary ar
 
 ## Consumer scent intelligence
 The private Scentprint, structured feedback, thresholded community aggregation, and scent wardrobe foundation is available. Durable accounts, consent lifecycle, public reviews/community, scent-twin discovery, social proof, frontend quizzes, campaigns, and MicroPromote integration remain separately scoped future work.
+
+## Launch intelligence readiness layer
+
+The backend-only, explainable launch prioritisation layer now connects existing profile, sourcing, catalogue, seller-demand, and consumer-intelligence signals through safe bands and human-review gates. Storefront, dashboard, Maison Obsidian, Shopify, and MicroPromote integrations remain future, separately scoped work.

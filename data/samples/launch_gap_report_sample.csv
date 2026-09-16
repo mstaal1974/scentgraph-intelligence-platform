@@ -1,0 +1,2 @@
+gap_id,launch_candidate_id,gap_type,severity,explanation,recommended_fix,owner_role,review_status
+gap-fictional-001,fictional-launch-002,needs_enrichment,medium,Profile enrichment is incomplete.,Complete enrichment and human review.,fragrance_reviewer,needs_human_review
