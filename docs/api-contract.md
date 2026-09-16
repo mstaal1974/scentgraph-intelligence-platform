@@ -39,3 +39,12 @@ status `approved_for_catalogue`, human attribution, sufficient provenance and co
 licensing risk, and no restricted copied content or supplier-private values. A successful response
 contains a decision and public-safe fragrance. Repeating it safely returns the existing promotion.
 The `/catalogue` GET operations expose only this allowlisted projection.
+# Scent vectors
+
+`GET /scent-vectors`, `GET /scent-vectors/{id}`, and
+`GET /catalogue/fragrances/{fragrance_id}/scent-vector` expose public-safe vectors. `POST
+/scent-vectors/generate` generates only from an approved catalogue ID. `POST
+/scent-vectors/{id}/approve` and `/reject` apply human review decisions; rejection requires a
+reason. `POST /scent-vectors/similarity` compares an input vector with requested candidates (or all
+candidates) and returns descending cosine similarity. Unknown IDs return 404; failed safety gates
+return 422.

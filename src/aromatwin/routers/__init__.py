@@ -9,6 +9,7 @@ from aromatwin.routers import (
     notes,
     profile_drafts,
     recommendations,
+    scent_vectors,
     scentprint,
     search,
     supplier_items,
@@ -26,6 +27,7 @@ ROUTERS = (
     profile_drafts.router,
     search.router,
     recommendations.router,
+    scent_vectors.router,
     scentprint.router,
     clone_matches.router,
 )

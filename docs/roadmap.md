@@ -14,3 +14,7 @@
 The independent enrichment review queue now generates original, provenance-linked review records
 and enforces human readiness, licensing, confidence, and copied-content checks. Only reviews marked
 `approved_for_catalogue` cross the promotion boundary. Maison Obsidian consumption remains future.
+## Scent vector engine
+
+The deterministic public-catalogue scent vector layer is now available. Recommendation,
+Scentprint, clone-comparison, and Maison Obsidian discovery integrations remain later stages.

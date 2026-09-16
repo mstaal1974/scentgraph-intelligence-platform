@@ -26,3 +26,9 @@ traceable. It rejects missing provenance, low confidence, high licensing risk, r
 content, and every status other than `approved_for_catalogue`. Its output allowlist prevents both
 supplier-commercial fields and third-party descriptive, media, review, rating, comment, or UGC
 content from crossing into the public catalogue.
+## Scent-vector derivation
+
+Scent vectors retain the provenance references of the approved catalogue record and are calculated
+only from allowlisted public fields. Source fingerprints document recalculation without retaining
+private inputs. Supplier-commercial fields and copied descriptions, reviews, ratings, comments,
+images, or UGC are rejected before generation and cannot appear in public vector responses.

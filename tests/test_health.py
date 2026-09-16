@@ -32,6 +32,9 @@ def test_openapi_exposes_workflow_routes() -> None:
         "/recommend",
         "/scentprint",
         "/clone-matches/{fragrance_id}",
+        "/scent-vectors",
+        "/scent-vectors/generate",
+        "/scent-vectors/similarity",
     }
     assert required <= set(paths)
 

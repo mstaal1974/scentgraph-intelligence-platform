@@ -1,1 +1,2 @@
-fragrance_id,warm,fresh,sweet,dark,woody,floral,spicy,fruit,green,aquatic,marine,leather,powdery,resinous,smoky,gourmand,citrus,aromatic,luxury,projection,longevity
+id,fragrance_id,warm,fresh,sweet,dark,woody,floral,spicy,fruity,green,aquatic,marine,leather,powdery,resinous,smoky,gourmand,citrus,aromatic,amber,musky,luxury,projection,longevity,confidence_score,generation_method,review_status,provenance_references,source_fingerprint,rejection_reason
+1,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.62,public_catalogue_keyword_v1,needs_human_review,1,cf3959d9a47e1e5d37cc7c8da741a661f4f5bf3b26cc3bf86ba34c51f4c78946,

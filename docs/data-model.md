@@ -12,6 +12,14 @@ an `approved_for_catalogue` enrichment review with sufficient provenance.
 
 Foreign keys, bounded scores, immutable raw values, status checks, and guarded promotion prevent reference data from becoming commercial catalogue content by accident.
 
+## Scent vectors
+
+Each scent vector belongs to one approved public catalogue fragrance and stores 23 bounded
+dimensions, confidence, generation method, review status, provenance references, and a fingerprint
+of its allowlisted source fields. The fingerprint provides idempotency and change detection. This
+derived public-safe layer cannot point directly to supplier items, profile drafts, or enrichment
+reviews. See [Scent Vector Engine](scent-vector-engine.md).
+
 ## Independent enrichment review records
 
 The review-only API representation links `profile_draft_id` to original description text,
