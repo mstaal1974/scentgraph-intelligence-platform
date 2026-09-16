@@ -54,3 +54,7 @@ boundary. Launch intelligence supplies aggregate readiness bands and gap evidenc
 workflow does not change its candidates. API endpoints live below the configured internal prefix
 and require the private API key outside local development. Their default projections contain
 counts, statuses, remediation summaries, and bands only.
+
+## Optional durable persistence
+
+Completed private manifests can be migrated through the summary-only persistence boundary documented in [Production persistence and audit trail](production-persistence-audit.md). This is opt-in and does not replace or mutate run files.

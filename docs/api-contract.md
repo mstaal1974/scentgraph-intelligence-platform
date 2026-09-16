@@ -119,3 +119,7 @@ Private-key-protected `/launch-intelligence` endpoints provide health, build, ca
 ## Private pilot orchestration
 
 This module may supply non-mutating readiness evidence to the [private pilot workflow](private-pilot-workflow.md). The pilot layer records only safe statuses, counts, bands, blockers, and human-review actions; it does not bypass this module's existing review gates or expose private source values.
+
+## Internal operations API
+
+Authenticated `/operations` endpoints return public-safe operational projections for persisted runs, stages, artifacts, review items, launch candidates, provenance, and audit events. Although responses are allow-listed, the endpoints remain private/internal and require the private API boundary outside local mode.
