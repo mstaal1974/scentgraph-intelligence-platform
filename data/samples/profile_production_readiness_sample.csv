@@ -1,0 +1,2 @@
+readiness_id,overall_status,supplier_intake_status,matching_status,profile_generation_status,enrichment_status,review_status,persistence_status,privacy_status,output_path_status,blocking_issues,warnings,required_operator_actions,recommended_next_step,created_at
+ppr-fictional-001,ready_for_private_profile_batch,ready,ready,available,available,configured,private_local_output_available,available,safe_private_path,,fictional demonstration only,Run a bounded dry run,2026-01-01T00:00:00Z

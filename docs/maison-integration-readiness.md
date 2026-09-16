@@ -59,3 +59,7 @@ privacy, content, and human reviews.
 ## Commercial entitlement boundary
 
 Maison integration remains an internal API group. A commercial plan definition does not activate synchronization: private authentication, operator approval, staging evidence, and the existing Maison readiness gates still apply. Public and white-label summaries contain only reviewed public-safe fields.
+
+## Profile production prerequisite
+
+A private production draft is not Maison-ready. Complete enrichment, provenance review, human profile review, and catalogue review first. Maison bundles remain a separate, explicitly invoked workflow and are never produced by profile-production endpoints or scripts.

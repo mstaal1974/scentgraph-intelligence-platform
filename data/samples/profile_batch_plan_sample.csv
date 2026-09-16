@@ -1,0 +1,2 @@
+batch_plan_id,source_run_id,supplier_public_label,planned_profile_count,skipped_count,blocked_count,duplicate_count,confidence_band_summary,selected_candidate_ids,required_review_gates,required_enrichment_steps,privacy_checks_required,blocking_issues,warnings,recommended_next_action,created_at
+pbp-fictional-001,run-fictional-001,fictional-supplier-a,1,0,0,0,"high:0;medium:1;low:0",candidate-fictional-001,"identity_review;provenance_review;catalogue_review","note_pyramid;accords","private_output_path;original_copy",,,Run human review,2026-01-01T00:00:00Z

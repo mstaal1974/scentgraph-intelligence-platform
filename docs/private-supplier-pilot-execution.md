@@ -65,3 +65,7 @@ For a hosted pilot, first satisfy `docs/staging-deployment-readiness.md`. Upload
 The Maison readiness pack consumes only approved, public-safe summaries through allow-listed contracts.
 It does not change existing generation, pilot, review, persistence, or staging workflows and never
 performs an external sync. See [Maison integration readiness](maison-integration-readiness.md).
+
+## Private profile production handoff
+
+After intake and candidate matching, use the [private fragrance profile production pack](private-fragrance-profile-production.md). The production preflight must be ready, and operational drafts stay under the run's private `profiles/` directory. This handoff never approves or publishes a profile.
