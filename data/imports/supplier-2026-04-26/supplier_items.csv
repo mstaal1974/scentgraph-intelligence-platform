@@ -1,0 +1,2 @@
+id,supplier_name,supplier_brand_raw,supplier_name_raw,supplier_ori_raw,normalised_brand,normalised_name,status
+1,Public Sample Supplier,Example Oil House,Example Scent SUPER,Example Reference Fragrance,Example Oil House,Example Scent,supplier_imported

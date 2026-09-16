@@ -1,0 +1,9 @@
+code,description,terminal
+supplier_imported,Raw supplier row imported,false
+match_candidate,Candidate identity proposed,false
+needs_verification,Independent verification required,false
+verified_official,Official source checked,false
+enriched_original,Original enrichment prepared,false
+approved_for_catalogue,Human-approved commercial catalogue record,true
+rejected_low_confidence,Rejected because evidence was insufficient,true
+rejected_licensing_risk,Rejected because source permissions were unsafe,true
