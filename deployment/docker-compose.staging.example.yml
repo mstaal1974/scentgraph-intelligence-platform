@@ -1,0 +1,14 @@
+services:
+  api:
+    build: ..
+    env_file: staging.env
+    ports: ["127.0.0.1:8000:8000"]
+    volumes:
+      - aromatwin-private:/var/lib/aromatwin/private
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/deployment/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+volumes:
+  aromatwin-private:

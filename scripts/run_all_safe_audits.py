@@ -15,6 +15,7 @@ COMMANDS = [
     ["scripts/audit_pilot_workflow_privacy.py"], ["scripts/audit_persistence_privacy.py"],
     ["scripts/audit_review_workflow_privacy.py"], ["scripts/audit_private_pilot_inputs.py"],
     ["scripts/audit_platform_completion_privacy.py"],
+    ["scripts/audit_deployment_privacy.py"],
 ]
 
 

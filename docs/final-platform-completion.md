@@ -34,3 +34,7 @@ Detailed operational reports may be written only beneath `data/private/reports/`
 Maison Obsidian integration additionally needs an approved API contract, credentials, staging validation, and separately reviewed website-repository work. MicroPromote remains a future, separately scoped integration and requires an approved data contract and campaign controls. SaaS packaging remains a commercial decision requiring tenancy, billing, support, legal terms, pricing, and compliance review.
 
 Never commit real supplier files or commercial terms, seller briefs or private notes, consumer records or identifiers, credentials, generated private reports, or copied third-party content. The orchestrator never deploys, auto-approves, publishes, creates products, exports to production storefronts, or generates campaigns.
+
+## Staging deployment handoff
+
+Repository completion is distinct from hosted readiness. Use the non-deploying checks and operator sequence in [staging deployment readiness](staging-deployment-readiness.md); missing secrets, databases, or private mounts remain explicit human-owned blockers.

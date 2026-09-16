@@ -1,7 +1,7 @@
 from functools import lru_cache
 from typing import Annotated
 
-from pydantic import field_validator, model_validator
+from pydantic import AliasChoices, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 LOCAL_ENVIRONMENTS = frozenset({"development", "dev", "local", "test", "testing"})
@@ -15,14 +15,25 @@ DEFAULT_DEVELOPMENT_ORIGINS = (
 class Settings(BaseSettings):
     """Runtime configuration, loaded only from explicit AromaTwin environment variables."""
 
-    model_config = SettingsConfigDict(env_prefix="AROMATWIN_", env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_prefix="AROMATWIN_", env_file=".env", extra="ignore", populate_by_name=True
+    )
 
-    environment: str = "development"
-    database_url: str = "postgresql+psycopg://aromatwin:aromatwin@localhost:5432/aromatwin"
+    environment: str = Field(
+        default="development",
+        validation_alias=AliasChoices("AROMATWIN_ENV", "AROMATWIN_ENVIRONMENT"),
+    )
+    database_url: str = Field(
+        default="postgresql+psycopg://aromatwin:aromatwin@localhost:5432/aromatwin",
+        validation_alias=AliasChoices("DATABASE_URL", "AROMATWIN_DATABASE_URL"),
+    )
     api_key: str | None = None
     admin_api_key: str | None = None
     private_api_key: str | None = None
-    allowed_origins: Annotated[tuple[str, ...], NoDecode] = DEFAULT_DEVELOPMENT_ORIGINS
+    allowed_origins: Annotated[tuple[str, ...], NoDecode] = Field(
+        default=DEFAULT_DEVELOPMENT_ORIGINS,
+        validation_alias=AliasChoices("CORS_ALLOWED_ORIGINS", "AROMATWIN_ALLOWED_ORIGINS"),
+    )
     enable_admin_console: bool = True
     enable_private_supplier_endpoints: bool = True
     log_level: str = "INFO"

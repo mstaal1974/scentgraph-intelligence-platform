@@ -1,0 +1,15 @@
+# Example only: create secrets and managed database in Render dashboard.
+services:
+  - type: web
+    name: aromatwin-staging-placeholder
+    runtime: docker
+    healthCheckPath: /deployment/health
+    envVars:
+      - key: AROMATWIN_ENV
+        value: staging
+      - key: AROMATWIN_PRIVATE_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: PRIVATE_STORAGE_ROOT
+        value: /var/lib/aromatwin/private

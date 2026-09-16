@@ -123,3 +123,15 @@ Remaining manual/external tasks:
 - build consumer-facing quiz/UI
 - later integrate MicroPromote
 - define SaaS pricing and commercial packaging
+
+## Next manual staging steps
+
+1. Merge the deployment readiness pack.
+2. Configure staging secrets in the hosting provider.
+3. Create the isolated staging database.
+4. Configure access-controlled private persistent storage.
+5. Deploy the staging API through a human-reviewed release.
+6. Upload approved supplier files directly to private storage.
+7. Run the private pilot.
+8. Complete human review.
+9. Plan Maison integration later as a separate repository task.

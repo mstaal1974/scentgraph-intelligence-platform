@@ -47,3 +47,7 @@ The focused execution layer is documented in [Private supplier pilot execution](
 ## Completion handoff
 
 An isolated SQLite smoke check proves only local initialisation capability. Production persistence remains blocked until the target database, credentials, migrations, backup, monitoring, and audit retention are configured and verified in the deployment environment.
+
+## Pre-deployment persistence check
+
+Before a staging release, run `PYTHONPATH=src python scripts/check_migration_readiness.py` and the deployment readiness check. These commands inspect configuration and migration syntax only; they neither connect to production nor execute schema changes. Configure staging database credentials only in the host secret store.

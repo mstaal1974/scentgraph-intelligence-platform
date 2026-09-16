@@ -1,0 +1,3 @@
+environment,check_name,status,blocking_issue_type,warning_count,required_operator_action,recommended_next_step,public_safe_summary
+fictional-staging,private_api_auth,blocked_missing_secret,missing_secret,0,Configure in host secret store,Re-run environment check,No value is present
+fictional-staging,cors,warning,none,1,Set explicit origins,Verify staging hostname,No origin value is disclosed

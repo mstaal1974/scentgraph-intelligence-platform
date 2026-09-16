@@ -26,6 +26,7 @@ from aromatwin.routers import (
     supplier_sourcing,
 )
 from aromatwin.security import validate_cors_origins
+from aromatwin.services.environment_readiness import check_environment_readiness
 
 ADMIN_STATIC = Path(__file__).resolve().parents[2] / "static" / "admin"
 
@@ -39,6 +40,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         description="Supplier-first, brand-neutral commercial fragrance intelligence API",
     )
     application.state.settings = settings
+    # Record masked startup evidence for operators without preventing local development.
+    application.state.environment_readiness = check_environment_readiness()
     # Dependency overrides make explicitly supplied settings deterministic in tests and app factories.
     application.dependency_overrides[get_settings] = lambda: settings
 

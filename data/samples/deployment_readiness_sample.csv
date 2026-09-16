@@ -1,0 +1,3 @@
+environment,check_name,status,blocking_issue_type,warning_count,required_operator_action,recommended_next_step,public_safe_summary
+fictional-staging,configuration,ready_after_secrets_configured,missing_configuration,0,Configure host-managed secrets,Run readiness check,Example contains statuses only
+fictional-staging,privacy_audit,ready,none,0,Perform human review,Review deployment plan,No private records inspected

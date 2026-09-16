@@ -1,0 +1,13 @@
+app = "replace-with-staging-app-name"
+primary_region = "replace-with-region"
+[build]
+  dockerfile = "Dockerfile"
+[env]
+  AROMATWIN_ENV = "staging"
+  PRIVATE_STORAGE_ROOT = "/var/lib/aromatwin/private"
+[http_service]
+  internal_port = 8000
+  force_https = true
+[[vm]]
+  memory = "1gb"
+  cpus = 1
