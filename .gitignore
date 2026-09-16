@@ -12,7 +12,3 @@ validation-report.json
 supplier-staging.json
 match-candidates.json
 staging/
-
-# Supplier source files can contain confidential codes, stock, and pricing.
-/data/private/
-/private/

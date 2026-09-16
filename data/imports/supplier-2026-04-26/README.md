@@ -1,11 +1,14 @@
-# Supplier import audit — 2026-04-26
+# Supplier source drop — 2026-04-26
 
-This tracked directory was reviewed during supplier-import hardening. It contained no supplier CSV or spreadsheet: only this documentation file was committed. A separate public template elsewhere in the repository did contain example cost and supplier-code columns; that template has been removed and replaced with the identity-only sample at `data/samples/supplier_identity_sample.csv`.
+This directory is the canonical input location for the dated supplier-first staging batch. Source CSV/XLS/XLSX files are read in place, hashed, validated, and converted to `supplier_imported` staging rows.
 
-Do **not** add raw supplier files here. Confidential source files—including prices, quantities, stock positions, supplier codes, and commercial terms—belong under the gitignored local path:
+The source files were not present in the repository workspace when this workflow was implemented. No supplier rows have therefore been fabricated or copied from templates. Add the original supplied files here without editing them, then run:
 
-```text
-data/private/imports/supplier-2026-04-26/
+```bash
+python scripts/import_supplier.py data/imports/supplier-2026-04-26 \
+  --supplier-name "<supplier name>" \
+  --output staging/supplier-2026-04-26.json \
+  --report staging/supplier-2026-04-26-report.json
 ```
 
-The importer stages those private files locally. Generated staging output and validation reports must also remain under ignored local paths. Staged rows retain `supplier_imported` status and are never approved catalogue records.
+Generated rows are staging evidence only. They are never approved catalogue records and must proceed through candidate matching and independent enrichment review.

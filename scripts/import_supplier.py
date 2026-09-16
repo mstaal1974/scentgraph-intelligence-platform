@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 import json
-import os
 from dataclasses import asdict
 from decimal import Decimal
 from pathlib import Path
@@ -13,10 +12,7 @@ from aromatwin.services.supplier_importer import (
     prepare_supplier_file,
 )
 
-DEFAULT_PRIVATE_IMPORT_ROOT = Path(
-    os.environ.get("AROMATWIN_PRIVATE_IMPORT_ROOT", "data/private/imports")
-)
-DEFAULT_IMPORT = DEFAULT_PRIVATE_IMPORT_ROOT / "supplier-2026-04-26"
+DEFAULT_IMPORT = Path("data/imports/supplier-2026-04-26")
 
 
 def serialise(value: object) -> object:
@@ -31,12 +27,8 @@ def main() -> None:
     )
     parser.add_argument("input", nargs="?", type=Path, default=DEFAULT_IMPORT)
     parser.add_argument("--supplier-name", required=True)
-    parser.add_argument(
-        "--output", type=Path, default=Path("data/private/staging/supplier-2026-04-26.json")
-    )
-    parser.add_argument(
-        "--report", type=Path, default=Path("data/private/staging/supplier-2026-04-26-report.json")
-    )
+    parser.add_argument("--output", type=Path, default=Path("supplier-staging.json"))
+    parser.add_argument("--report", type=Path, default=Path("validation-report.json"))
     args = parser.parse_args()
 
     args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,20 @@
+Column,Meaning
+supplier_item_id,Deterministic import row ID for the cleaned supplier item.
+import_batch_id,Batch identifier for this source file.
+supplier_brand_raw,"Brand exactly as supplied, cleaned for line breaks/spacing only."
+supplier_name_raw,"Supplier fragrance/oil name exactly as supplied, cleaned for line breaks/spacing only."
+supplier_ori_raw,Original ORI marker from source; LZ indicates clone/alternate naming rows in this supplier file.
+supplier_cn_raw,CN/supplier clone or alternate name from source.
+supplier_code,Supplier code from source.
+quantity_raw,Quantity from source.
+quantity_kg,Quantity parsed to kg where possible.
+price_aed,AED price from source.
+price_usd,USD price from source.
+normalised_brand,Cleaned/canonicalised brand candidate for matching.
+normalised_fragrance_name,Cleaned fragrance name candidate.
+candidate_original_brand,Initial original-brand candidate based on supplier row only.
+candidate_original_name,Initial original-fragrance candidate with performance variant labels stripped where safe.
+supplier_clone_name,Supplier clone/alternate name when CN differs from name or ORI=LZ.
+variant_flags,Machine flags for LZ/TOP/SUPER/duplicates/raw-material review.
+review_status,Always starts at needs_verification. Do not treat as verified.
+can_promote_to_catalogue,requires_review; do not promote automatically.

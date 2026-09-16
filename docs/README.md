@@ -3,7 +3,6 @@
 - [Architecture](architecture.md)
 - [Commercial positioning](commercial-positioning.md)
 - [Supplier import workflow](supplier-import-workflow.md)
-- [Supplier data security](supplier-data-security.md)
 - [Candidate matching](candidate-matching-workflow.md)
 - [Independent enrichment](enrichment-workflow.md)
 - [Licensing guardrails](licensing-guardrails.md)

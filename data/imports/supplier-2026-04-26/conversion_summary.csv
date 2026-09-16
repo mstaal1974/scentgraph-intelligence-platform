@@ -1,0 +1,15 @@
+Metric,Value
+Source workbook,PERFUME OIL PRICE LIST  26.04.2026 (1).xlsx
+Source sheet,Table 1
+Original worksheet rows read,3065
+Repeated header / blank rows removed,43
+Clean supplier items exported,3022
+Unique normalised brands,427
+Rows with LZ clone/alternate name marker,823
+Rows with TOP variant flag,373
+Rows with SUPER variant flag,28
+Exact duplicate rows flagged,4
+Duplicate supplier-code rows flagged,24
+Medium/high review queue rows,1321
+Import batch ID,supplier_20260426
+Converted at UTC,2026-09-15T23:52:40+00:00

@@ -4,7 +4,7 @@ import csv
 from pathlib import Path
 
 EXPECTED = {
-    "samples/supplier_identity_sample.csv": {"BRAND", "NAME", "ORI"},
+    "supplier_import_template.csv": {"BRAND", "NAME", "ORI", "CN CODE", "QTY", "AED", "USD"},
     "reference_match_template.csv": {
         "supplier_item_id",
         "candidate_source_type",
