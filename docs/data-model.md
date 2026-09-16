@@ -83,3 +83,7 @@ Bulk profile drafts, coverage rows, and research queue items are file-backed ope
 ## Launch intelligence records
 
 `LaunchIntelligenceRead` is a derived, non-persistent decision record keyed by a deterministic launch candidate ID. It references optional fragrance and product IDs, readiness/status bands, an explainable score, blockers, requirements, formats, and human review state. `LaunchGapRead` assigns each derived gap to an owner role. `LaunchRecommendationPlanRead` groups candidate IDs into non-executing planning themes. Raw commercial and personal source fields are outside these contracts.
+
+## Private pilot orchestration
+
+This module may supply non-mutating readiness evidence to the [private pilot workflow](private-pilot-workflow.md). The pilot layer records only safe statuses, counts, bands, blockers, and human-review actions; it does not bypass this module's existing review gates or expose private source values.

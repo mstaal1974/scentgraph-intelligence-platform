@@ -1,0 +1,3 @@
+run_id,run_mode,stage_name,stage_status,accepted_count,skipped_count,blocked_count,readiness_status,public_safe_summary
+fictional-pilot-alpha,demo_sample,supplier_import,completed,3,0,0,ready_for_private_review,Fictional records passed structural checks without mutation.
+fictional-pilot-alpha,demo_sample,launch_intelligence,completed,2,1,0,ready_for_private_review,Readiness bands were evaluated for private human review.

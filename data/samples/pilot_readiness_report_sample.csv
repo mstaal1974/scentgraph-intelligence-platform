@@ -1,0 +1,2 @@
+run_id,run_mode,readiness_status,launch_now_count,enrichment_needed_count,supplier_review_needed_count,product_setup_needed_count,hold_count,privacy_audit_status,public_safe_summary
+fictional-pilot-alpha,demo_sample,ready_for_private_review,0,1,0,1,1,passed,Fictional aggregate evidence requires human review before a small pilot.

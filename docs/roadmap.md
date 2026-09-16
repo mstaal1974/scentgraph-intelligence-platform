@@ -68,3 +68,7 @@ The private Scentprint, structured feedback, thresholded community aggregation, 
 ## Launch intelligence readiness layer
 
 The backend-only, explainable launch prioritisation layer now connects existing profile, sourcing, catalogue, seller-demand, and consumer-intelligence signals through safe bands and human-review gates. Storefront, dashboard, Maison Obsidian, Shopify, and MicroPromote integrations remain future, separately scoped work.
+
+## Private pilot orchestration
+
+This module may supply non-mutating readiness evidence to the [private pilot workflow](private-pilot-workflow.md). The pilot layer records only safe statuses, counts, bands, blockers, and human-review actions; it does not bypass this module's existing review gates or expose private source values.
