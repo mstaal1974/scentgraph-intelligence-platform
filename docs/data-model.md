@@ -79,3 +79,7 @@ Bulk profile drafts, coverage rows, and research queue items are file-backed ope
 
 ## Consumer scent intelligence (service-layer records)
 `ConsumerScentprint` stores only structured scent preferences under a pseudonymous alias. `ConsumerFeedback` retains private notes internally and exposes an explicit safe projection. `CommunityScentIntelligence` is thresholded aggregate evidence that supplements rather than overwrites approved profiles. `ScentWardrobeItem` is private by default. These transient records do not add a customer identity model or require a foundation migration.
+
+## Launch intelligence records
+
+`LaunchIntelligenceRead` is a derived, non-persistent decision record keyed by a deterministic launch candidate ID. It references optional fragrance and product IDs, readiness/status bands, an explainable score, blockers, requirements, formats, and human review state. `LaunchGapRead` assigns each derived gap to an owner role. `LaunchRecommendationPlanRead` groups candidate IDs into non-executing planning themes. Raw commercial and personal source fields are outside these contracts.

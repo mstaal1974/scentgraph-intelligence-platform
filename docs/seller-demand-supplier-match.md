@@ -33,3 +33,7 @@ python scripts/build_seller_demand_matches.py --briefs data/private/briefs.json 
 python scripts/build_supplier_opportunity_report.py --matches data/private/reports/seller-demand-matches.json
 python scripts/audit_seller_supplier_matching.py
 ```
+
+## Launch intelligence integration
+
+The launch-readiness layer consumes this layer's reviewed, aggregated status or band as read-only decision support. It never changes source records, approves catalogue entries, creates SKUs, or publishes private source detail. See [Launch intelligence and commercial readiness](launch-intelligence-readiness.md).

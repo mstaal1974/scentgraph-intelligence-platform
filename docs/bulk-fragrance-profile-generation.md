@@ -34,3 +34,7 @@ Operational outputs remain under `data/private/staging/profile_drafts/` and `dat
 
 ## Seller-demand integration
 Profile coverage can inform internal launch readiness. The [matching layer](seller-demand-supplier-match.md) only uses supported profile evidence and does not infer missing notes, accords, moods, seasons, or claims.
+
+## Launch intelligence integration
+
+The launch-readiness layer consumes this layer's reviewed, aggregated status or band as read-only decision support. It never changes source records, approves catalogue entries, creates SKUs, or publishes private source detail. See [Launch intelligence and commercial readiness](launch-intelligence-readiness.md).

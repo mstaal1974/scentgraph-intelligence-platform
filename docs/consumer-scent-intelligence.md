@@ -25,3 +25,7 @@ These structured signals can later improve recommendation fit, reveal where cons
 ## API and offline workflow
 
 `/consumer-scent` routes are internal and private-key protected. Default Scentprint and feedback responses are allowlisted safe projections. Offline scripts generate fictional samples, aggregate optional private input into `data/private/reports/`, and audit tracked sample files. Private reports must remain ignored and untracked.
+
+## Launch intelligence integration
+
+The launch-readiness layer consumes this layer's reviewed, aggregated status or band as read-only decision support. It never changes source records, approves catalogue entries, creates SKUs, or publishes private source detail. See [Launch intelligence and commercial readiness](launch-intelligence-readiness.md).

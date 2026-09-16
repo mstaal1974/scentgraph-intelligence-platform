@@ -32,3 +32,7 @@ Margin scenarios remain internal. The product SKU catalogue may consume a final 
 
 ## Seller-demand integration
 Seller-demand matching consumes sourcing confidence and commercial suitability bands, not raw scenario values. See [seller demand to supplier matching](seller-demand-supplier-match.md); inputs remain inside the private boundary.
+
+## Launch intelligence integration
+
+The launch-readiness layer consumes this layer's reviewed, aggregated status or band as read-only decision support. It never changes source records, approves catalogue entries, creates SKUs, or publishes private source detail. See [Launch intelligence and commercial readiness](launch-intelligence-readiness.md).

@@ -111,3 +111,7 @@ With private endpoints enabled, `/seller-demand` provides health; brief create/l
 
 ## Internal consumer scent intelligence
 `/consumer-scent` provides health; Scentprint create/list/read and structured matching; feedback create/list; community-intelligence list/build; wardrobe add/list/gaps; and audit routes. All routes require the private API key. Default responses omit consumer IDs and private notes where a public-safe projection is appropriate. Wardrobes remain private workflow responses. No response contract has supplier-commercial fields.
+
+## Launch intelligence
+
+Private-key-protected `/launch-intelligence` endpoints provide health, build, candidate, priority, gap, plan, and audit operations. Build operations are internal workflows. All response models use an explicit public-safe projection containing only identifiers, readiness bands, statuses, explanations, and next actions; approval and downstream creation remain human operations.
