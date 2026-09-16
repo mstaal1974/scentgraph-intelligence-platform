@@ -41,3 +41,8 @@ stages.
 - **Future operational work:** production authentication/authorization, a durable decision
   audit store, and deployment-specific observability. These are intentionally outside the
   lightweight console layer.
+# Multi-supplier availability
+
+The focused multi-supplier offer ingestion, private comparison, safe matching, and audit boundary
+are now implemented. Future persistence/API repository wiring may replace the current typed preview
+store without changing the catalogue approval workflow or public contract.

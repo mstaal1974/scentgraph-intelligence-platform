@@ -17,3 +17,8 @@ python scripts/import_supplier.py data/private/imports/supplier-2026-04-26 \
 The staging output preserves raw values and adds normalised matching fields, variant markers, duplicate flags, provenance coordinates, and `supplier_imported` status. `ORI` is only a supplier-provided identity hint. Neither it nor any other supplier row verifies a clone relationship or authorises a catalogue record.
 
 The report always states `catalogue_promotion_allowed=false`. Candidate matching and independently sourced human-reviewed enrichment are mandatory before approval.
+# Multi-supplier offers
+
+Private commercial lists from multiple suppliers are imported with
+`scripts/import_supplier_offers.py`; see [the offer import guide](multi-supplier-offer-import.md).
+Do not place source lists or generated staging/report artifacts outside `data/private/`.

@@ -11,6 +11,10 @@ validation, and continue to return only approved allowlisted data. See
 
 - Operations: `GET /health`
 - Supplier: `GET /supplier-items`, `GET /supplier-items/{id}`, `POST /supplier-items/import-preview`
+- Private supplier offers: `GET /supplier-offers/health`, `POST /supplier-offers/import`, `POST
+  /supplier-offers/match`, `GET /supplier-offers`, `GET /supplier-offers/{id}`, `GET
+  /supplier-offers/catalogue/{fragrance_id}`, `POST /supplier-offers/compare`, and `GET
+  /supplier-offers/audit`
 - Matching: `GET /match-candidates`, `GET /match-candidates/{id}`, `POST /match-candidates/generate`
 - Enrichment: `GET /enrichment-reviews`, `GET /enrichment-reviews/{id}`, `POST /enrichment-reviews/{id}/approve`, `POST /enrichment-reviews/{id}/reject`
 - Profile drafts: `GET /profile-drafts`, `GET /profile-drafts/{id}`, `POST /profile-drafts/generate`, `POST /profile-drafts/{id}/approve`, `POST /profile-drafts/{id}/reject`
@@ -19,6 +23,10 @@ validation, and continue to return only approved allowlisted data. See
 - Intelligence: recommendation routes below, `GET /similar/{fragrance_id}`, `POST /scentprint`, and `GET /clone-matches/{fragrance_id}`
 
 Foundation workflow endpoints may use in-memory previews until repositories are wired, but all requests and responses remain typed. Approved catalogue routes must never expose unapproved enrichment or restricted source content.
+
+Supplier-offer operations are tagged internal/private, require the private API key outside local
+environments, and return allowlisted summaries by default. Import returns counts and warnings;
+comparison returns grouping counts. Neither response publishes private commercial attributes.
 
 Profile-draft responses deliberately omit supplier prices, codes, stock, quantities, and commercial
 terms. Generate only creates `needs_human_review` records; approve and reject are review decisions,
