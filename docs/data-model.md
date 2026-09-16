@@ -11,3 +11,11 @@ create a catalogue record. A future promotion boundary may create catalogue reco
 independent review and provenance checks.
 
 Foreign keys, bounded scores, immutable raw values, status checks, and guarded promotion prevent reference data from becoming commercial catalogue content by accident.
+
+## Independent enrichment review records
+
+The review-only API representation links `profile_draft_id` to original description text,
+`source_ids`, a provenance summary, bounded source confidence, licensing risk, copied-content flag,
+review status, reviewer, and rejection reason. Enrichment sources record identity/reference, URL,
+licence status, commercial-use permission, confidence, risk, and reference-only state. These are
+workflow records, not canonical catalogue entities, and contain no supplier commercial fields.
