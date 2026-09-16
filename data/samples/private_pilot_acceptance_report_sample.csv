@@ -1,0 +1,2 @@
+acceptance_report_id,run_id,overall_status,accepted_count,blocked_count,review_required_count,enrichment_required_count,recommended_next_action,public_safe_summary
+acceptance-fictional-001,run-fictional-001,accepted_for_internal_review,3,0,3,1,Complete every mandatory human review gate,Fictional aggregate status only

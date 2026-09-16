@@ -1,0 +1,3 @@
+intake_id,supplier_public_label,detected_format,file_type,readiness_status,blocking_issue_type,recommended_next_action,public_safe_summary
+intake-fictional-001,pilot-supplier-a,generic_supplier,csv,ready_for_import,none,Proceed to controlled import after operator review,Fictional file passed structural preflight
+intake-fictional-002,pilot-supplier-b,unknown,xlsx,needs_format_mapping,unknown_supplier_format,Create and approve a private format mapping,Fictional file requires mapping

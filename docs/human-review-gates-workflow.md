@@ -45,3 +45,7 @@ Never commit real supplier files, seller briefs, consumer records, private notes
 feedback, contact details, supplier identifiers, customs identifiers, inventory, quantities,
 prices, costs, margin values, or commercial conditions. Never copy third-party descriptions,
 reviews, ratings, images, comments, or user-generated content.
+
+## Private supplier pilot execution pack
+
+The focused execution layer is documented in [Private supplier pilot execution](private-supplier-pilot-execution.md). It adds path-safe intake, explicit preflight plans, private run boundaries, aggregate acceptance evidence, privacy auditing, and mandatory human review without changing the underlying intelligence workflow or permitting publication.
