@@ -4,6 +4,7 @@ from aromatwin.routers import (
     bulk_profiles,
     catalogue,
     clone_matches,
+    commercial_packaging,
     consumer_scent,
     deployment,
     enrichment_reviews,
@@ -37,6 +38,7 @@ supplier_items = private_supplier_workflow
 
 ROUTERS = (
     health.router,
+    commercial_packaging.router,
     deployment.router,
     admin_review.router,
     maison.router,

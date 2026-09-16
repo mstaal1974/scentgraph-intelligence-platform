@@ -55,3 +55,7 @@ The backend now defines a public-safe quiz contract and fictional demo result sh
 Maison frontend, account linkage, deployment, automatic publication, or campaign behavior is part
 of the pack. A later Maison-repository change may render the versioned options after staging,
 privacy, content, and human reviews.
+
+## Commercial entitlement boundary
+
+Maison integration remains an internal API group. A commercial plan definition does not activate synchronization: private authentication, operator approval, staging evidence, and the existing Maison readiness gates still apply. Public and white-label summaries contain only reviewed public-safe fields.

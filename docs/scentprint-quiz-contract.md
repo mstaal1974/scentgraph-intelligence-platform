@@ -54,3 +54,7 @@ Build fictional CSV examples with `PYTHONPATH=src python scripts/build_scentprin
 Validate the contract with `PYTHONPATH=src python scripts/check_scentprint_quiz_contracts.py` and
 audit artifacts with `PYTHONPATH=src python scripts/audit_scentprint_quiz_privacy.py`. JSON/CSV
 exports are generated locally by `PYTHONPATH=src python scripts/export_scentprint_quiz_contracts.py`.
+
+## Commercial entitlement boundary
+
+The anonymous quiz contract may be represented as a public-safe API entitlement. That entitlement does not grant access to consumer-private intelligence, raw individual feedback, or internal records; those workflows remain private and manually controlled.

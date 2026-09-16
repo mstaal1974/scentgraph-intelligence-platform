@@ -1,0 +1,4 @@
+plan_id,api_group,allowed,access_level,usage_limit,public_safe_reason
+plan_retailer_starter,public_health,true,public,contract_band,Public-safe health contract
+plan_retailer_starter,private_supplier_pilot,false,disabled,none,Private workflows are excluded
+plan_api_partner,product_catalogue_public,true,public,contract_band,Public-safe catalogue contract

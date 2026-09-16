@@ -1,0 +1,2 @@
+readiness_status,billing_status,manual_review_status,recommended_next_action
+ready_for_commercial_model_review,intentionally_not_connected,required,Complete external commercial and legal review

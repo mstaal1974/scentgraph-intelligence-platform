@@ -1,0 +1,4 @@
+plan_id,tenant_context_label,feature_key,allowed,access_level,data_scope,usage_limit_band,public_safe_summary
+plan_retailer_starter,Fictional Sample Context,product_catalogue_exports,true,authenticated,public_safe_only,contract_band,Cross-context access is forbidden
+plan_retailer_starter,Fictional Sample Context,supplier_matching,false,disabled,disabled,none,Private workflow is unavailable
+plan_white_label_partner,Fictional Sample Context,white_label_exports,true,authenticated,public_safe_only,contract_band,Only reviewed public-safe content may be exported
