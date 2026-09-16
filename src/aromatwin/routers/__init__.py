@@ -17,6 +17,7 @@ from aromatwin.routers import (
     scent_vectors,
     scentprint,
     search,
+    seller_demand,
     supplier_offers,
     supplier_sourcing,
 )
@@ -32,6 +33,7 @@ ROUTERS = (
     supplier_items.router,
     supplier_offers.router,
     supplier_sourcing.router,
+    seller_demand.router,
     bulk_profiles.router,
     match_candidates.router,
     enrichment_reviews.router,
