@@ -1,11 +1,9 @@
 # Supplier Import Workflow
 
-The supplier price list is the primary source of commercial availability. The canonical dated input is `data/imports/supplier-2026-04-26/`. The importer discovers CSV/XLS/XLSX files in that directory, hashes the original bytes, and derives a stable batch ID from the supplier, directory, file names, and hashes.
+The supplier price list is the primary source of commercial availability, but the original file is confidential operational input. The canonical local input is `data/private/imports/supplier-2026-04-26/`, which is excluded by `.gitignore`. `AROMATWIN_PRIVATE_IMPORT_ROOT` may point to an access-controlled mount outside the repository.
 
-For every row it preserves raw `BRAND`, `NAME`, `ORI`, `CN CODE`, `QTY`, `AED`, and `USD`, source file, original spreadsheet/CSV row number, and batch identity. Headers are whitespace/case normalised before validation. Blank rows are ignored; missing brand/name values and invalid numeric fields are reported with their source location.
+The importer discovers CSV/XLS/XLSX files, hashes the original bytes, and derives a stable batch ID from the supplier, directory, file names, and hashes. It preserves raw fields and source row coordinates locally, normalises matching fields, detects TOP/SUPER/LZ variants, and finds duplicates within and across files.
 
-Names are normalised for matching, TOP/SUPER/LZ markers are separated, and duplicates are detected both within each file and across the dated batch. File-level and aggregate counts, hashes, variants, duplicates, and errors belong in the validation report.
+Validation and staging artifacts default to `data/private/staging/`, which is also ignored. If any file fails validation, the entire batch is rejected and only a local error report is produced. Successful rows receive `supplier_imported` and `catalogue_promotion_allowed=false`; importing never creates or updates an approved brand or fragrance.
 
-Every output row is assigned `supplier_imported`, with `catalogue_promotion_allowed=false`. Importing never creates or updates brands or fragrances. The only next step is candidate matching, followed by independent verification and enrichment review.
-
-If any source file fails validation, the batch is rejected as a unit: no partial staging output is written, `status=validation_failed`, and the report identifies each invalid file while keeping catalogue promotion disabled.
+Public examples are identity-only fictional data under `data/samples/`. They must not include price, cost, currency, quantity, stock, SKU, supplier-code, or commercial-term columns. Run `python scripts/audit_supplier_data.py` before committing to detect tracked raw imports, tracked private paths, and unsafe public-sample headers.
