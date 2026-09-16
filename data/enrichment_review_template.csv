@@ -1,0 +1,2 @@
+id,match_candidate_id,approved_brand,approved_fragrance_name,official_source_url,official_source_checked_at,description_original,description_ai_generated,description_reviewed,top_notes,heart_notes,base_notes,accords,fragrance_family,gender,season,occasion,mood,scent_vector_status,review_status,reviewer,approved_at,source_confidence
+1,1,Example Brand,Example Scent,https://example.com/official-product,2026-01-01T00:00:00Z,Original independently reviewed description,true,false,[],[],[],[],amber,,[],[],[],estimated,needs_verification,,,0.70
