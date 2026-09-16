@@ -1,0 +1,14 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+staging.csv
+validation-report.json
+supplier-staging.json
+match-candidates.json
+staging/
