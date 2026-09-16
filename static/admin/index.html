@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AromaTwin Admin Review</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <header><p class="eyebrow">AromaTwin · Internal</p><h1>Review console</h1>
+    <p>Human approval for public-safe workflow metadata. Stage guardrails always apply.</p></header>
+  <main>
+    <section><h2>Review summary</h2><div id="summary" class="cards" aria-live="polite"></div></section>
+    <section><div class="section-title"><h2>Queue by stage</h2>
+      <select id="stage" aria-label="Filter queue by stage"><option value="">All stages</option></select></div>
+      <div id="queue" class="table-wrap"></div></section>
+    <section class="split"><div><h2>Blocked items</h2><div id="blocked"></div></div>
+      <div><h2>Maison API readiness</h2><div id="readiness"></div></div></section>
+  </main>
+  <dialog id="decision"><form method="dialog"><h2 id="decision-title">Review decision</h2>
+    <label>Reviewer<input id="reviewer" required autocomplete="name"></label>
+    <label>Reason<textarea id="reason" rows="3"></textarea></label>
+    <p id="decision-error" class="error"></p><div class="actions"><button value="cancel">Cancel</button>
+    <button id="submit" value="default">Submit</button></div></form></dialog>
+  <script src="admin.js" defer></script>
+</body>
+</html>

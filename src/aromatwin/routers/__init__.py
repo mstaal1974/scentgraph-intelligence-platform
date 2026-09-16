@@ -1,4 +1,5 @@
 from aromatwin.routers import (
+    admin_review,
     brands,
     catalogue,
     clone_matches,
@@ -18,6 +19,7 @@ from aromatwin.routers import (
 
 ROUTERS = (
     health.router,
+    admin_review.router,
     maison.router,
     supplier_items.router,
     match_candidates.router,

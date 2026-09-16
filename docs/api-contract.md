@@ -64,3 +64,12 @@ privacy/IP gates. `POST /recommendations/{id}/reject` requires and retains a rej
 The retailer-safe integration exposes `GET /maison/health`, `GET /maison/fragrances`, `GET /maison/fragrances/{fragrance_id}`, `GET /maison/fragrances/slug/{slug}`, `GET /maison/fragrances/{fragrance_id}/similar`, `GET /maison/fragrances/{fragrance_id}/recommendations`, `POST /maison/scentprint/match`, `GET /maison/export/catalogue`, and `GET /maison/export/recommendations`.
 
 All responses are typed allowlisted projections. Catalogue records must be approved; vector and recommendation review status remains visible; unsafe/unapproved intelligence and workflow-layer records are omitted. See [Maison Obsidian API integration](maison-obsidian-api-integration.md).
+# Admin review API
+
+The internal `/admin` surface aggregates allowlisted workflow metadata only. `GET
+/admin/review/summary`, `/admin/review/queue`, `/admin/review/queue/{stage}`,
+`/admin/review/blocked`, and `/admin/review/readiness` support monitoring. Decision endpoints
+are `POST /admin/review/{stage}/{record_id}/approve`, `/reject`, and
+`/request-more-sources`; they require a reviewer, rejection requires a reason, and approvals
+delegate to existing stage guardrails. `GET /admin/export/review-queue` returns the same safe
+fields as CSV. See [Admin review console](admin-review-console.md).
