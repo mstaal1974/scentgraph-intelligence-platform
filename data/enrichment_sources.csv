@@ -1,0 +1,2 @@
+id,source_name,source_type,source_url,source_title,source_domain,commercial_use_allowed,can_copy_text,can_copy_images,can_use_for_factual_reference,can_use_for_matching,source_confidence,notes,created_at,updated_at
+1,Example official product page,official_source,https://example.com/products/example-fragrance,Example Fragrance,example.com,true,false,false,true,true,0.80,Fictional metadata-only source; no text or images copied,,

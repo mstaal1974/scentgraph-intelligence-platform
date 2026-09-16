@@ -1,0 +1,2 @@
+id,entity_type,entity_id,source_name,source_type,source_reference,licence_status,commercial_use_allowed,confidence,notes
+1,match_candidate,1,Public identity sample,reference_only,public-sample-reference,reference_only,false,0.35,Identifiers only; no third-party content

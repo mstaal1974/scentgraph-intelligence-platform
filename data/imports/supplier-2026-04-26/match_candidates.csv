@@ -1,0 +1,2 @@
+id,supplier_item_id,candidate_brand,candidate_fragrance_name,candidate_concentration,candidate_source_type,candidate_source_reference,match_method,match_confidence,review_status
+1,1,Example Brand,Example Fragrance,,reference_only,public-sample-reference,normalised_identifier,0.60,match_candidate

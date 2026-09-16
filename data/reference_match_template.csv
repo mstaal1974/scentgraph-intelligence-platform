@@ -1,0 +1,2 @@
+supplier_item_id,candidate_brand,candidate_fragrance_name,candidate_concentration,candidate_source_type,candidate_source_reference,match_method,match_confidence,match_notes,review_status,commercial_use_allowed,can_copy_text,can_copy_images,can_use_for_matching
+1,Original Brand,Original Scent,eau de parfum,reference_only,reference-row-42,normalised_exact,0.80,Identifier-only hypothesis,match_candidate,false,false,false,true
