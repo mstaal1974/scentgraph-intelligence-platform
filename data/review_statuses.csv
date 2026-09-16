@@ -7,3 +7,6 @@ enriched_original,Original enrichment prepared,false
 approved_for_catalogue,Human-approved commercial catalogue record,true
 rejected_low_confidence,Rejected because evidence was insufficient,true
 rejected_licensing_risk,Rejected because source permissions were unsafe,true
+needs_human_review,Profile draft requires human review,false
+approved,Profile draft approved without catalogue promotion,true
+rejected,Profile draft rejected with a recorded reason,true

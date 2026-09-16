@@ -4,4 +4,8 @@
 
 `reference_sources` describes source capabilities, while `source_provenance` records evidence attached to any entity. `review_statuses` defines controlled workflow states. Notes, accords, vectors, clone relationships, and product mappings form the proprietary intelligence layer.
 
+`profile_drafts` links one supplier item and match candidate to an original placeholder profile,
+provenance note, bounded confidence, and review decision. Drafts begin as `needs_human_review` and
+contain no supplier commercial fields; approval does not create a catalogue record.
+
 Foreign keys, bounded scores, immutable raw values, status checks, and guarded promotion prevent reference data from becoming commercial catalogue content by accident.
