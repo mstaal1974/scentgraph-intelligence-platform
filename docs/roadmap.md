@@ -189,3 +189,15 @@ None of these operational steps is performed or automated by this contract pack.
 11. Build the Maison website integration later in its separate repository.
 
 This pack does not perform, approve, or automate any of these steps.
+
+## Next manual steps: first private profile batch
+
+1. Place real supplier files in private runtime storage.
+2. Run supplier intake.
+3. Run supplier matching.
+4. Run the private fragrance profile batch.
+5. Review draft profiles.
+6. Complete enrichment.
+7. Complete provenance review.
+8. Approve selected profiles for catalogue review.
+9. Then generate the Maison export bundle manually.

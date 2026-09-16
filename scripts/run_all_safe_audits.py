@@ -20,6 +20,7 @@ COMMANDS = [
     ["scripts/audit_maison_integration_privacy.py"],
     ["scripts/audit_scentprint_quiz_privacy.py"],
     ["scripts/audit_commercial_packaging_privacy.py"],
+    ["scripts/audit_profile_production_privacy.py"],
 ]
 
 

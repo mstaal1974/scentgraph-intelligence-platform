@@ -53,3 +53,7 @@ The focused execution layer is documented in [Private supplier pilot execution](
 ## Completion handoff
 
 The completion orchestrator validates that review-gate code exists but separately reports outstanding human decisions as blocked. It never converts readiness evidence into approval and never publishes or creates products.
+
+## Profile production packets
+
+Private profile production creates a review packet per draft with identity, evidence, originality, tag, and provenance questions. The packet is guidance only: an operator must return the draft for enrichment, reject it, or advance it to catalogue review through the existing review decision workflow.
