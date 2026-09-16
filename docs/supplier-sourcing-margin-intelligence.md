@@ -29,3 +29,6 @@ This supports Maison Obsidian purchasing, assortment planning, and pricing witho
 ## Product catalogue boundary
 
 Margin scenarios remain internal. The product SKU catalogue may consume a final approved selling price, but it never exports the cost basis, margin amount or percentage, supplier price, currency, or commercial assumptions used to derive it.
+
+## Seller-demand integration
+Seller-demand matching consumes sourcing confidence and commercial suitability bands, not raw scenario values. See [seller demand to supplier matching](seller-demand-supplier-match.md); inputs remain inside the private boundary.

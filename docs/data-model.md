@@ -73,3 +73,6 @@ Supplier sourcing decisions and product-format margin scenarios are computed pro
 ## Operational bulk profile records
 
 Bulk profile drafts, coverage rows, and research queue items are file-backed operational projections in this phase, not new catalogue entities. Private drafts retain source offer/match identifiers; public-safe summaries omit those links and all commercial supplier attributes. Coverage records describe workflow state, while research tasks contain missing-field questions and no copied source content.
+
+## Seller demand intelligence (service-layer records)
+`SellerDemandBrief` is private launch intent. `SellerSupplierMatch` links a brief to an existing offer/candidate without creating a catalogue record or SKU. `SupplierOpportunity` is a derived anonymised aggregation. These are transient/service and private-report records, so no foundation migration is required.

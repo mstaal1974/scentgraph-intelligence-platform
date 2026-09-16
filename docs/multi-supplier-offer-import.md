@@ -53,3 +53,6 @@ python scripts/audit_supplier_offers.py
 ## Sourcing hand-off
 
 Imported offers may feed the private ranking described in [Supplier sourcing and margin intelligence](supplier-sourcing-margin-intelligence.md). Ranking does not promote offers to the catalogue, and commercial values remain private.
+
+## Seller-demand integration
+Imported offers can be consumed in memory by the internal [seller-demand matching layer](seller-demand-supplier-match.md). Public-safe match projections never expose offer codes, commercial values, or supplier identity.

@@ -58,3 +58,6 @@ The public-safe product, variant, and bundle projection is available as a founda
 ## Bulk profile coverage milestone
 
 The bulk drafting, coverage, and offline enrichment-queue workflow now supplies human review at scale. Catalogue promotion, vectors, recommendations, product creation, and Maison publication remain later, separately gated actions after approved provenance-backed enrichment.
+
+## Seller-demand intelligence
+The internal demand-brief matcher and anonymised supplier-opportunity summary are the first two-sided intelligence layer. A public marketplace, portals, automated approval, and catalogue/SKU creation remain future work subject to tenancy, consent, privacy thresholds, and commercial governance.

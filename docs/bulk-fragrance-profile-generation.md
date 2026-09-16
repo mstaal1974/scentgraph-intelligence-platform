@@ -31,3 +31,6 @@ python scripts/prepare_enrichment_research_queue.py --coverage data/private/repo
 ```
 
 Operational outputs remain under `data/private/staging/profile_drafts/` and `data/private/reports/`. Never commit supplier files, staging/report outputs, supplier identities where sensitive, codes, CN codes, prices, currencies, stock, quantities, costs, margins, commercial terms, or copied third-party content. The files in `data/samples/` are fictional contract examples only.
+
+## Seller-demand integration
+Profile coverage can inform internal launch readiness. The [matching layer](seller-demand-supplier-match.md) only uses supported profile evidence and does not infer missing notes, accords, moods, seasons, or claims.

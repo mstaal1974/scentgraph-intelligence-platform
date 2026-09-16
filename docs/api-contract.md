@@ -105,3 +105,6 @@ Public reads are available at `/products`, `/products/{product_id}`, `/products/
 ## Internal bulk profile API
 
 When private supplier endpoints are enabled, `/internal/bulk-profiles` provides health, generation, draft summaries, coverage/summary, research-queue build/list, and audit routes. All routes require the private API key. Responses use public-safe schemas: generation and reads do not return supplier offer IDs, references, prices, codes, stock, quantities, costs, margins, or commercial terms. Build actions create review-only operational data and never catalogue records.
+
+## Internal seller-demand workflow
+With private endpoints enabled, `/seller-demand` provides health; brief create/list/read; match build/list/read; supplier-opportunity build/read; and audit routes. All require the private API key. Default brief responses omit seller identity and private notes. Match responses omit private offer identifiers and commercial inputs. Opportunities are aggregated and anonymised.
