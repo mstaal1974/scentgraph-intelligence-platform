@@ -42,3 +42,7 @@ workflow records, not canonical catalogue entities, and contain no supplier comm
 The public catalogue projection contains public IDs, brand/name and deterministic slugs,
 concentration, original description, confidence, provenance summary/reference IDs, and its source
 enrichment-review ID. It deliberately contains no supplier-commercial values.
+
+## Maison consumer projection
+
+Maison card, detail, recommendation, similarity, Scentprint, and export schemas are derived views, not new canonical entities. Their IDs link only to approved catalogue fragrances. Safe vectors, recommendations, and reviewed clone relationships may enrich the view, while supplier, candidate, draft, and review entities cannot be represented directly. The projection is an explicit allowlist and stores no storefront or supplier-commercial state.

@@ -2,7 +2,7 @@
 
 1. **Foundation:** supplier-first ingestion, layered schema, matching, review workflow, licensing guardrails, typed API, and tests.
    The review-only fragrance profile draft builder and guarded catalogue promotion are available;
-   Maison Obsidian consumption of approved catalogue profiles remains future work.
+   Maison Obsidian can now consume approved catalogue profiles through a focused public-safe API.
 2. **Data operations:** Alembic revisions, persistent repositories, curator queues, taxonomy governance, and dataset versioning.
 3. **Intelligence:** calibrate the available vectors and recommendation engine, then add reviewed clone estimates, Scentprint feedback, and layering research.
 4. **Commercial API:** tenant identity, scoped keys, quotas, metering, audit logs, data tiers, and SLAs.
@@ -17,5 +17,6 @@ and enforces human readiness, licensing, confidence, and copied-content checks. 
 ## Scent vector and recommendation engines
 
 The deterministic public-catalogue scent vector and explainable recommendation layers are now
-available. Scentprint, clone-comparison, and Maison Obsidian discovery integrations remain later
+available. Maison discovery, Scentprint matching, and reviewed clone-relationship projection are
+now available through the retailer-safe integration; calibration and storefront wiring remain later
 stages.

@@ -58,3 +58,9 @@ source. `POST /recommendations/similar-fragrances` returns vector-ranked results
 /recommendations/contextual` filters approved candidates by mood, occasion, season, family, and
 intensity where those fields exist. `POST /recommendations/{id}/approve` enforces confidence and
 privacy/IP gates. `POST /recommendations/{id}/reject` requires and retains a rejection reason.
+
+## Maison Obsidian public integration
+
+The retailer-safe integration exposes `GET /maison/health`, `GET /maison/fragrances`, `GET /maison/fragrances/{fragrance_id}`, `GET /maison/fragrances/slug/{slug}`, `GET /maison/fragrances/{fragrance_id}/similar`, `GET /maison/fragrances/{fragrance_id}/recommendations`, `POST /maison/scentprint/match`, `GET /maison/export/catalogue`, and `GET /maison/export/recommendations`.
+
+All responses are typed allowlisted projections. Catalogue records must be approved; vector and recommendation review status remains visible; unsafe/unapproved intelligence and workflow-layer records are omitted. See [Maison Obsidian API integration](maison-obsidian-api-integration.md).
