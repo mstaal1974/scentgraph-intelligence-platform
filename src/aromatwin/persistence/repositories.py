@@ -71,7 +71,7 @@ class RunRepository(Repository[models.PersistentRun]):
     model, identity_field, projection = (
         models.PersistentRun,
         "run_id",
-        projections.run_public_summary,
+        staticmethod(projections.run_public_summary),
     )
 
 
@@ -79,7 +79,7 @@ class StageRepository(Repository[models.PersistentRunStage]):
     model, identity_field, projection = (
         models.PersistentRunStage,
         "id",
-        projections.stage_public_summary,
+        staticmethod(projections.stage_public_summary),
     )
 
     def append(self, **values: Any) -> models.PersistentRunStage:
@@ -100,7 +100,7 @@ class ArtifactRepository(Repository[models.PersistentArtifact]):
     model, identity_field, projection = (
         models.PersistentArtifact,
         "id",
-        projections.artifact_public_summary,
+        staticmethod(projections.artifact_public_summary),
     )
 
 
@@ -108,7 +108,7 @@ class ProfileDraftRepository(Repository[models.PersistentProfileDraft]):
     model, identity_field, projection = (
         models.PersistentProfileDraft,
         "profile_draft_id",
-        projections.profile_draft_public_summary,
+        staticmethod(projections.profile_draft_public_summary),
     )
 
 
@@ -116,7 +116,7 @@ class ReviewItemRepository(Repository[models.PersistentReviewItem]):
     model, identity_field, projection = (
         models.PersistentReviewItem,
         "review_item_id",
-        projections.review_item_public_summary,
+        staticmethod(projections.review_item_public_summary),
     )
 
 
@@ -124,7 +124,7 @@ class LaunchCandidateRepository(Repository[models.PersistentLaunchCandidate]):
     model, identity_field, projection = (
         models.PersistentLaunchCandidate,
         "launch_candidate_id",
-        projections.launch_candidate_public_summary,
+        staticmethod(projections.launch_candidate_public_summary),
     )
 
 
@@ -132,7 +132,7 @@ class SellerDemandRepository(Repository[models.PersistentSellerDemandBrief]):
     model, identity_field, projection = (
         models.PersistentSellerDemandBrief,
         "demand_brief_id",
-        projections.seller_demand_public_summary,
+        staticmethod(projections.seller_demand_public_summary),
     )
 
 
@@ -140,7 +140,7 @@ class ConsumerScentprintRepository(Repository[models.PersistentConsumerScentprin
     model, identity_field, projection = (
         models.PersistentConsumerScentprint,
         "scentprint_id",
-        projections.consumer_scentprint_public_summary,
+        staticmethod(projections.consumer_scentprint_public_summary),
     )
 
 
@@ -148,7 +148,7 @@ class ProvenanceRepository(Repository[models.PersistentProvenanceRecord]):
     model, identity_field, projection = (
         models.PersistentProvenanceRecord,
         "provenance_id",
-        projections.provenance_public_summary,
+        staticmethod(projections.provenance_public_summary),
     )
 
 
@@ -156,7 +156,7 @@ class AuditEventRepository(Repository[models.PersistentAuditEvent]):
     model, identity_field, projection = (
         models.PersistentAuditEvent,
         "audit_event_id",
-        projections.audit_event_public_summary,
+        staticmethod(projections.audit_event_public_summary),
     )
 
     def append_audit_event(self, **values: Any) -> models.PersistentAuditEvent:
