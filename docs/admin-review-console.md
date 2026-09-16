@@ -73,3 +73,11 @@ This module may supply non-mutating readiness evidence to the [private pilot wor
 ## Persisted review state
 
 Operational review items may be stored by the persistence layer for durable status history. The layer never auto-approves or publishes records, and `/operations` exposes only allow-listed summaries. See [Production persistence and audit trail](production-persistence-audit.md).
+
+## Human review workflow
+
+Human review gates now provide private, audit-oriented queues and explicit decisions. Approval is
+only permission for a next internal stage; it never publishes records, creates catalogue products
+or SKUs, starts launch execution, or generates campaigns. Default API projections contain only
+safe identifiers, bands, statuses, role labels, summaries, and aggregate readiness counts. See
+[Human review gates workflow](human-review-gates-workflow.md).

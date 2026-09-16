@@ -1,0 +1,2 @@
+decision_id,review_item_id,gate_type,decision,reviewer_role,reviewer_alias,next_status,next_action
+fictional-decision-001,review-fictional-001,profile_draft_review,request_enrichment,catalogue_reviewer,catalogue_reviewer:sample,enrichment_requested,Complete internal enrichment review.

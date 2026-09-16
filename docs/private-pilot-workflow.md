@@ -58,3 +58,11 @@ counts, statuses, remediation summaries, and bands only.
 ## Optional durable persistence
 
 Completed private manifests can be migrated through the summary-only persistence boundary documented in [Production persistence and audit trail](production-persistence-audit.md). This is opt-in and does not replace or mutate run files.
+
+## Human review workflow
+
+Human review gates now provide private, audit-oriented queues and explicit decisions. Approval is
+only permission for a next internal stage; it never publishes records, creates catalogue products
+or SKUs, starts launch execution, or generates campaigns. Default API projections contain only
+safe identifiers, bands, statuses, role labels, summaries, and aggregate readiness counts. See
+[Human review gates workflow](human-review-gates-workflow.md).

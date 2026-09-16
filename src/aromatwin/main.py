@@ -17,6 +17,7 @@ from aromatwin.routers import (
     operations,
     pilot_workflow,
     product_catalogue,
+    review_workflow,
     seller_demand,
     supplier_items,
     supplier_offers,
@@ -45,7 +46,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 application.include_router(router, prefix=settings.internal_api_prefix)
         elif router in (supplier_items.router, supplier_offers.router, supplier_sourcing.router,
                         bulk_profiles.router, seller_demand.router, consumer_scent.router,
-                        launch_intelligence.router, pilot_workflow.router, operations.router):
+                        launch_intelligence.router, pilot_workflow.router, operations.router,
+                        review_workflow.router):
             if settings.enable_private_supplier_endpoints:
                 application.include_router(router, prefix=settings.internal_api_prefix)
         elif router in (maison.router, product_catalogue.router):

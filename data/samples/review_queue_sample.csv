@@ -1,0 +1,3 @@
+review_item_id,gate_type,linked_entity_type,priority_band,confidence_band,risk_band,review_status,assigned_role,recommended_next_action,public_safe_summary
+review-fictional-001,profile_draft_review,profile_draft,high,medium,moderate,queued,catalogue_reviewer,Complete human evidence review,Fictional profile draft awaiting internal review.
+review-fictional-002,pilot_blocker_review,pilot_blocker,urgent,unknown,blocked,queued,pilot_operator,Resolve missing evidence,Fictional pilot blocker awaiting internal review.
