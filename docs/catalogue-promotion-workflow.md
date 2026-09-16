@@ -28,5 +28,7 @@ Brand and fragrance slugs are deterministic. Repeating one review is idempotent,
 review for the same normalized brand and fragrance is rejected as a duplicate.
 
 The CLI reads `data/enrichment_reviews.csv`, writes `data/catalogue_fragrances.csv`, and reports
-accepted and rejected counts. The catalogue API can later serve Maison Obsidian and other retailers;
-this stage adds neither retailer integration nor a frontend.
+accepted and rejected counts. Its `--confidence-threshold` option sets the publication threshold
+for a run. Repeated review IDs remain idempotent and are reported
+as rejected rather than being written twice. The catalogue API can later serve Maison Obsidian and
+other retailers; this stage adds neither retailer integration nor a frontend.

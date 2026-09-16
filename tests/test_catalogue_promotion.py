@@ -83,7 +83,16 @@ def test_supplier_private_input_is_rejected_and_output_is_allowlisted() -> None:
     assert PRIVATE_SUPPLIER_FIELDS.isdisjoint(vars(item))
 
 
-@pytest.mark.parametrize("field,value", [("stock", 0), ("SUPPLIER_CODE", "private")])
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("stock", 0),
+        ("SUPPLIER_CODE", "private"),
+        ("Supplier Price (AED)", "99.00"),
+        ("stock-quantity", 4),
+        ("CN Codes", "3303.00"),
+    ],
+)
 def test_supplier_private_fields_are_rejected_even_when_zero_or_uppercase(
     field: str, value: object
 ) -> None:
@@ -130,3 +139,29 @@ def test_missing_provenance_or_human_reviewer_is_rejected() -> None:
         promote_enrichment_review(review(source_ids=()))
     with pytest.raises(ValueError, match="reviewer"):
         promote_enrichment_review(review(reviewer=""))
+
+
+def test_cli_duplicate_is_safe_and_included_in_report_counts(tmp_path: Path) -> None:
+    source = tmp_path / "reviews.csv"
+    output = tmp_path / "catalogue.csv"
+    rows = [vars(review()), vars(review())]
+    with source.open("w", newline="", encoding="utf-8") as target:
+        writer = csv.DictWriter(target, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+
+    assert promote_rows(source, output) == (1, 1)
+    with output.open(newline="", encoding="utf-8") as target:
+        assert len(list(csv.DictReader(target))) == 1
+
+
+def test_cli_confidence_threshold_is_configurable(tmp_path: Path) -> None:
+    source = tmp_path / "reviews.csv"
+    output = tmp_path / "catalogue.csv"
+    row = vars(review(source_confidence=0.8))
+    with source.open("w", newline="", encoding="utf-8") as target:
+        writer = csv.DictWriter(target, fieldnames=list(row))
+        writer.writeheader()
+        writer.writerow(row)
+
+    assert promote_rows(source, output, confidence_threshold=0.85) == (0, 1)
