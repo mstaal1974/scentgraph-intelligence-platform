@@ -10,3 +10,11 @@ Profile drafts use an original deterministic placeholder and an explicit provena
 is blocked for missing provenance, low-confidence evidence, and reference-only, restricted, or
 unknown sources. Supplier commercial data and third-party descriptive or media content are never
 part of the public draft representation.
+
+## Enrichment review controls
+
+Independent enrichment records reference separately recorded sources and generate deterministic,
+original AromaTwin text. Official sources are preferred. Confidence and licensing risk are distinct:
+high confidence cannot cure a restricted licence. Missing provenance blocks readiness; low
+confidence, high risk, reference-only/non-commercial evidence, detected copying, and a non-ready
+status each block approval. No approval here publishes or promotes a catalogue record.

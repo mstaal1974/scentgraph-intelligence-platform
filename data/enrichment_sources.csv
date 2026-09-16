@@ -1,0 +1,2 @@
+id,profile_draft_id,source_name,source_type,source_reference,source_url,licence_status,commercial_use_allowed,source_confidence,licensing_risk,reference_only
+1,1,Aster and Vale official identity record,official,AV-MG-IDENTITY,https://example.com/aster-vale/moonlit-grove,official-factual-metadata,true,0.91,low,false

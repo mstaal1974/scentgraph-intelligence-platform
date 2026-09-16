@@ -17,3 +17,16 @@ terms. Generate only creates `needs_human_review` records; approve and reject ar
 not catalogue promotion operations. Approval returns `422` when provenance is incomplete, source
 confidence is below `0.75`, the source is restricted/reference-only, or copied content is detected.
 Rejection requires a reason, which is retained on the draft.
+
+## Enrichment review workflow
+
+- `POST /enrichment-reviews/generate` creates only a `needs_human_review` record.
+- `POST /enrichment-reviews/{id}/mark-ready` requires sufficient recorded provenance.
+- `POST /enrichment-reviews/{id}/approve` requires `ready_for_approval`, confidence at least
+  `0.75`, acceptable licensing risk, non-reference commercially usable evidence, and no copied
+  restricted content. It does not promote to the catalogue.
+- `POST /enrichment-reviews/{id}/reject` requires and retains a rejection reason.
+- `GET /enrichment-sources` and `POST /enrichment-sources` list and record provenance metadata.
+
+Enrichment responses omit prices, supplier/CN codes, stock, quantities, commercial terms, and
+third-party descriptions, reviews, ratings, images, comments, or UGC.

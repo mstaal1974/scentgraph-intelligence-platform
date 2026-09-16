@@ -8,3 +8,9 @@
 4. **Commercial API:** tenant identity, scoped keys, quotas, metering, audit logs, data tiers, and SLAs.
 5. **Channels:** retailer enrichment tools and optional white-label/Shopify/WooCommerce consumers.
 6. **Operations:** security review, privacy controls, observability, backups, and regional production deployment.
+
+## Current enrichment-review boundary
+
+The independent enrichment review queue now generates original, provenance-linked review records
+and enforces human readiness, licensing, confidence, and copied-content checks. Catalogue promotion
+and Maison Obsidian catalogue consumption remain explicitly future work.
