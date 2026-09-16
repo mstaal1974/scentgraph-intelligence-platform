@@ -1,0 +1,3 @@
+run_id,blocker_type,severity,owner_role,recommended_next_action,public_safe_summary
+fictional-pilot-alpha,missing_profile_evidence,high,enrichment_reviewer,Complete approved-source enrichment,One fictional candidate lacks sufficient profile evidence.
+fictional-pilot-alpha,human_gate_pending,medium,admin_reviewer,Complete private admin review,No publication or creation action is authorised.

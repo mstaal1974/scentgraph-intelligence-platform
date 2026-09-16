@@ -19,4 +19,5 @@ staging/
 /data/private/staging/**
 /data/private/reports/**
 /data/private/exports/**
+/data/private/runs/**
 /private/**

@@ -115,3 +115,7 @@ With private endpoints enabled, `/seller-demand` provides health; brief create/l
 ## Launch intelligence
 
 Private-key-protected `/launch-intelligence` endpoints provide health, build, candidate, priority, gap, plan, and audit operations. Build operations are internal workflows. All response models use an explicit public-safe projection containing only identifiers, readiness bands, statuses, explanations, and next actions; approval and downstream creation remain human operations.
+
+## Private pilot orchestration
+
+This module may supply non-mutating readiness evidence to the [private pilot workflow](private-pilot-workflow.md). The pilot layer records only safe statuses, counts, bands, blockers, and human-review actions; it does not bypass this module's existing review gates or expose private source values.

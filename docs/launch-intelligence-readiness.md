@@ -25,3 +25,7 @@ Public responses are generated with an allow-list. They contain bands, statuses,
 5. Run the privacy audit and submit all recommendations for human review.
 
 The private API is mounted below the configured internal prefix. Build endpoints require the private API key; default reads return safe summaries. This work is not a storefront, dashboard, supplier portal, or social feature. It does not integrate MicroPromote. In later, separately reviewed work, these summaries can feed dashboards, Shopify exports, Maison Obsidian, retailer portals, and MicroPromote campaign packs without coupling those systems now.
+
+## Private pilot orchestration
+
+This module may supply non-mutating readiness evidence to the [private pilot workflow](private-pilot-workflow.md). The pilot layer records only safe statuses, counts, bands, blockers, and human-review actions; it does not bypass this module's existing review gates or expose private source values.

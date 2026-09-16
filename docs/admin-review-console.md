@@ -65,3 +65,7 @@ python scripts/export_admin_review_queue.py
 ## Bulk profile link
 
 Bulk-generated drafts and their enrichment tasks are upstream inputs to admin review. Generation never changes approval state or invokes catalogue promotion; reviewers use the existing decision controls after provenance and licensing checks.
+
+## Private pilot orchestration
+
+This module may supply non-mutating readiness evidence to the [private pilot workflow](private-pilot-workflow.md). The pilot layer records only safe statuses, counts, bands, blockers, and human-review actions; it does not bypass this module's existing review gates or expose private source values.

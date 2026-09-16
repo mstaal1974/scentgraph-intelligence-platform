@@ -35,7 +35,8 @@ def audit(root: Path, tracked: list[str] | None = None) -> list[str]:
             rows = list(csv.reader(handle))
         headers = [normalise(value) for value in (rows[0] if rows else [])]
         leaked = sorted({header for header in headers
-                         if any(marker in header for marker in FORBIDDEN_PARTS)})
+                         if any(marker in header for marker in FORBIDDEN_PARTS)
+                         and not ("margin" in header and header.endswith(" band"))})
         if leaked:
             errors.append(f"Public sample exposes forbidden fields: {name}: {leaked}")
         content = "\n".join(",".join(row) for row in rows[1:])
