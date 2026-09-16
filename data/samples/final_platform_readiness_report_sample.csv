@@ -1,0 +1,6 @@
+task_id,status,blocker_type,next_action,public_safe_summary
+completion.private_supplier_pilot_ready,blocked,private_data,Place authorised files in private runtime storage,Repository is ready for controlled private input
+completion.production_credentials,blocked,credentials,Configure secrets in the approved runtime,No secret is stored in this report
+completion.human_approvals,blocked,human_review,Complete documented review gates,No approval was inferred
+completion.deployment_readiness,blocked,deployment,Configure and validate the runtime,No deployment was performed
+completion.maison_integration_ready,blocked,external_repo,Schedule separately authorised repository work,No external repository was changed

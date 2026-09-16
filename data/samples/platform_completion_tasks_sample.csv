@@ -1,0 +1,4 @@
+task_id,task_name,category,status,blocker_type,safe_auto_action,next_action,public_safe_summary
+completion.repository_validation,Repository Validation,repository_validation,completed,,Inspect repository structure,Continue with private pilot preflight,Fictional repository evidence passed
+completion.private_supplier_pilot_ready,Private Pilot Readiness,private_supplier_pilot_ready,blocked_private_data_required,private_data,Report blocker only,Place authorised files in private runtime storage,Fictional demo does not use private files
+completion.human_approvals,Human Approvals,review_gates_ready,blocked_human_review_required,human_review,Report blocker only,Obtain authorised reviewer decisions,Automation never approves profiles

@@ -49,3 +49,7 @@ reviews, repeat the privacy audit, and approve a separate internal next-stage de
 Export a safe report with
 `python scripts/export_private_pilot_acceptance_report.py RUN_ID` and audit samples with
 `python scripts/audit_private_pilot_inputs.py`.
+
+## Final completion gate
+
+Run `python scripts/complete_platform_readiness.py` before intake. Repository completion is not pilot completion: real inputs must remain under `data/private/`, credentials must be injected at runtime, and every human review gate remains mandatory. See [final platform completion](final-platform-completion.md).

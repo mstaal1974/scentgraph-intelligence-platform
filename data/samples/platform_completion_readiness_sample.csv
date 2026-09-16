@@ -1,0 +1,4 @@
+section,readiness_status,blocker_type,next_action,public_safe_summary
+core platform modules,completed,,Run safe checks,Repository capability is available
+private pilot readiness,ready_after_private_supplier_files_added,private_data,Use approved private runtime inputs,Fictional sample remains blocked from real execution
+deployment readiness,blocked_deployment_environment_required,deployment,Configure an approved runtime,Deployment was not performed

@@ -43,3 +43,7 @@ safe identifiers, bands, statuses, role labels, summaries, and aggregate readine
 ## Private supplier pilot execution pack
 
 The focused execution layer is documented in [Private supplier pilot execution](private-supplier-pilot-execution.md). It adds path-safe intake, explicit preflight plans, private run boundaries, aggregate acceptance evidence, privacy auditing, and mandatory human review without changing the underlying intelligence workflow or permitting publication.
+
+## Completion handoff
+
+An isolated SQLite smoke check proves only local initialisation capability. Production persistence remains blocked until the target database, credentials, migrations, backup, monitoring, and audit retention are configured and verified in the deployment environment.
