@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+
 from scentgraph.routers import (
     brands,
     clone_matches,

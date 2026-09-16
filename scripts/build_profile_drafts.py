@@ -2,11 +2,9 @@
 import argparse
 import csv
 from pathlib import Path
-
 from types import SimpleNamespace
 
 from aromatwin.services.profile_builder import build_profile_draft
-
 
 OUTPUT_FIELDS = (
     "supplier_item_id",

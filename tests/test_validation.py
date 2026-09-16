@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from scripts.validate_data import validate
 
 

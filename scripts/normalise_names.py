@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+
 from scentgraph.services.importer import normalise_name
 
 if __name__ == "__main__":

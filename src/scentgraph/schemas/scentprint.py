@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
+
 from scentgraph.models.scent_vector import VECTOR_DIMENSIONS
 
 

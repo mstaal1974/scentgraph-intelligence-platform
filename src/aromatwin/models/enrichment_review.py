@@ -1,7 +1,9 @@
 from datetime import datetime
 from decimal import Decimal
-from sqlalchemy import Boolean, DateTime, ForeignKey, JSON, Numeric, Text
+
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Numeric, Text
 from sqlalchemy.orm import Mapped, mapped_column
+
 from aromatwin.database import Base
 
 

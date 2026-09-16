@@ -1,6 +1,8 @@
 from decimal import Decimal
+
 from sqlalchemy import Boolean, Numeric, Text
 from sqlalchemy.orm import Mapped, mapped_column
+
 from aromatwin.database import Base
 from aromatwin.models.common import TimestampMixin
 

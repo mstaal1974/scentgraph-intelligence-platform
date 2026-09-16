@@ -1,4 +1,5 @@
 from collections.abc import Iterable
+
 from scentgraph.models.scent_vector import VECTOR_DIMENSIONS
 from scentgraph.schemas.scentprint import ScentprintMatch, ScentprintRequest, ScentprintResponse
 from scentgraph.services.similarity import cosine_similarity

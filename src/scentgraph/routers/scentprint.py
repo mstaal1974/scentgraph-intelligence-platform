@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+
 from scentgraph.schemas.scentprint import ScentprintRequest, ScentprintResponse
 from scentgraph.services.scentprint import match_scentprint
 

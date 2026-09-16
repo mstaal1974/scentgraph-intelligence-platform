@@ -13,9 +13,9 @@ from aromatwin.schemas.maison import (
     MaisonFragranceCard,
     MaisonFragranceDetail,
     MaisonRecommendationCard,
-    MaisonScentVectorSummary,
     MaisonScentprintRequest,
     MaisonScentprintResult,
+    MaisonScentVectorSummary,
     MaisonSimilarFragranceResult,
 )
 from aromatwin.services.scent_vector_engine import VECTOR_DIMENSIONS

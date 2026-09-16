@@ -1,7 +1,9 @@
 from datetime import datetime
 from decimal import Decimal
+
 from sqlalchemy import DateTime, Numeric, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
+
 from scentgraph.database import Base
 
 

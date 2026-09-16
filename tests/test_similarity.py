@@ -1,4 +1,5 @@
 import pytest
+
 from aromatwin.services.similarity import cosine_similarity
 
 

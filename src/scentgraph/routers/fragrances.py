@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+
 from scentgraph.schemas.fragrance import FragranceRead, SimilarityMatch
 
 router = APIRouter(tags=["fragrances"])

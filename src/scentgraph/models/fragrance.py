@@ -1,5 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
+
 from sqlalchemy import (
     Boolean,
     DateTime,
@@ -12,6 +13,7 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from scentgraph.database import Base
 
 

@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+
 from aromatwin.schemas.brand import BrandRead
 
 router = APIRouter(prefix="/brands", tags=["catalogue"])

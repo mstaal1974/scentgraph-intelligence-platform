@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+
 from aromatwin.schemas.fragrance import FragranceRead, SimilarityMatch
 
 router = APIRouter(tags=["catalogue"])

@@ -4,7 +4,12 @@ from fastapi.testclient import TestClient
 
 from aromatwin.routers.admin_review import _DECISIONS
 from aromatwin.routers.profile_drafts import _DRAFTS
-from aromatwin.services.profile_builder import ProfileDraft, draft_description, draft_provenance_notes
+from aromatwin.services.profile_builder import (
+    ProfileDraft,
+    draft_description,
+    draft_provenance_notes,
+)
+
 
 def setup_function() -> None:
     _DECISIONS.clear()

@@ -3,6 +3,7 @@ import argparse
 import json
 from dataclasses import asdict
 from pathlib import Path
+
 from aromatwin.services.matching import candidate_from_supplier
 from aromatwin.services.supplier_importer import prepare_supplier_file
 

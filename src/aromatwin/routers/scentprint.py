@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+
 from aromatwin.schemas.scentprint import ScentprintRequest, ScentprintResponse
 from aromatwin.services.scentprint import match_scentprint
 

@@ -1,4 +1,5 @@
 import pytest
+
 from aromatwin.services.enrichment import EnrichmentProposal, approve_enrichment
 from aromatwin.services.provenance import (
     PermittedUse,

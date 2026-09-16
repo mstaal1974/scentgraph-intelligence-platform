@@ -1,5 +1,6 @@
 import pytest
 from pydantic import ValidationError
+
 from scentgraph.schemas.fragrance import FragranceRead
 from scentgraph.schemas.scentprint import ScentprintRequest
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+
 from aromatwin.services.normalisation import split_variant
 
 if __name__ == "__main__":
