@@ -46,3 +46,11 @@ enrichment-review ID. It deliberately contains no supplier-commercial values.
 ## Maison consumer projection
 
 Maison card, detail, recommendation, similarity, Scentprint, and export schemas are derived views, not new canonical entities. Their IDs link only to approved catalogue fragrances. Safe vectors, recommendations, and reviewed clone relationships may enrich the view, while supplier, candidate, draft, and review entities cannot be represented directly. The projection is an explicit allowlist and stores no storefront or supplier-commercial state.
+# Admin review projection
+
+`AdminReviewQueueItem` is a read projection, not a new foundation entity. It identifies a
+source record by stage and ID, then exposes only title, review state, confidence, licensing and
+restricted-content flags, provenance summary, blocker, reviewer, update time, and next action.
+It cannot contain supplier commercial fields or copied third-party content. Summary, blocked,
+readiness, decision, and export schemas derive from that allowlisted projection; the existing
+stage records remain authoritative.

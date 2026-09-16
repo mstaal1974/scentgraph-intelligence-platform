@@ -20,3 +20,10 @@ The deterministic public-catalogue scent vector and explainable recommendation l
 available. Maison discovery, Scentprint matching, and reviewed clone-relationship projection are
 now available through the retailer-safe integration; calibration and storefront wiring remain later
 stages.
+# Admin review console
+
+- **Delivered:** public-safe cross-stage queue, stage/status summaries, blocker and readiness
+  monitoring, guarded human decisions, CSV export, and a dependency-free internal interface.
+- **Future operational work:** production authentication/authorization, a durable decision
+  audit store, and deployment-specific observability. These are intentionally outside the
+  lightweight console layer.

@@ -1,0 +1,7 @@
+stage,record_id,title,status,confidence,provenance_summary,blocking_reason,next_action
+profile_draft,1,Aster & Vale Moonlit Grove,needs_human_review,0.91,"Identity proposed by licensed_commercial candidate 2001 from supplier item 1001; only identity fields and confidence were used; third-party descriptions, reviews, ratings, images, comments, and UGC were not copied.",,human_review
+enrichment_review,1,Aster & Vale Moonlit Grove,needs_human_review,0.91,"Independent source metadata recorded from Aster and Vale official identity record (official). Only identity and provenance metadata were used; descriptions, reviews, ratings, images, comments, and UGC were not copied.",,human_review
+catalogue_promotion,1,Aster & Vale Moonlit Grove,approved,0.91,Human-approved fictional identity facts from a commercially usable first-party source.,,monitor_next_stage
+scent_vector,1,Scent Vector 1,needs_human_review,0.62,Recorded provenance references are available for human verification.,Low confidence requires additional verification,request_more_sources
+recommendation,1,Recommendation 101 → 102,approved,0.82,Generated from approved public-safe catalogue and vector metadata.,,monitor_next_stage
+maison_api_ready,1,Aster & Vale Moonlit Grove,not_ready,0.91,Human-approved fictional identity facts from a commercially usable first-party source.,Approved vector and recommendation evidence is required,resolve_blocker
