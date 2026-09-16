@@ -46,3 +46,7 @@ stages.
 The focused multi-supplier offer ingestion, private comparison, safe matching, and audit boundary
 are now implemented. Future persistence/API repository wiring may replace the current typed preview
 store without changing the catalogue approval workflow or public contract.
+
+## Supplier sourcing and margin intelligence
+
+The focused private sourcing layer now supports multi-offer ranking, audit flags, product-format costing, and safe-by-default API summaries. Future work may add persistent tenant isolation and approval history for multi-retailer licensing; it must preserve the commercial-data boundary.

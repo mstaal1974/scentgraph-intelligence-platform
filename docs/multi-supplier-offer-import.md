@@ -49,3 +49,7 @@ python scripts/import_supplier_offers.py data/private/imports/offers.csv \
 python scripts/compare_supplier_offers.py data/private/staging/supplier_offers/*.json
 python scripts/audit_supplier_offers.py
 ```
+
+## Sourcing hand-off
+
+Imported offers may feed the private ranking described in [Supplier sourcing and margin intelligence](supplier-sourcing-margin-intelligence.md). Ranking does not promote offers to the catalogue, and commercial values remain private.

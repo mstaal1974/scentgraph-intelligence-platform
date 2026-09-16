@@ -61,3 +61,7 @@ stage records remain authoritative.
 candidate or catalogue fragrance. The record retains raw and normalised identity, file provenance,
 private commercial attributes, confidence, and review state. It never owns or creates a public
 fragrance profile. See [Multi-supplier offer import](multi-supplier-offer-import.md).
+
+## Private sourcing projections
+
+Supplier sourcing decisions and product-format margin scenarios are computed projections rather than public catalogue entities. Decisions link to an existing catalogue fragrance or match candidate, retain risk and review state, and keep supplier/commercial fields in private reports. They intentionally require no public catalogue schema or foundation migration.
