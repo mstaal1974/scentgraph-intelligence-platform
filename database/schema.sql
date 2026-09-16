@@ -90,6 +90,18 @@ CREATE TABLE enrichment_reviews (
   CHECK (review_status <> 'approved_for_catalogue' OR (description_reviewed AND reviewer IS NOT NULL AND approved_at IS NOT NULL AND official_source_url IS NOT NULL))
 );
 
+CREATE TABLE profile_drafts (
+  id BIGSERIAL PRIMARY KEY,
+  supplier_item_id BIGINT NOT NULL REFERENCES supplier_items(id) ON DELETE RESTRICT,
+  match_candidate_id BIGINT NOT NULL REFERENCES match_candidates(id) ON DELETE RESTRICT,
+  brand TEXT NOT NULL, fragrance_name TEXT NOT NULL, concentration TEXT,
+  description TEXT NOT NULL, provenance_notes TEXT NOT NULL, source_type TEXT NOT NULL,
+  source_confidence NUMERIC(4,3) NOT NULL CHECK (source_confidence BETWEEN 0 AND 1),
+  review_status TEXT NOT NULL REFERENCES review_statuses(code), rejection_reason TEXT,
+  UNIQUE (supplier_item_id, match_candidate_id),
+  CHECK (review_status <> 'needs_human_review' OR rejection_reason IS NULL)
+);
+
 CREATE TABLE brands (
   id BIGSERIAL PRIMARY KEY, name TEXT NOT NULL, slug TEXT NOT NULL UNIQUE, country TEXT, website TEXT,
   verified BOOLEAN NOT NULL DEFAULT FALSE, review_status TEXT NOT NULL REFERENCES review_statuses(code),
