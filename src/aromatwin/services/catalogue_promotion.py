@@ -16,7 +16,8 @@ PRIVATE_SUPPLIER_FIELDS = frozenset(
         "supplier_price", "aed_price", "usd_price", "price", "supplier_code", "supplier_sku",
         "supplier_cn_code", "cn_code", "stock", "stock_status", "quantity", "quantities",
         "commercial_terms", "unit_cost", "wholesale_price",
-        "supplier_commercial_terms",
+        "supplier_commercial_terms", "supplier_price_aed", "supplier_price_usd",
+        "stock_quantity", "available_quantity", "supplier_codes", "cn_codes",
     }
 )
 RESTRICTED_CONTENT_FIELDS = frozenset(
@@ -71,6 +72,22 @@ def _has_supplied_value(data: Mapping[str, object], fields: frozenset[str]) -> b
     )
 
 
+def _present_supplier_private_fields(data: Mapping[str, object]) -> set[str]:
+    """Return populated private columns after normalising common CSV header spelling."""
+    private_names = {field.replace("_", "") for field in PRIVATE_SUPPLIER_FIELDS}
+    present: set[str] = set()
+    for key, value in data.items():
+        normalised = re.sub(r"[^a-z0-9]+", "", str(key).strip().lower())
+        if normalised not in private_names:
+            continue
+        if value is None or value in ((), [], {}):
+            continue
+        if isinstance(value, str) and not value.strip():
+            continue
+        present.add(str(key))
+    return present
+
+
 def _is_true(value: object) -> bool:
     if isinstance(value, bool):
         return value
@@ -102,7 +119,7 @@ def validate_review_for_promotion(
         raise ValueError("Copied restricted content prevents catalogue promotion")
     if _has_supplied_value(data, RESTRICTED_CONTENT_FIELDS):
         raise ValueError("Restricted third-party content prevents catalogue promotion")
-    if _has_supplied_value(data, PRIVATE_SUPPLIER_FIELDS):
+    if _present_supplier_private_fields(data):
         raise ValueError("Supplier-private fields cannot be exposed by catalogue promotion")
     references = data.get("source_ids") or data.get("provenance_references")
     if not references or not _source_ids(references) or not str(
@@ -145,7 +162,12 @@ def promote_enrichment_review(
 ) -> CatalogueFragrance:
     """Create a public allowlisted record, or return the prior idempotent promotion."""
     data = validate_review_for_promotion(review, confidence_threshold=confidence_threshold)
-    review_id = int(data["id"])
+    try:
+        review_id = int(data["id"])
+    except (KeyError, TypeError, ValueError) as error:
+        raise ValueError("A valid enrichment review ID is required") from error
+    if review_id <= 0:
+        raise ValueError("A valid enrichment review ID is required")
     prior = next((item for item in existing if item.enrichment_review_id == review_id), None)
     if prior is not None:
         return prior
