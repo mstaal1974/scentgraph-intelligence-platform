@@ -1,11 +1,14 @@
 # Supplier Import Guide
 
-Supplier files establish availability and are processed from `data/imports/supplier-2026-04-26/`. Keep the source files unchanged so their SHA-256 fingerprints remain auditable.
+Supplier files establish availability and are processed from
+`data/private/imports/supplier-2026-04-26/`. This ignored directory is the default local input;
+an access-controlled path outside the repository may also be used. Keep source files unchanged so
+their SHA-256 fingerprints remain auditable.
 
 Required columns are `BRAND`, `NAME`, `ORI`, `CN CODE`, `QTY`, `AED`, and `USD`. CSV, XLS, and XLSX inputs are accepted; unrelated files are ignored.
 
 ```bash
-python scripts/import_supplier.py data/imports/supplier-2026-04-26 \
+python scripts/import_supplier.py data/private/imports/supplier-2026-04-26 \
   --supplier-name "Supplier" \
   --output staging/supplier-2026-04-26.json \
   --report staging/supplier-2026-04-26-report.json

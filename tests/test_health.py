@@ -23,23 +23,23 @@ def test_openapi_exposes_workflow_routes(client: TestClient) -> None:
         "/match-candidates/{candidate_id}",
         "/match-candidates/generate",
         "/enrichment-reviews",
-        "/enrichment-reviews/{review_id}",
-        "/enrichment-reviews/{review_id}/approve",
-        "/enrichment-reviews/{review_id}/reject",
+        "/enrichment-reviews/{enrichment_review_id}",
+        "/enrichment-reviews/{enrichment_review_id}/approve",
+        "/enrichment-reviews/{enrichment_review_id}/reject",
         "/brands",
         "/fragrances",
         "/notes",
         "/accords",
         "/search",
         "/similar/{fragrance_id}",
-        "/recommend",
+        "/recommendations",
         "/scentprint",
         "/clone-matches/{fragrance_id}",
         "/scent-vectors",
         "/scent-vectors/generate",
         "/scent-vectors/similarity",
     }
-    assert required <= set(paths)
+    assert required.issubset(paths)
 
 
 def test_import_preview_remains_unapproved_staging(client: TestClient) -> None:

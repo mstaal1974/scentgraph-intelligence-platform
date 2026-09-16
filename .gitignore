@@ -12,3 +12,11 @@ validation-report.json
 supplier-staging.json
 match-candidates.json
 staging/
+
+# Supplier source files and generated private artifacts must never be tracked.
+/data/imports/**
+/data/private/imports/**
+/data/private/staging/**
+/data/private/reports/**
+/data/private/exports/**
+/private/**
