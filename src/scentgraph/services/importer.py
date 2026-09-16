@@ -1,7 +1,9 @@
+import re
 from dataclasses import dataclass
 from pathlib import Path
-import re
+
 import pandas as pd
+
 from scentgraph.services.validation import missing_headers
 
 SUPPLIER_HEADERS = {

@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
+
 from aromatwin.models.scent_vector import VECTOR_DIMENSIONS
 
 

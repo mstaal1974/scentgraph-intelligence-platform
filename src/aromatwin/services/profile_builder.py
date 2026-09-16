@@ -1,7 +1,6 @@
 from dataclasses import dataclass, replace
 from typing import Protocol
 
-
 NEEDS_HUMAN_REVIEW = "needs_human_review"
 APPROVAL_CONFIDENCE_THRESHOLD = 0.75
 RESTRICTED_SOURCE_TYPES = {"reference_only", "restricted_non_commercial", "unknown"}

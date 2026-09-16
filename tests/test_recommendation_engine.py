@@ -12,7 +12,7 @@ from aromatwin.services.recommendation_engine import (
     generate_recommendations,
     public_recommendation,
 )
-from aromatwin.services.scent_vector_engine import ScentVector, VECTOR_DIMENSIONS
+from aromatwin.services.scent_vector_engine import VECTOR_DIMENSIONS, ScentVector
 from scripts.build_recommendations import OUTPUT_FIELDS, build_recommendations
 
 

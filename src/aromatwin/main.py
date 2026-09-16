@@ -2,6 +2,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+
 from aromatwin.routers import ROUTERS
 
 app = FastAPI(

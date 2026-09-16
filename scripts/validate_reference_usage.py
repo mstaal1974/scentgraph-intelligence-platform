@@ -2,6 +2,7 @@
 import argparse
 import json
 from pathlib import Path
+
 from aromatwin.services.provenance import PermittedUse, SourcePolicy, validate_commercial_promotion
 
 

@@ -9,6 +9,12 @@
 5. **Channels:** retailer enrichment tools and optional white-label/Shopify/WooCommerce consumers.
 6. **Operations:** security review, privacy controls, observability, backups, and regional production deployment.
 
+## Test and CI reliability
+
+The repository now has a Python 3.12 GitHub Actions gate for linting, compilation, the complete
+offline test suite, public data validation, and supplier privacy auditing. Development and test
+environment guidance is maintained in [development-and-testing.md](development-and-testing.md).
+
 ## Current enrichment-review boundary
 
 The independent enrichment review queue now generates original, provenance-linked review records

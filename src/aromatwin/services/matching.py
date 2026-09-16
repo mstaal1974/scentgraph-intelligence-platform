@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 from aromatwin.services.normalisation import parse_original_hint
 from aromatwin.services.supplier_importer import SupplierRow
 

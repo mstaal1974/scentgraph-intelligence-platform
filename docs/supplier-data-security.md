@@ -2,7 +2,12 @@
 
 ## Repository audit
 
-The tracked `data/imports/supplier-2026-04-26/` directory was reviewed and contained documentation only—no supplier CSV or spreadsheet was committed. The repository did contain `data/supplier_import_template.csv` with fictional values in supplier-sensitive fields (`CN CODE`, `QTY`, `AED`, and `USD`). Although those values were examples rather than a real supplier disclosure, the file created an unsafe public-sample pattern and has been removed.
+Raw supplier imports and their generated artifacts are prohibited from tracked `data/imports/` and
+belong under the ignored `data/private/` boundary. Previously tracked dated import artifacts were
+removed rather than relabelled as public samples because they contained supplier-commercial fields.
+The repository previously contained `data/supplier_import_template.csv` with fictional values in
+supplier-sensitive fields. Although those values were examples rather than a real supplier
+disclosure, the file created an unsafe public-sample pattern and has been removed.
 
 Its replacement, `data/samples/supplier_identity_sample.csv`, contains fictional identity hints only. Automated tests and `scripts/audit_supplier_data.py` reject pricing, quantity, SKU, cost, and supplier-code columns in public supplier samples.
 

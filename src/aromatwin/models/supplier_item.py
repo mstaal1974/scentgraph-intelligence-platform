@@ -1,8 +1,10 @@
 from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
+
 from sqlalchemy import DateTime, ForeignKey, Numeric, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
+
 from aromatwin.database import Base
 
 

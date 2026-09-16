@@ -1,5 +1,6 @@
 from sqlalchemy import Text
 from sqlalchemy.orm import Mapped, mapped_column
+
 from aromatwin.database import Base
 
 

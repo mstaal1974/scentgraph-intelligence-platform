@@ -1,6 +1,8 @@
 from decimal import Decimal
+
 from sqlalchemy import ForeignKey, Numeric
 from sqlalchemy.orm import Mapped, mapped_column
+
 from aromatwin.database import Base
 
 VECTOR_DIMENSIONS = (

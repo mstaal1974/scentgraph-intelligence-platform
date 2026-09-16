@@ -1,5 +1,5 @@
-from math import sqrt
 from collections.abc import Sequence
+from math import sqrt
 
 
 def cosine_similarity(left: Sequence[float], right: Sequence[float]) -> float:

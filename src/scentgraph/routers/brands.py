@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+
 from scentgraph.schemas.brand import BrandRead
 
 router = APIRouter(prefix="/brands", tags=["brands"])

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Query
+
 from aromatwin.schemas.fragrance import SearchResult
 
 router = APIRouter(tags=["catalogue"])

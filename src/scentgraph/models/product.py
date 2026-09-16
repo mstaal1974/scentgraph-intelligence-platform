@@ -1,6 +1,8 @@
 from decimal import Decimal
+
 from sqlalchemy import Boolean, ForeignKey, Numeric
 from sqlalchemy.orm import Mapped, mapped_column
+
 from scentgraph.database import Base
 
 

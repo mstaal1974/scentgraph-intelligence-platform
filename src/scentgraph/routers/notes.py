@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+
 from scentgraph.schemas.note import AccordRead, NoteRead
 
 router = APIRouter(tags=["taxonomy"])

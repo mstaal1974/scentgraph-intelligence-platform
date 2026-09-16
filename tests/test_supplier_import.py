@@ -1,6 +1,8 @@
 from decimal import Decimal
+
 import pandas as pd
 import pytest
+
 from aromatwin.services.supplier_importer import prepare_supplier_frame
 
 

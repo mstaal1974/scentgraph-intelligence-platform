@@ -12,7 +12,7 @@ from aromatwin.services.supplier_importer import (
     prepare_supplier_file,
 )
 
-DEFAULT_IMPORT = Path("data/imports/supplier-2026-04-26")
+DEFAULT_IMPORT = Path("data/private/imports/supplier-2026-04-26")
 
 
 def serialise(value: object) -> object:
