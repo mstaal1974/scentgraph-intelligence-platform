@@ -76,3 +76,6 @@ Bulk profile drafts, coverage rows, and research queue items are file-backed ope
 
 ## Seller demand intelligence (service-layer records)
 `SellerDemandBrief` is private launch intent. `SellerSupplierMatch` links a brief to an existing offer/candidate without creating a catalogue record or SKU. `SupplierOpportunity` is a derived anonymised aggregation. These are transient/service and private-report records, so no foundation migration is required.
+
+## Consumer scent intelligence (service-layer records)
+`ConsumerScentprint` stores only structured scent preferences under a pseudonymous alias. `ConsumerFeedback` retains private notes internally and exposes an explicit safe projection. `CommunityScentIntelligence` is thresholded aggregate evidence that supplements rather than overwrites approved profiles. `ScentWardrobeItem` is private by default. These transient records do not add a customer identity model or require a foundation migration.

@@ -108,3 +108,6 @@ When private supplier endpoints are enabled, `/internal/bulk-profiles` provides 
 
 ## Internal seller-demand workflow
 With private endpoints enabled, `/seller-demand` provides health; brief create/list/read; match build/list/read; supplier-opportunity build/read; and audit routes. All require the private API key. Default brief responses omit seller identity and private notes. Match responses omit private offer identifiers and commercial inputs. Opportunities are aggregated and anonymised.
+
+## Internal consumer scent intelligence
+`/consumer-scent` provides health; Scentprint create/list/read and structured matching; feedback create/list; community-intelligence list/build; wardrobe add/list/gaps; and audit routes. All routes require the private API key. Default responses omit consumer IDs and private notes where a public-safe projection is appropriate. Wardrobes remain private workflow responses. No response contract has supplier-commercial fields.

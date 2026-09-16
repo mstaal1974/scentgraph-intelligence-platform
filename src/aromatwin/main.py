@@ -11,6 +11,7 @@ from aromatwin.routers import (
     ROUTERS,
     admin_review,
     bulk_profiles,
+    consumer_scent,
     maison,
     product_catalogue,
     seller_demand,
@@ -40,7 +41,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             if settings.enable_admin_console:
                 application.include_router(router, prefix=settings.internal_api_prefix)
         elif router in (supplier_items.router, supplier_offers.router, supplier_sourcing.router,
-                        bulk_profiles.router, seller_demand.router):
+                        bulk_profiles.router, seller_demand.router, consumer_scent.router):
             if settings.enable_private_supplier_endpoints:
                 application.include_router(router, prefix=settings.internal_api_prefix)
         elif router in (maison.router, product_catalogue.router):

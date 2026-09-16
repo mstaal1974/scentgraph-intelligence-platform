@@ -61,3 +61,6 @@ The bulk drafting, coverage, and offline enrichment-queue workflow now supplies 
 
 ## Seller-demand intelligence
 The internal demand-brief matcher and anonymised supplier-opportunity summary are the first two-sided intelligence layer. A public marketplace, portals, automated approval, and catalogue/SKU creation remain future work subject to tenancy, consent, privacy thresholds, and commercial governance.
+
+## Consumer scent intelligence
+The private Scentprint, structured feedback, thresholded community aggregation, and scent wardrobe foundation is available. Durable accounts, consent lifecycle, public reviews/community, scent-twin discovery, social proof, frontend quizzes, campaigns, and MicroPromote integration remain separately scoped future work.
