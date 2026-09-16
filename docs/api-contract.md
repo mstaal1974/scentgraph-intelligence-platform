@@ -14,4 +14,6 @@ Foundation workflow endpoints may use in-memory previews until repositories are 
 
 Profile-draft responses deliberately omit supplier prices, codes, stock, quantities, and commercial
 terms. Generate only creates `needs_human_review` records; approve and reject are review decisions,
-not catalogue promotion operations.
+not catalogue promotion operations. Approval returns `422` when provenance is incomplete, source
+confidence is below `0.75`, the source is restricted/reference-only, or copied content is detected.
+Rejection requires a reason, which is retained on the draft.

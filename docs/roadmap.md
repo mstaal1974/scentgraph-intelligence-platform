@@ -1,7 +1,8 @@
 # Roadmap
 
 1. **Foundation:** supplier-first ingestion, layered schema, matching, review workflow, licensing guardrails, typed API, and tests.
-   The review-only fragrance profile draft builder is available; catalogue promotion remains future work.
+   The review-only fragrance profile draft builder is available; catalogue promotion and Maison
+   Obsidian consumption of approved catalogue profiles remain future work.
 2. **Data operations:** Alembic revisions, persistent repositories, curator queues, taxonomy governance, and dataset versioning.
 3. **Intelligence:** calibrated vectors, reviewed clone estimates, contextual recommendations, Scentprint feedback, and layering research.
 4. **Commercial API:** tenant identity, scoped keys, quotas, metering, audit logs, data tiers, and SLAs.
