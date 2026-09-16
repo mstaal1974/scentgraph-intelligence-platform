@@ -1,0 +1,2 @@
+rehearsal_id,status,draft_profile_count,review_gate_count,maison_ready_count,recommended_next_action
+fictional-rehearsal-001,rehearsal_passed_with_warnings,1,1,0,Configure staging and retain human review

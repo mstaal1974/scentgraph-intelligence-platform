@@ -201,3 +201,19 @@ This pack does not perform, approve, or automate any of these steps.
 7. Complete provenance review.
 8. Approve selected profiles for catalogue review.
 9. Then generate the Maison export bundle manually.
+
+## Profile pipeline rehearsal
+
+The fictional, sample-safe rehearsal pack validates integration without real inputs or external side effects. It never approves drafts, creates products, publishes records, or exports to Maison. See [Profile pipeline rehearsal](profile-pipeline-rehearsal.md).
+
+### Manual steps after the rehearsal passes
+
+1. Deploy or configure the staging environment.
+2. Run staging smoke tests.
+3. Place authorized supplier files in private runtime storage.
+4. Run supplier intake, then supplier matching.
+5. Run the private fragrance profile batch.
+6. Review draft profiles.
+7. Complete enrichment and provenance review.
+8. Approve selected profiles for catalogue review.
+9. Only then generate the Maison export bundle.

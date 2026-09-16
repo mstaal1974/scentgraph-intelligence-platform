@@ -57,3 +57,7 @@ The completion orchestrator validates that review-gate code exists but separatel
 ## Profile production packets
 
 Private profile production creates a review packet per draft with identity, evidence, originality, tag, and provenance questions. The packet is guidance only: an operator must return the draft for enrichment, reject it, or advance it to catalogue review through the existing review decision workflow.
+
+## Profile pipeline rehearsal
+
+The fictional, sample-safe rehearsal pack validates integration without real inputs or external side effects. It never approves drafts, creates products, publishes records, or exports to Maison. See [Profile pipeline rehearsal](profile-pipeline-rehearsal.md).

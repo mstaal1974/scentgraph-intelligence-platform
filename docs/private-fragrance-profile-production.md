@@ -28,3 +28,7 @@ After the first batch, operators complete enrichment and provenance review, appr
 ## Privacy rules
 
 Public API responses contain statuses, bands, identifiers, counts, questions, and original safe summaries only. They exclude source paths and all supplier-commercial, seller-private, consumer-private, individual-feedback, and copied third-party material. The fictional CSVs under `data/samples/` are contract examples, never production output.
+
+## Profile pipeline rehearsal
+
+The fictional, sample-safe rehearsal pack validates integration without real inputs or external side effects. It never approves drafts, creates products, publishes records, or exports to Maison. See [Profile pipeline rehearsal](profile-pipeline-rehearsal.md).

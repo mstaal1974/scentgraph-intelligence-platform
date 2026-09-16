@@ -8,12 +8,16 @@ import sys
 from pathlib import Path
 
 COMMANDS = [
-    ["scripts/validate_data.py", "data"], ["scripts/audit_supplier_data.py"],
-    ["scripts/audit_supplier_offers.py"], ["scripts/audit_seller_supplier_matching.py"],
+    ["scripts/validate_data.py", "data"],
+    ["scripts/audit_supplier_data.py"],
+    ["scripts/audit_supplier_offers.py"],
+    ["scripts/audit_seller_supplier_matching.py"],
     ["scripts/audit_consumer_scent_privacy.py"],
     ["scripts/audit_launch_intelligence_privacy.py"],
-    ["scripts/audit_pilot_workflow_privacy.py"], ["scripts/audit_persistence_privacy.py"],
-    ["scripts/audit_review_workflow_privacy.py"], ["scripts/audit_private_pilot_inputs.py"],
+    ["scripts/audit_pilot_workflow_privacy.py"],
+    ["scripts/audit_persistence_privacy.py"],
+    ["scripts/audit_review_workflow_privacy.py"],
+    ["scripts/audit_private_pilot_inputs.py"],
     ["scripts/audit_platform_completion_privacy.py"],
     ["scripts/audit_deployment_privacy.py"],
     ["scripts/audit_staging_smoke_privacy.py"],
@@ -21,6 +25,7 @@ COMMANDS = [
     ["scripts/audit_scentprint_quiz_privacy.py"],
     ["scripts/audit_commercial_packaging_privacy.py"],
     ["scripts/audit_profile_production_privacy.py"],
+    ["scripts/audit_profile_pipeline_rehearsal_privacy.py"],
 ]
 
 
@@ -36,8 +41,14 @@ def run_all(root: Path = Path(".")) -> tuple[int, list[dict[str, str]]]:
             print(f"WARNING: skipping missing optional audit: {command[0]}")
             results.append({"audit": command[0], "status": "skipped_missing"})
             continue
-        completed = subprocess.run([sys.executable, *command], cwd=root, check=False,
-                                   capture_output=True, text=True, env=environment)
+        completed = subprocess.run(
+            [sys.executable, *command],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            env=environment,
+        )
         status = "passed" if completed.returncode == 0 else "failed"
         results.append({"audit": command[0], "status": status})
         print(f"{status.upper()}: {' '.join(command)}")
