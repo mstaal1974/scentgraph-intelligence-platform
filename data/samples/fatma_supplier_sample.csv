@@ -1,0 +1,2 @@
+supplier_name,supplier_brand_raw,supplier_name_raw,normalised_brand,normalised_name,candidate_brand,candidate_fragrance_name,review_status
+Fictional Supplier Beta,Ember House,Cedar Veil,Ember House,Cedar Veil,,,needs_matching

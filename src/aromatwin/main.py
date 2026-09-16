@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 
 from aromatwin.config import Settings, get_settings
 from aromatwin.middleware import SecurityAndLoggingMiddleware
-from aromatwin.routers import ROUTERS, admin_review, maison, supplier_items
+from aromatwin.routers import ROUTERS, admin_review, maison, supplier_items, supplier_offers
 from aromatwin.security import validate_cors_origins
 
 ADMIN_STATIC = Path(__file__).resolve().parents[2] / "static" / "admin"
@@ -29,7 +29,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if router is admin_review.router:
             if settings.enable_admin_console:
                 application.include_router(router, prefix=settings.internal_api_prefix)
-        elif router is supplier_items.router:
+        elif router in (supplier_items.router, supplier_offers.router):
             if settings.enable_private_supplier_endpoints:
                 application.include_router(router, prefix=settings.internal_api_prefix)
         elif router is maison.router:

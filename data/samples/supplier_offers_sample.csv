@@ -1,0 +1,2 @@
+supplier_name,supplier_brand_raw,supplier_name_raw,normalised_brand,normalised_name,candidate_brand,candidate_fragrance_name,review_status
+Fictional Supplier Alpha,Aurora Atelier,Midnight Bloom,Aurora Atelier,Midnight Bloom,Aurora Atelier,Midnight Bloom,matched_to_candidate

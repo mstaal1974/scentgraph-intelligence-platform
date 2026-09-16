@@ -10,6 +10,7 @@ from aromatwin.models.profile_draft import ProfileDraft
 from aromatwin.models.provenance import ReferenceSource, ReviewStatus, SourceProvenance
 from aromatwin.models.scent_vector import ScentVector
 from aromatwin.models.supplier_item import ImportBatch, SupplierItem
+from aromatwin.models.supplier_offer import SupplierOffer
 
 __all__ = [
     "Accord",
@@ -27,4 +28,5 @@ __all__ = [
     "ScentVector",
     "SourceProvenance",
     "SupplierItem",
+    "SupplierOffer",
 ]

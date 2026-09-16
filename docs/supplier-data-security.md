@@ -16,3 +16,9 @@ Its replacement, `data/samples/supplier_identity_sample.csv`, contains fictional
 Raw files and generated artifacts belong under `data/private/` or another access-controlled location configured with `AROMATWIN_PRIVATE_IMPORT_ROOT`. Both `data/private/` and top-level `private/` are ignored by Git. Operators should verify ignores, restrict filesystem permissions, avoid copying raw rows into tickets or logs, and never force-add private data.
 
 A repository ignore rule reduces accidental commits; it is not encryption or access control. Production operations should use encrypted storage, least-privilege access, secret-managed mount locations, retention limits, and auditable deletion procedures.
+# Supplier offer boundary
+
+Supplier-offer source files and detailed comparison reports are private artifacts under
+`data/private/`. Public schemas and samples use an explicit identity/workflow allowlist and omit
+commercial fields. The protected `/supplier-offers` API returns the same safe projection by
+default; authentication does not make a public response safe to contain commercial data.

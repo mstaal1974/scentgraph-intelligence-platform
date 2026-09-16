@@ -54,3 +54,10 @@ restricted-content flags, provenance summary, blocker, reviewer, update time, an
 It cannot contain supplier commercial fields or copied third-party content. Summary, blocked,
 readiness, decision, and export schemas derive from that allowlisted projection; the existing
 stage records remain authoritative.
+# Supplier offers
+
+`supplier_offers` stores private, provenance-bearing commercial availability independently from
+`supplier_items` and public fragrances. Optional foreign keys link an offer to an existing match
+candidate or catalogue fragrance. The record retains raw and normalised identity, file provenance,
+private commercial attributes, confidence, and review state. It never owns or creates a public
+fragrance profile. See [Multi-supplier offer import](multi-supplier-offer-import.md).
