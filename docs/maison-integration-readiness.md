@@ -48,3 +48,10 @@ secrets outside Git, deploy the staging API, run smoke tests, complete the priva
 human review, generate the export bundle, and review its manifest. The separate Maison repository will
 later need an authenticated staging client, mapping and presentation work, failure handling, and its own
 review and release process. No live publication is recommended by this pack.
+# Future Scentprint quiz integration
+
+The backend now defines a public-safe quiz contract and fictional demo result shape; see
+[`scentprint-quiz-contract.md`](scentprint-quiz-contract.md). This is contract readiness only. No
+Maison frontend, account linkage, deployment, automatic publication, or campaign behavior is part
+of the pack. A later Maison-repository change may render the versioned options after staging,
+privacy, content, and human reviews.

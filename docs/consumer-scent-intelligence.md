@@ -35,3 +35,10 @@ The launch-readiness layer consumes this layer's reviewed, aggregated status or 
 The Maison readiness pack consumes only approved, public-safe summaries through allow-listed contracts.
 It does not change existing generation, pilot, review, persistence, or staging workflows and never
 performs an external sync. See [Maison integration readiness](maison-integration-readiness.md).
+# Consumer Scentprint quiz contract
+
+The public-safe, stateless quiz contract is documented in
+[`scentprint-quiz-contract.md`](scentprint-quiz-contract.md). It produces only structured preference
+weights, bands, counts, and summaries under a public alias. It does not replace the existing
+private consumer scent workflow, accept free prose, persist responses, or infer personal traits.
+Any future connection must preserve that separation and receive explicit privacy review.

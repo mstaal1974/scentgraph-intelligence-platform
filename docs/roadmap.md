@@ -159,3 +159,17 @@ Remaining manual/external tasks:
 7. Generate the Maison export bundle.
 8. Review the Maison sync manifest.
 9. Update the Maison Obsidian website later, in its own repository.
+# Scentprint quiz contract handoff
+
+After this focused contract PR, the manual sequence is:
+
+1. Merge the Scentprint quiz contract pack.
+2. Deploy the staging API.
+3. Run staging smoke tests.
+4. Upload real supplier files to private runtime storage only.
+5. Run the private supplier pilot.
+6. Complete human review.
+7. Generate the Maison export bundle.
+8. Later, build the Maison website quiz UI in the Maison repository.
+
+None of these operational steps is performed or automated by this contract pack.

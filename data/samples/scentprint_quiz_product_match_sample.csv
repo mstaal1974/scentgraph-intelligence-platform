@@ -1,0 +1,2 @@
+product_id,product_title,product_format,match_score_band,match_reason,shared_families,shared_accords,shared_moods,public_safe_explanation
+demo-product-001,Fictional Horizon,sample,strong,Shares selected scent-preference categories.,"[""citrus"", ""woody""]","[""bright_citrus"", ""dry_woods""]","[""bright"", ""calm""]","This fictional demo match reflects only the selected scent families, accords, and moods."
