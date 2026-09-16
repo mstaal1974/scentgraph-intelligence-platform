@@ -29,3 +29,9 @@ These structured signals can later improve recommendation fit, reveal where cons
 ## Launch intelligence integration
 
 The launch-readiness layer consumes this layer's reviewed, aggregated status or band as read-only decision support. It never changes source records, approves catalogue entries, creates SKUs, or publishes private source detail. See [Launch intelligence and commercial readiness](launch-intelligence-readiness.md).
+
+## Maison integration readiness boundary
+
+The Maison readiness pack consumes only approved, public-safe summaries through allow-listed contracts.
+It does not change existing generation, pilot, review, persistence, or staging workflows and never
+performs an external sync. See [Maison integration readiness](maison-integration-readiness.md).

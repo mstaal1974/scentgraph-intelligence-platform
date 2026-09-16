@@ -1,0 +1,2 @@
+recommendation_id,source_product_id,recommended_product_id,recommendation_type,match_score_band,reason_summary,shared_notes,shared_accords,shared_moods,public_safe_explanation,status
+fictional-rec-01,fictional-product-01,fictional-product-02,similar_profile,medium,Fictional structural match for contract testing.,[],[],[],This placeholder requires human review.,draft

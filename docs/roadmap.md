@@ -147,3 +147,15 @@ Remaining manual/external tasks:
 7. Run the private pilot.
 8. Complete human review.
 9. Plan Maison integration later as a separate repository task.
+
+## Next manual steps after the Maison readiness pack
+
+1. Configure staging secrets outside version control.
+2. Deploy the staging API.
+3. Run staging smoke tests.
+4. Upload real supplier files to private runtime storage.
+5. Run the private supplier pilot.
+6. Complete human review.
+7. Generate the Maison export bundle.
+8. Review the Maison sync manifest.
+9. Update the Maison Obsidian website later, in its own repository.

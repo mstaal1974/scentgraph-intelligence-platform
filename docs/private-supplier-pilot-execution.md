@@ -59,3 +59,9 @@ Run `python scripts/complete_platform_readiness.py` before intake. Repository co
 ## Hosted staging prerequisite
 
 For a hosted pilot, first satisfy `docs/staging-deployment-readiness.md`. Upload approved private inputs directly to the protected runtime mount after deployment—never commit them—and retain all existing review gates.
+
+## Maison integration readiness boundary
+
+The Maison readiness pack consumes only approved, public-safe summaries through allow-listed contracts.
+It does not change existing generation, pilot, review, persistence, or staging workflows and never
+performs an external sync. See [Maison integration readiness](maison-integration-readiness.md).

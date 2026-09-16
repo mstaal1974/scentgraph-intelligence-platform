@@ -1,0 +1,2 @@
+match_id,scentprint_public_alias,product_id,match_score_band,family_fit,note_fit,mood_fit,occasion_fit,season_fit,reason_summary,confidence_band,review_status
+fictional-match-01,profile-example-a,fictional-product-01,medium,unspecified,unspecified,unspecified,unspecified,unspecified,Fictional banded match for contract testing.,low,human_review_required
