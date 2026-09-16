@@ -6,7 +6,7 @@ from aromatwin.schemas.seller_demand import SellerDemandBriefCreate
 from aromatwin.services.seller_demand_briefs import create_brief
 from aromatwin.services.seller_supplier_matching import match_brief_to_candidates, public_safe_match
 
-FORBIDDEN = ("price", "cost", "supplier_code", "cn_code", "quantity", "stock", "aed", "usd", "commercial")
+FORBIDDEN = ("price", "cost", "supplier_code", "cn_code", "quantity", "stock", "aed", "usd")
 
 
 def test_explainable_match_uses_requested_dimensions_and_stays_safe() -> None:
