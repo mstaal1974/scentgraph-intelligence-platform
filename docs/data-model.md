@@ -65,3 +65,7 @@ fragrance profile. See [Multi-supplier offer import](multi-supplier-offer-import
 ## Private sourcing projections
 
 Supplier sourcing decisions and product-format margin scenarios are computed projections rather than public catalogue entities. Decisions link to an existing catalogue fragrance or match candidate, retain risk and review state, and keep supplier/commercial fields in private reports. They intentionally require no public catalogue schema or foundation migration.
+
+## Maison product projection
+
+`ProductCatalogue` references one approved catalogue fragrance. `ProductVariant` references a product and carries a deterministic SKU, format, size, and optional public retail price. `ProductBundle` references product and variant IDs. These public projections are deliberately separate from supplier offers and internal margin scenarios; see [Maison product SKU catalogue](maison-product-sku-catalogue.md).

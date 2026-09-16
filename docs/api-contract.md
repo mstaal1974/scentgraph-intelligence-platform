@@ -97,3 +97,7 @@ bypass any review, approval, provenance, or privacy guardrail.
 ## Private supplier sourcing
 
 The `/supplier-sourcing` routes are internal, private-key protected routes. They build and compare sourcing decisions, return safe decision summaries, calculate margin scenarios, and expose audit counts. Response models intentionally omit all raw supplier prices and codes, stock/quantity, currencies, costs, margins, and commercial terms. Margin inputs are accepted only at this private boundary; margin responses remain safe summaries by default.
+
+## Product catalogue
+
+Public reads are available at `/products`, `/products/{product_id}`, `/products/slug/{product_slug}`, `/products/{product_id}/variants`, `/products/bundles`, and the three `/products/export/*` routes. POST build routes require the admin workflow dependency and return review metadata but no commercial inputs. See [Maison product SKU catalogue](maison-product-sku-catalogue.md).

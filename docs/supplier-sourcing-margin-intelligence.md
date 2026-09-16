@@ -25,3 +25,7 @@ These are planning estimates: concentrations, tax treatment, wastage, fee bases,
 5. Share only a deliberately generated safe summary; never move a private report into tracked public data.
 
 This supports Maison Obsidian purchasing, assortment planning, and pricing without coupling its public catalogue to supplier terms. Later, tenant-specific private storage, policy, and assumptions can support licensed retailers while preserving the same isolation boundary.
+
+## Product catalogue boundary
+
+Margin scenarios remain internal. The product SKU catalogue may consume a final approved selling price, but it never exports the cost basis, margin amount or percentage, supplier price, currency, or commercial assumptions used to derive it.

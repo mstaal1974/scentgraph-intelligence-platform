@@ -50,3 +50,7 @@ store without changing the catalogue approval workflow or public contract.
 ## Supplier sourcing and margin intelligence
 
 The focused private sourcing layer now supports multi-offer ranking, audit flags, product-format costing, and safe-by-default API summaries. Future work may add persistent tenant isolation and approval history for multi-retailer licensing; it must preserve the commercial-data boundary.
+
+## Maison product SKU catalogue
+
+The public-safe product, variant, and bundle projection is available as a foundation for later Shopify, WooCommerce, custom storefront, and retailer-licensing adapters. Those external write integrations and storefront UI remain future work.
