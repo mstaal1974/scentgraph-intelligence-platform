@@ -1,3 +1,3 @@
-# Migrations
+# Alembic migrations
 
-Alembic owns executable application migrations. The reviewed baseline is currently captured in `database/schema.sql`; generate the first revision before shared environment deployment with `alembic revision --autogenerate -m "initial schema"`.
+Run `alembic upgrade head`. Revision `0001` applies the reviewed baseline `database/schema.sql`; subsequent schema changes must use ordinary Alembic operations and remain reviewable independently.

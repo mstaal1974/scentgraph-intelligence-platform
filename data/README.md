@@ -1,3 +1,5 @@
-# Data templates
+# Data Templates
 
-These deliberately small UTF-8 CSV files document exchange shapes and provide safe illustrative records. They are not a production catalogue or authoritative claims. Stable IDs only coordinate samples. Validate changes with `python scripts/validate_data.py data` before import; retain provenance and confirm source permissions.
+Supplier availability is the commercial starting point. Templates preserve raw source values and separate reference candidates, independent enrichment, approved catalogue data, and proprietary intelligence.
+
+The illustrative rows are schema examples, not authoritative fragrance claims. Do not paste restricted descriptions, reviews, ratings, images, article text, or UGC into these files. Validate with `python scripts/validate_data.py data`.

@@ -1,7 +1,7 @@
 # Provenance, Confidence, and Intellectual Property
 
-ScentGraph is a standalone commercial technology asset. Supplier files are source references, not the product and not automatically canonical truth. Each accepted entity can retain source name, source type, source reference, confidence, notes, and ingestion time. Confidence expresses evidence quality, not popularity.
+Supplier files are the primary evidence of availability but not proof of public fragrance identity. Official or licensed sources support verified facts. Restricted and non-commercial datasets are reference-only unless permission is documented.
 
-Proprietary value comes from structured taxonomy, entity resolution, scent vectors, clone mappings, Scentprint matching, recommendation logic, provenance, and validation. Keeping raw evidence traceable and derived intelligence versioned supports correction, licensing controls, defensible quality, and IP separation.
+Every imported, matched, or enriched record carries source identity, reference or URL, licence status, commercial-use permission, confidence, and review state. Confidence measures evidence strength; it does not override licensing. Raw evidence, candidate hypotheses, reviewed catalogue facts, and proprietary derivations remain separately traceable.
 
-Before ingesting a source, operators must record permission, permitted uses, retention requirements, and attribution obligations. Avoid copying protected descriptions unless licensed. Commercial options include SaaS access, metered API licences, data tiers, white-label widgets, and retailer connectors. Contractual access controls—not retailer-specific forks—will define licensed capabilities.
+AromaTwin's defensible value comes from normalisation, entity resolution, original reviewed descriptions, taxonomy, scent vectors, clone intelligence, recommendations, validation, and audit history—not copied descriptions, reviews, images, ratings, or UGC.

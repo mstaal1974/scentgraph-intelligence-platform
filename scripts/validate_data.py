@@ -4,17 +4,42 @@ import csv
 from pathlib import Path
 
 EXPECTED = {
-    "brands.csv": {"id", "name", "slug", "verified"},
-    "fragrances.csv": {"id", "brand_id", "name", "slug", "source_confidence"},
+    "supplier_import_template.csv": {"BRAND", "NAME", "ORI", "CN CODE", "QTY", "AED", "USD"},
+    "reference_match_template.csv": {
+        "supplier_item_id",
+        "candidate_source_type",
+        "review_status",
+        "commercial_use_allowed",
+        "can_copy_text",
+        "can_copy_images",
+        "can_use_for_matching",
+    },
+    "enrichment_review_template.csv": {
+        "match_candidate_id",
+        "official_source_url",
+        "description_original",
+        "review_status",
+        "source_confidence",
+    },
+    "review_statuses.csv": {"code", "description", "terminal"},
+    "brands.csv": {"id", "name", "review_status"},
+    "fragrances.csv": {"id", "enrichment_review_id", "name", "review_status"},
     "notes.csv": {"id", "name", "slug", "note_type"},
     "accords.csv": {"id", "name", "slug"},
     "fragrance_notes.csv": {"fragrance_id", "note_id", "pyramid_level"},
     "fragrance_accords.csv": {"fragrance_id", "accord_id", "weight"},
-    "scent_vectors.csv": {"fragrance_id", "warm", "fresh", "sweet", "longevity"},
-    "clone_relationships.csv": {"id", "clone_fragrance_id", "original_fragrance_id"},
-    "products.csv": {"id", "fragrance_id", "sku"},
+    "scent_vectors.csv": {"fragrance_id", "warm", "fresh", "longevity"},
+    "clone_relationships.csv": {"id", "supplier_item_id", "score_status", "review_status"},
+    "products.csv": {"id", "supplier_item_id", "sku"},
     "aliases.csv": {"id", "entity_type", "entity_id", "alias"},
-    "source_provenance.csv": {"id", "entity_type", "entity_id", "source_name", "confidence"},
+    "source_provenance.csv": {
+        "id",
+        "entity_type",
+        "entity_id",
+        "licence_status",
+        "commercial_use_allowed",
+        "confidence",
+    },
 }
 
 

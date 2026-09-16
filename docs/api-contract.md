@@ -1,20 +1,12 @@
 # API Contract
 
-The initial contract is JSON over HTTP and is documented through OpenAPI at `/docs` and `/openapi.json`.
+The foundation exposes JSON and OpenAPI at `/docs` and `/openapi.json`.
 
-| Method | Path | Purpose |
-|---|---|---|
-| GET | `/health` | Service status |
-| GET | `/brands` | List brands |
-| GET | `/brands/{brand_id}` | Fetch a brand |
-| GET | `/fragrances` | List fragrances |
-| GET | `/fragrances/{fragrance_id}` | Fetch a fragrance |
-| GET | `/notes` | List note taxonomy |
-| GET | `/accords` | List accord taxonomy |
-| GET | `/search?q=` | Search canonical entities |
-| GET | `/similar/{fragrance_id}` | Similarity candidates |
-| POST | `/recommend` | Contextual recommendation request |
-| POST | `/scentprint` | Build and match a preference vector |
-| GET | `/clone-matches/{fragrance_id}` | Directional clone alternatives |
+- Operations: `GET /health`
+- Supplier: `GET /supplier-items`, `GET /supplier-items/{id}`, `POST /supplier-items/import-preview`
+- Matching: `GET /match-candidates`, `GET /match-candidates/{id}`, `POST /match-candidates/generate`
+- Enrichment: `GET /enrichment-reviews`, `GET /enrichment-reviews/{id}`, `POST /enrichment-reviews/{id}/approve`, `POST /enrichment-reviews/{id}/reject`
+- Catalogue: `GET /brands`, `GET /fragrances`, `GET /fragrances/{id}`, `GET /notes`, `GET /accords`, `GET /search?q=`
+- Intelligence: `GET /similar/{fragrance_id}`, `POST /recommend`, `POST /scentprint`, `GET /clone-matches/{fragrance_id}`
 
-Foundation responses may be empty or illustrative but remain typed. Future commercial access adds versioning, API keys, tenant scopes, quotas, metering, and licensed response fields without leaking database access.
+Foundation workflow endpoints may use in-memory previews until repositories are wired, but all requests and responses remain typed. Approved catalogue routes must never expose unapproved enrichment or restricted source content.

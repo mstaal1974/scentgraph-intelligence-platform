@@ -1,21 +1,14 @@
-# AromaTwin supplier import package — 26.04.2026
+# Supplier source drop — 2026-04-26
 
-Generated from `PERFUME OIL PRICE LIST  26.04.2026 (1).xlsx` sheet `Table 1`.
+This directory is the canonical input location for the dated supplier-first staging batch. Source CSV/XLS/XLSX files are read in place, hashed, validated, and converted to `supplier_imported` staging rows.
 
-This package is supplier-first. It is intended for staging/import into AromaTwin or Maison Obsidian tooling, not direct catalogue publication.
+The source files were not present in the repository workspace when this workflow was implemented. No supplier rows have therefore been fabricated or copied from templates. Add the original supplied files here without editing them, then run:
 
-## Key outputs
+```bash
+python scripts/import_supplier.py data/imports/supplier-2026-04-26 \
+  --supplier-name "<supplier name>" \
+  --output staging/supplier-2026-04-26.json \
+  --report staging/supplier-2026-04-26-report.json
+```
 
-- `supplier_items.csv` — cleaned supplier availability rows with provenance, raw fields, normalised matching fields, prices, flags, and review status.
-- `match_candidates.csv` — initial match candidates generated from supplier rows only.
-- `brands.csv` — unique normalised brand candidates and row counts.
-- `review_queue.csv` — medium/high priority rows needing human review before catalogue approval.
-- `duplicates.csv` — duplicate exact rows and duplicate supplier-code flags.
-- `source_provenance.csv` — source records and commercial/IP guardrails.
-
-## Important guardrail
-
-All rows start as `needs_verification`. Do not use the rows as approved product/catalogue copy until independent verification, enrichment, and review are completed.
-
-Import batch: `supplier_20260426`
-Converted at UTC: `2026-09-15T23:52:40+00:00`
+Generated rows are staging evidence only. They are never approved catalogue records and must proceed through candidate matching and independent enrichment review.

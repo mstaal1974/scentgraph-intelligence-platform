@@ -1,12 +1,10 @@
-INSERT INTO brands (id, name, slug, country, website, verified) VALUES
- (1, 'Tom Ford', 'tom-ford', 'United States', 'https://www.tomford.com/', false),
- (2, 'Maison Francis Kurkdjian', 'maison-francis-kurkdjian', 'France', 'https://www.franciskurkdjian.com/', false)
+INSERT INTO review_statuses (code,description,terminal) VALUES
+('supplier_imported','Raw supplier row imported',false),('match_candidate','Candidate identity proposed',false),
+('needs_verification','Independent verification required',false),('verified_official','Official source checked',false),
+('enriched_original','Original enrichment prepared',false),('approved_for_catalogue','Human-approved commercial catalogue record',true),
+('rejected_low_confidence','Rejected because evidence was insufficient',true),('rejected_licensing_risk','Rejected because source permissions were unsafe',true)
 ON CONFLICT DO NOTHING;
-INSERT INTO fragrances (id, brand_id, name, slug, concentration, family, verified, source_confidence) VALUES
- (1, 1, 'Lost Cherry', 'lost-cherry', 'eau de parfum', 'amber floral', false, 0.500),
- (2, 2, 'Baccarat Rouge 540', 'baccarat-rouge-540', 'eau de parfum', 'amber floral', false, 0.500)
+INSERT INTO reference_sources (source_name,source_type,permitted_use,commercial_use_allowed,can_copy_text,can_copy_images,can_use_for_matching,notes) VALUES
+('Supplier catalogue','supplier','supplier_source',true,false,false,true,'Primary evidence of commercial availability'),
+('Restricted reference dataset','dataset','restricted_non_commercial',false,false,false,true,'Matching and deduplication only')
 ON CONFLICT DO NOTHING;
-INSERT INTO notes (id, name, slug, note_type) VALUES (1, 'Bergamot', 'bergamot', 'top'), (2, 'Amber', 'amber', 'base') ON CONFLICT DO NOTHING;
-INSERT INTO accords (id, name, slug) VALUES (1, 'Woody', 'woody') ON CONFLICT DO NOTHING;
-SELECT setval(pg_get_serial_sequence('brands','id'), (SELECT max(id) FROM brands));
-SELECT setval(pg_get_serial_sequence('fragrances','id'), (SELECT max(id) FROM fragrances));

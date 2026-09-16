@@ -1,3 +1,1 @@
-id,name,slug,country,website,verified,created_at,updated_at
-1,Tom Ford,tom-ford,United States,https://www.tomford.com/,false,,
-2,Maison Francis Kurkdjian,maison-francis-kurkdjian,France,https://www.franciskurkdjian.com/,false,,
+id,name,slug,country,website,verified,review_status,created_at,updated_at

@@ -1,14 +1,16 @@
 # Supplier Import Guide
 
-Supplier data enters staging and never overwrites canonical records directly. Operators must retain permitted provenance and review duplicate and variant warnings.
+Supplier files establish availability and are processed from `data/imports/supplier-2026-04-26/`. Keep the source files unchanged so their SHA-256 fingerprints remain auditable.
 
-## Expected CSV
+Required columns are `BRAND`, `NAME`, `ORI`, `CN CODE`, `QTY`, `AED`, and `USD`. CSV, XLS, and XLSX inputs are accepted; unrelated files are ignored.
 
-Required headers:
-
-```csv
-brand_name,fragrance_name,concentration,product_type,size_ml,sku,price,currency,source_reference
-Example Brand,Example Scent,eau de parfum,spray,50,EX-50,79.00,GBP,catalogue-row-1
+```bash
+python scripts/import_supplier.py data/imports/supplier-2026-04-26 \
+  --supplier-name "Supplier" \
+  --output staging/supplier-2026-04-26.json \
+  --report staging/supplier-2026-04-26-report.json
 ```
 
-Run `python scripts/import_supplier.py input.csv --source-name "Supplier" --output staging.csv --report report.json`. The pipeline loads CSV, validates headers, normalises names, identifies duplicate keys, preserves concentration variants, emits staging records, and writes a validation report with provenance metadata. Human review and database loading are later phases.
+The staging output preserves raw values and adds normalised matching fields, variant markers, duplicate flags, provenance coordinates, and `supplier_imported` status. `ORI` is only a supplier-provided identity hint. Neither it nor any other supplier row verifies a clone relationship or authorises a catalogue record.
+
+The report always states `catalogue_promotion_allowed=false`. Candidate matching and independently sourced human-reviewed enrichment are mandatory before approval.

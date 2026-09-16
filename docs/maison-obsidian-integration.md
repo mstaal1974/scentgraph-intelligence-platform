@@ -1,7 +1,7 @@
 # Maison Obsidian Integration
 
-Maison Obsidian is ScentGraph's first implementation and an API customer; it does not own or embed the platform internally. ScentGraph remains independently deployable, brand-neutral, and suitable for other retailers.
+Maison Obsidian is AromaTwin's first customer, not its owner or internal implementation. AromaTwin remains independently deployable, brand-neutral, and licensable to other retailers.
 
-Maison Obsidian will map its product SKUs to ScentGraph fragrance IDs and call the same documented endpoints used by any licensee. Its website or commerce services may request fragrance details, similar scents, clone matches, recommendations, and Scentprint matches. Retail prices, stock, checkout, merchandising, and customer presentation stay in Maison Obsidian systems.
+A future integration maps Maison Obsidian SKUs to approved AromaTwin fragrance IDs and consumes the documented API. Prices, stock, checkout, merchandising, and presentation remain in Maison Obsidian. Supplier ingestion, candidate research, licensing decisions, enrichment, and proprietary ranking remain within AromaTwin.
 
-A future integration will use scoped credentials, tenant configuration, quotas, metering, contract-version headers, and caching rules. No Maison Obsidian catalogue assumptions or branding belong in core taxonomy, import, ranking, or persistence code. This foundation defines the boundary only and performs no live integration.
+Future scoped credentials, tenant configuration, quotas, metering, version headers, and caching policies will protect the boundary. This foundation performs no live integration.

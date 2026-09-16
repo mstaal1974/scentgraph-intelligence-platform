@@ -1,15 +1,18 @@
-# Documentation
-
-ScentGraph is a brand-neutral commercial technology asset. These documents define its initial architecture, public API, governed data model, algorithms, integration boundary, and roadmap.
+# AromaTwin Documentation
 
 - [Architecture](architecture.md)
-- [API contract](api-contract.md)
+- [Commercial positioning](commercial-positioning.md)
+- [Supplier import workflow](supplier-import-workflow.md)
+- [Candidate matching](candidate-matching-workflow.md)
+- [Independent enrichment](enrichment-workflow.md)
+- [Licensing guardrails](licensing-guardrails.md)
+- [AI review policy](ai-review-policy.md)
+- [Provenance and IP](provenance-and-ip.md)
 - [Data model](data-model.md)
-- [Import guide](import-guide.md)
-- [Taxonomy](taxonomy.md)
+- [API contract](api-contract.md)
+- [Maison Obsidian boundary](maison-obsidian-integration.md)
 - [Scentprint](scentprint.md)
 - [Recommendations](recommendation-engine.md)
 - [Clone intelligence](clone-intelligence.md)
-- [Provenance and IP](provenance-and-ip.md)
-- [Maison Obsidian integration](maison-obsidian-integration.md)
+- [Taxonomy](taxonomy.md)
 - [Roadmap](roadmap.md)
