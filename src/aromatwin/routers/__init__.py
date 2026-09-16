@@ -5,6 +5,7 @@ from aromatwin.routers import (
     enrichment_reviews,
     fragrances,
     health,
+    maison,
     match_candidates,
     notes,
     profile_drafts,
@@ -17,6 +18,7 @@ from aromatwin.routers import (
 
 ROUTERS = (
     health.router,
+    maison.router,
     supplier_items.router,
     match_candidates.router,
     enrichment_reviews.router,
