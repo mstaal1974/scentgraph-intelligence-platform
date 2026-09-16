@@ -32,3 +32,5 @@ jobs:
         run: python scripts/validate_data.py data
       - name: Audit supplier privacy
         run: python scripts/audit_supplier_data.py
+      - name: Build deployable container
+        run: docker build -t aromatwin-ci .

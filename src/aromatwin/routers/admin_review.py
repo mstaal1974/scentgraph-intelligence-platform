@@ -3,7 +3,7 @@
 import csv
 import io
 
-from fastapi import APIRouter, HTTPException, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 
 from aromatwin.routers import enrichment_reviews, profile_drafts, recommendations, scent_vectors
 from aromatwin.schemas.admin_review import (
@@ -14,13 +14,16 @@ from aromatwin.schemas.admin_review import (
     AdminReviewQueueItem,
     AdminReviewSummary,
 )
+from aromatwin.security import require_admin_api_key
 from aromatwin.services import admin_review
 from aromatwin.services.enrichment_review import approve_enrichment_review, reject_enrichment_review
 from aromatwin.services.profile_builder import approve_profile_draft, reject_profile_draft
 from aromatwin.services.recommendation_engine import approve_recommendation, reject_recommendation
 from aromatwin.services.scent_vector_engine import approve_scent_vector, reject_scent_vector
 
-router = APIRouter(prefix="/admin", tags=["admin review"])
+router = APIRouter(
+    prefix="/admin", tags=["admin review"], dependencies=[Depends(require_admin_api_key)]
+)
 _DECISIONS: dict[tuple[str, str], dict[str, str | None]] = {}
 
 

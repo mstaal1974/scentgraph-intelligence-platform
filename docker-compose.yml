@@ -1,10 +1,12 @@
+# Development convenience only. Production deployments must inject secrets through their
+# platform's secret manager and must not use these placeholder database credentials.
 services:
   postgres:
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: ${AROMATWIN_POSTGRES_DB:-aromatwin}
       POSTGRES_USER: ${AROMATWIN_POSTGRES_USER:-aromatwin}
-      POSTGRES_PASSWORD: ${AROMATWIN_POSTGRES_PASSWORD:-change-me}
+      POSTGRES_PASSWORD: ${AROMATWIN_POSTGRES_PASSWORD:-change-me-development-only}
     ports: ["5432:5432"]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
@@ -13,15 +15,22 @@ services:
       retries: 10
     volumes: ["postgres_data:/var/lib/postgresql/data"]
   app:
-    image: python:3.12-slim
-    working_dir: /app
-    volumes: [".:/app"]
-    env_file: [.env]
+    build: .
     environment:
-      AROMATWIN_DATABASE_URL: postgresql+psycopg://aromatwin:${AROMATWIN_POSTGRES_PASSWORD:-change-me}@postgres:5432/${AROMATWIN_POSTGRES_DB:-aromatwin}
-    command: sh -c "pip install -e . && uvicorn aromatwin.main:app --host 0.0.0.0 --port 8000"
+      AROMATWIN_ENVIRONMENT: ${AROMATWIN_ENVIRONMENT:-development}
+      AROMATWIN_DATABASE_URL: postgresql+psycopg://aromatwin:${AROMATWIN_POSTGRES_PASSWORD:-change-me-development-only}@postgres:5432/${AROMATWIN_POSTGRES_DB:-aromatwin}
+      AROMATWIN_API_KEY: ${AROMATWIN_API_KEY:-}
+      AROMATWIN_ADMIN_API_KEY: ${AROMATWIN_ADMIN_API_KEY:-}
+      AROMATWIN_PRIVATE_API_KEY: ${AROMATWIN_PRIVATE_API_KEY:-}
+      AROMATWIN_ALLOWED_ORIGINS: ${AROMATWIN_ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:5173}
+      AROMATWIN_ENABLE_ADMIN_CONSOLE: ${AROMATWIN_ENABLE_ADMIN_CONSOLE:-true}
+      AROMATWIN_ENABLE_PRIVATE_SUPPLIER_ENDPOINTS: ${AROMATWIN_ENABLE_PRIVATE_SUPPLIER_ENDPOINTS:-true}
+      AROMATWIN_LOG_LEVEL: ${AROMATWIN_LOG_LEVEL:-INFO}
+      AROMATWIN_PUBLIC_API_PREFIX: ${AROMATWIN_PUBLIC_API_PREFIX:-}
+      AROMATWIN_INTERNAL_API_PREFIX: ${AROMATWIN_INTERNAL_API_PREFIX:-}
     ports: ["8000:8000"]
     depends_on:
       postgres: {condition: service_healthy}
+    # Deliberately no source-tree or private supplier-data volume mounts.
 volumes:
   postgres_data:
