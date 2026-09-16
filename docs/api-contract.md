@@ -93,3 +93,7 @@ These routes are omitted when the admin console feature flag is disabled. In pro
 requests without `X-Admin-API-Key`; supplier workflow routes similarly require
 `X-Private-API-Key`. Both also accept `X-API-Key` as a compatibility header. Authentication does not
 bypass any review, approval, provenance, or privacy guardrail.
+
+## Private supplier sourcing
+
+The `/supplier-sourcing` routes are internal, private-key protected routes. They build and compare sourcing decisions, return safe decision summaries, calculate margin scenarios, and expose audit counts. Response models intentionally omit all raw supplier prices and codes, stock/quantity, currencies, costs, margins, and commercial terms. Margin inputs are accepted only at this private boundary; margin responses remain safe summaries by default.

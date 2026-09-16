@@ -16,6 +16,7 @@ from aromatwin.routers import (
     scentprint,
     search,
     supplier_offers,
+    supplier_sourcing,
 )
 
 # Compatibility alias retained for imports written before the route was explicitly private.
@@ -27,6 +28,7 @@ ROUTERS = (
     maison.router,
     supplier_items.router,
     supplier_offers.router,
+    supplier_sourcing.router,
     match_candidates.router,
     enrichment_reviews.router,
     catalogue.router,
