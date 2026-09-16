@@ -42,3 +42,9 @@ The exporter accepts input only below `data/private/reports/` and emits IDs, mas
 `.github/workflows/staging-smoke-template.yml` is intentionally disabled with a false job condition. After human review, configure both named GitHub Secrets and remove that condition. Do not replace secret references with literal values.
 
 Never commit credentials, connection strings, private paths, supplier files or commercial terms, seller briefs, consumer data, response bodies, or staging evidence containing those values. Run `python scripts/audit_staging_smoke_privacy.py` before handoff.
+
+## Maison integration readiness boundary
+
+The Maison readiness pack consumes only approved, public-safe summaries through allow-listed contracts.
+It does not change existing generation, pilot, review, persistence, or staging workflows and never
+performs an external sync. See [Maison integration readiness](maison-integration-readiness.md).

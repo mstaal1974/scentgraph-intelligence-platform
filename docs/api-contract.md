@@ -147,3 +147,9 @@ Authenticated `/platform-completion` endpoints expose health, public-safe task s
 ## Deployment diagnostics
 
 `GET /deployment/health` returns only service status and version. `GET /deployment/readiness`, `GET /deployment/environment`, `POST /deployment/readiness/check`, and `GET /deployment/audit` require private authentication outside local mode. Their contracts expose status, masked path indicators, counts, warnings, and operator actions only; they never return credentials, private records, or commercial data.
+
+## Maison integration readiness boundary
+
+The Maison readiness pack consumes only approved, public-safe summaries through allow-listed contracts.
+It does not change existing generation, pilot, review, persistence, or staging workflows and never
+performs an external sync. See [Maison integration readiness](maison-integration-readiness.md).

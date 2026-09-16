@@ -1,0 +1,2 @@
+sync_manifest_id,sync_mode,source_environment,target_system_label,generated_at,product_count,variant_count,recommendation_count,scentprint_match_count,bundle_count,skipped_count,blocked_count,export_files,checksums,review_status,privacy_status,blocking_issues,recommended_next_action
+fictional-sync-01,dry_run,sample,Maison Obsidian staging contract,2026-01-01T00:00:00Z,1,1,1,1,0,0,0,[],{},human_review_required,passed,[],Review the fictional manifest; do not publish.
