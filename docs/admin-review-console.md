@@ -69,3 +69,7 @@ Bulk-generated drafts and their enrichment tasks are upstream inputs to admin re
 ## Private pilot orchestration
 
 This module may supply non-mutating readiness evidence to the [private pilot workflow](private-pilot-workflow.md). The pilot layer records only safe statuses, counts, bands, blockers, and human-review actions; it does not bypass this module's existing review gates or expose private source values.
+
+## Persisted review state
+
+Operational review items may be stored by the persistence layer for durable status history. The layer never auto-approves or publishes records, and `/operations` exposes only allow-listed summaries. See [Production persistence and audit trail](production-persistence-audit.md).

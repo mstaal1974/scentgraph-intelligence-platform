@@ -87,3 +87,7 @@ Bulk profile drafts, coverage rows, and research queue items are file-backed ope
 ## Private pilot orchestration
 
 This module may supply non-mutating readiness evidence to the [private pilot workflow](private-pilot-workflow.md). The pilot layer records only safe statuses, counts, bands, blockers, and human-review actions; it does not bypass this module's existing review gates or expose private source values.
+
+## Operational persistence
+
+Ten `persistent_*` tables hold workflow runs, stages, safe artifact metadata, draft/review/launch summaries, redacted demand and scentprint summaries, provenance, and audit events. They intentionally exclude raw private and commercial data. See [Production persistence and audit trail](production-persistence-audit.md).

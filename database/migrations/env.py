@@ -6,6 +6,7 @@ from sqlalchemy import engine_from_config, pool
 from aromatwin import models  # noqa: F401
 from aromatwin.config import get_settings
 from aromatwin.database import Base
+from aromatwin.persistence import models as persistence_models  # noqa: F401
 
 config = context.config
 if config.config_file_name:

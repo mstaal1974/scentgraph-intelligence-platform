@@ -72,3 +72,7 @@ The backend-only, explainable launch prioritisation layer now connects existing 
 ## Private pilot orchestration
 
 This module may supply non-mutating readiness evidence to the [private pilot workflow](private-pilot-workflow.md). The pilot layer records only safe statuses, counts, bands, blockers, and human-review actions; it does not bypass this module's existing review gates or expose private source values.
+
+## Production persistence and audit trail
+
+The focused operational persistence boundary is now available for progressive pilot integration: durable run/review state, provenance, public-safe projections, and privacy-bounded audit events. Workflow replacement, storefront work, campaign generation, and automatic approval remain out of scope.
