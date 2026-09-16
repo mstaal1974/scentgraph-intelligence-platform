@@ -8,12 +8,12 @@ version = "0.2.0"
 description = "Supplier-first commercial fragrance intelligence platform"
 requires-python = ">=3.12"
 dependencies = [
-  "alembic>=1.13,<2", "fastapi>=0.115,<1", "pandas>=2.2,<3", "openpyxl>=3.1,<4", "xlrd>=2,<3", "pydantic>=2.8,<3",
+  "alembic>=1.13,<2", "fastapi>=0.115,<0.116", "pandas>=2.2,<3", "openpyxl>=3.1,<4", "xlrd>=2,<3", "pydantic>=2.8,<3",
   "pydantic-settings>=2.4,<3", "psycopg[binary]>=3.2,<4", "sqlalchemy>=2.0,<3", "uvicorn[standard]>=0.30,<1"
 ]
 
 [project.optional-dependencies]
-dev = ["httpx>=0.27,<1", "pytest>=8,<9", "ruff>=0.6,<1"]
+dev = ["httpx>=0.27,<0.29", "pytest>=8,<9", "ruff>=0.6,<1"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -21,6 +21,9 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["src", "."]
 testpaths = ["tests"]
+markers = [
+  "integration: requires an explicitly configured external service",
+]
 
 [tool.ruff]
 target-version = "py312"

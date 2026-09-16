@@ -17,6 +17,9 @@ uvicorn aromatwin.main:app --reload
 
 OpenAPI documentation is served at `http://localhost:8000/docs`.
 
+See [Development and testing](docs/development-and-testing.md) for the cloud, local, and CI test
+workflow.
+
 ## Foundation scope
 
 This repository establishes the supplier ingestion, candidate matching, independent enrichment, provenance, licensing guardrails, review workflow, catalogue, and proprietary intelligence boundaries. It intentionally excludes frontend, ecommerce, authentication, billing, full restricted-dataset imports, direct Maison Obsidian integration, and production deployment.

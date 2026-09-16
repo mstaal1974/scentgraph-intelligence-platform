@@ -1,17 +1,20 @@
 from fastapi.testclient import TestClient
-from aromatwin.main import app
-
-client = TestClient(app)
 
 
-def test_health_endpoint() -> None:
+def test_app_imports(app: object) -> None:
+    assert app is not None
+
+
+def test_health_endpoint(client: TestClient) -> None:
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "service": "aromatwin", "version": "0.2.0"}
 
 
-def test_openapi_exposes_workflow_routes() -> None:
-    paths = client.get("/openapi.json").json()["paths"]
+def test_openapi_exposes_workflow_routes(client: TestClient) -> None:
+    response = client.get("/openapi.json")
+    assert response.status_code == 200
+    paths = response.json()["paths"]
     required = {
         "/supplier-items",
         "/supplier-items/{item_id}",
@@ -39,7 +42,7 @@ def test_openapi_exposes_workflow_routes() -> None:
     assert required <= set(paths)
 
 
-def test_import_preview_remains_unapproved_staging() -> None:
+def test_import_preview_remains_unapproved_staging(client: TestClient) -> None:
     response = client.post(
         "/supplier-items/import-preview",
         json={

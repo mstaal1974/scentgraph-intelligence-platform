@@ -2,20 +2,16 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-from aromatwin.main import app
 from aromatwin.routers.admin_review import _DECISIONS
 from aromatwin.routers.profile_drafts import _DRAFTS
 from aromatwin.services.profile_builder import ProfileDraft, draft_description, draft_provenance_notes
-
-client = TestClient(app)
-
 
 def setup_function() -> None:
     _DECISIONS.clear()
     _DRAFTS.clear()
 
 
-def test_review_summary_returns_every_stage_count() -> None:
+def test_review_summary_returns_every_stage_count(client: TestClient) -> None:
     response = client.get("/admin/review/summary")
     assert response.status_code == 200
     stages = {item["stage"]: item["total"] for item in response.json()["stages"]}
@@ -25,14 +21,14 @@ def test_review_summary_returns_every_stage_count() -> None:
     }
 
 
-def test_queue_aggregates_safe_sample_stages() -> None:
+def test_queue_aggregates_safe_sample_stages(client: TestClient) -> None:
     queue = client.get("/admin/review/queue").json()
     stages = {item["stage"] for item in queue}
     assert {"profile_draft", "enrichment_review", "catalogue_promotion", "scent_vector",
             "recommendation"} <= stages
 
 
-def test_blockers_and_readiness_explain_ready_and_not_ready() -> None:
+def test_blockers_and_readiness_explain_ready_and_not_ready(client: TestClient) -> None:
     blocked = client.get("/admin/review/blocked").json()
     assert blocked and all(item["blocking_reason"] for item in blocked)
     report = client.get("/admin/review/readiness").json()
@@ -41,7 +37,7 @@ def test_blockers_and_readiness_explain_ready_and_not_ready() -> None:
     assert report["ready_count"] + report["not_ready_count"] > 0
 
 
-def test_approve_delegates_to_profile_guardrails() -> None:
+def test_approve_delegates_to_profile_guardrails(client: TestClient) -> None:
     _DRAFTS.append(ProfileDraft(
         id=42, supplier_item_id=1, match_candidate_id=2, brand="Fictional",
         fragrance_name="Unsafe Draft", concentration=None,
@@ -57,7 +53,7 @@ def test_approve_delegates_to_profile_guardrails() -> None:
     assert _DRAFTS[0].review_status == "needs_human_review"
 
 
-def test_reject_requires_and_returns_reason() -> None:
+def test_reject_requires_and_returns_reason(client: TestClient) -> None:
     missing = client.post(
         "/admin/review/catalogue_promotion/1/reject", json={"reviewer": "Human"}
     )
@@ -70,7 +66,7 @@ def test_reject_requires_and_returns_reason() -> None:
     assert response.json()["reason"] == "Provenance needs verification"
 
 
-def test_request_more_sources_marks_supported_stage() -> None:
+def test_request_more_sources_marks_supported_stage(client: TestClient) -> None:
     response = client.post(
         "/admin/review/profile_draft/1/request-more-sources",
         json={"reviewer": "Human", "reason": "Need another licensed source"},
@@ -83,7 +79,7 @@ def test_request_more_sources_marks_supported_stage() -> None:
     ).status_code == 422
 
 
-def test_outputs_have_no_private_or_restricted_content_fields() -> None:
+def test_outputs_have_no_private_or_restricted_content_fields(client: TestClient) -> None:
     payload = client.get("/admin/review/queue").json()
     keys = {key.lower() for item in payload for key in item}
     forbidden = {
@@ -96,7 +92,7 @@ def test_outputs_have_no_private_or_restricted_content_fields() -> None:
     assert all(field not in csv_text for field in forbidden)
 
 
-def test_static_console_and_openapi_admin_routes_exist() -> None:
+def test_static_console_and_openapi_admin_routes_exist(client: TestClient) -> None:
     for name in ("index.html", "admin.js", "admin.css"):
         assert (Path("static/admin") / name).is_file()
     assert client.get("/admin-console/").status_code == 200
