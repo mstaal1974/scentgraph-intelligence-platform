@@ -20,6 +20,15 @@ of its allowlisted source fields. The fingerprint provides idempotency and chang
 derived public-safe layer cannot point directly to supplier items, profile drafts, or enrichment
 reviews. See [Scent Vector Engine](scent-vector-engine.md).
 
+## Recommendations
+
+Recommendations link one approved public catalogue fragrance to another and store a controlled
+type, bounded deterministic score, original reason, shared-dimension JSON, difference summary,
+bounded confidence, generation method, review state, timestamps, and optional rejection reason.
+The source/candidate/type identity is duplicate-safe. Recommendations derive only from catalogue
+records and approved or review-safe vectors; they never link directly to supplier or review layers.
+See [Recommendation Engine](recommendation-engine.md).
+
 ## Independent enrichment review records
 
 The review-only API representation links `profile_draft_id` to original description text,
