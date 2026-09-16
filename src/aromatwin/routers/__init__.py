@@ -9,13 +9,16 @@ from aromatwin.routers import (
     maison,
     match_candidates,
     notes,
+    private_supplier_workflow,
     profile_drafts,
     recommendations,
     scent_vectors,
     scentprint,
     search,
-    supplier_items,
 )
+
+# Compatibility alias retained for imports written before the route was explicitly private.
+supplier_items = private_supplier_workflow
 
 ROUTERS = (
     health.router,

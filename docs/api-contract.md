@@ -2,6 +2,13 @@
 
 The foundation exposes JSON and OpenAPI at `/docs` and `/openapi.json`.
 
+Deployment may prepend `AROMATWIN_PUBLIC_API_PREFIX` to Maison routes and
+`AROMATWIN_INTERNAL_API_PREFIX` to internal routes. Outside local development, all `/admin`
+operations require the configured admin key and all `/supplier-items` operations require the
+private supplier key. Public Maison operations remain unauthenticated, with optional public-key
+validation, and continue to return only approved allowlisted data. See
+[Security and deployment](security-and-deployment.md).
+
 - Operations: `GET /health`
 - Supplier: `GET /supplier-items`, `GET /supplier-items/{id}`, `POST /supplier-items/import-preview`
 - Matching: `GET /match-candidates`, `GET /match-candidates/{id}`, `POST /match-candidates/generate`
@@ -73,3 +80,8 @@ are `POST /admin/review/{stage}/{record_id}/approve`, `/reject`, and
 `/request-more-sources`; they require a reviewer, rejection requires a reason, and approvals
 delegate to existing stage guardrails. `GET /admin/export/review-queue` returns the same safe
 fields as CSV. See [Admin review console](admin-review-console.md).
+
+These routes are omitted when the admin console feature flag is disabled. In production they reject
+requests without `X-Admin-API-Key`; supplier workflow routes similarly require
+`X-Private-API-Key`. Both also accept `X-API-Key` as a compatibility header. Authentication does not
+bypass any review, approval, provenance, or privacy guardrail.

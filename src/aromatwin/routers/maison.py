@@ -1,6 +1,6 @@
 """Public-safe Maison Obsidian integration endpoints."""
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from aromatwin.schemas.maison import (
     MaisonApiHealth,
@@ -12,9 +12,12 @@ from aromatwin.schemas.maison import (
     MaisonScentprintResult,
     MaisonSimilarFragranceResult,
 )
+from aromatwin.security import optional_public_api_key
 from aromatwin.services.maison_integration import MaisonIntegrationService
 
-router = APIRouter(prefix="/maison", tags=["maison"])
+router = APIRouter(
+    prefix="/maison", tags=["maison"], dependencies=[Depends(optional_public_api_key)]
+)
 SERVICE = MaisonIntegrationService()
 
 

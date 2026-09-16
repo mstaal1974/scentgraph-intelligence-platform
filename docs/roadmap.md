@@ -9,6 +9,14 @@
 5. **Channels:** retailer enrichment tools and optional white-label/Shopify/WooCommerce consumers.
 6. **Operations:** security review, privacy controls, observability, backups, and regional production deployment.
 
+## Deployment hardening boundary
+
+Environment validation, internal API keys, configurable CORS and route prefixes, request IDs,
+access summaries, baseline response headers, a non-root container, and deployment guidance are now
+available. This is a focused deployment baseline, not complete production identity or operations.
+Tenant RBAC, short-lived identity, rate limiting, durable security audit logs, managed hosting,
+backup/restore automation, and monitoring remain future work.
+
 ## Test and CI reliability
 
 The repository now has a Python 3.12 GitHub Actions gate for linting, compilation, the complete
