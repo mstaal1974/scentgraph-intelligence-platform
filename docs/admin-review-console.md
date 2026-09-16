@@ -61,3 +61,7 @@ Generate the tracked safe export with:
 ```bash
 python scripts/export_admin_review_queue.py
 ```
+
+## Bulk profile link
+
+Bulk-generated drafts and their enrichment tasks are upstream inputs to admin review. Generation never changes approval state or invokes catalogue promotion; reviewers use the existing decision controls after provenance and licensing checks.

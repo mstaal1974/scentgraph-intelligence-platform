@@ -69,3 +69,7 @@ Supplier sourcing decisions and product-format margin scenarios are computed pro
 ## Maison product projection
 
 `ProductCatalogue` references one approved catalogue fragrance. `ProductVariant` references a product and carries a deterministic SKU, format, size, and optional public retail price. `ProductBundle` references product and variant IDs. These public projections are deliberately separate from supplier offers and internal margin scenarios; see [Maison product SKU catalogue](maison-product-sku-catalogue.md).
+
+## Operational bulk profile records
+
+Bulk profile drafts, coverage rows, and research queue items are file-backed operational projections in this phase, not new catalogue entities. Private drafts retain source offer/match identifiers; public-safe summaries omit those links and all commercial supplier attributes. Coverage records describe workflow state, while research tasks contain missing-field questions and no copied source content.

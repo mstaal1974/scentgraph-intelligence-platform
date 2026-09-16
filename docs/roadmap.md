@@ -54,3 +54,7 @@ The focused private sourcing layer now supports multi-offer ranking, audit flags
 ## Maison product SKU catalogue
 
 The public-safe product, variant, and bundle projection is available as a foundation for later Shopify, WooCommerce, custom storefront, and retailer-licensing adapters. Those external write integrations and storefront UI remain future work.
+
+## Bulk profile coverage milestone
+
+The bulk drafting, coverage, and offline enrichment-queue workflow now supplies human review at scale. Catalogue promotion, vectors, recommendations, product creation, and Maison publication remain later, separately gated actions after approved provenance-backed enrichment.

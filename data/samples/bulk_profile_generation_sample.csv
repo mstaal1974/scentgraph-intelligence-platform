@@ -1,0 +1,2 @@
+canonical_brand,canonical_fragrance_name,profile_status,source_confidence,missing_fields,next_action,review_status,public_safe_summary
+Fictional Atelier,Silver Canopy,needs_enrichment,0.55,notes|accords|moods|seasons,Verify identity and enrich from permitted sources,needs_human_review,Fictional review-only identity draft
