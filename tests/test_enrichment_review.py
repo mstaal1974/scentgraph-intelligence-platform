@@ -168,7 +168,7 @@ def test_router_enforces_readiness_and_approval_rules() -> None:
     assert mark_ready(1).review_status == "ready_for_approval"
     assert approve_review(
         1, EnrichmentReviewDecisionRequest(reviewer="Curator")
-    ).review_status == "approved"
+    ).review_status == "approved_for_catalogue"
 
 
 def test_enrichment_reviews_csv_has_safe_expected_headers() -> None:

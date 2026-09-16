@@ -6,9 +6,9 @@
 
 `profile_drafts` links one supplier item and match candidate to an original placeholder profile,
 provenance note, bounded confidence, and review decision. Drafts begin as `needs_human_review` and
-contain no supplier commercial fields or third-party descriptive/media fields; approval does not
-create a catalogue record. A future promotion boundary may create catalogue records only after
-independent review and provenance checks.
+contain no supplier commercial fields or third-party descriptive/media fields; draft approval does
+not create a catalogue record. The separate promoter creates an allowlisted public record only from
+an `approved_for_catalogue` enrichment review with sufficient provenance.
 
 Foreign keys, bounded scores, immutable raw values, status checks, and guarded promotion prevent reference data from becoming commercial catalogue content by accident.
 
@@ -19,3 +19,9 @@ The review-only API representation links `profile_draft_id` to original descript
 review status, reviewer, and rejection reason. Enrichment sources record identity/reference, URL,
 licence status, commercial-use permission, confidence, risk, and reference-only state. These are
 workflow records, not canonical catalogue entities, and contain no supplier commercial fields.
+
+## Promoted catalogue records
+
+The public catalogue projection contains public IDs, brand/name and deterministic slugs,
+concentration, original description, confidence, provenance summary/reference IDs, and its source
+enrichment-review ID. It deliberately contains no supplier-commercial values.

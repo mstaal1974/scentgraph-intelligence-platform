@@ -18,3 +18,11 @@ original AromaTwin text. Official sources are preferred. Confidence and licensin
 high confidence cannot cure a restricted licence. Missing provenance blocks readiness; low
 confidence, high risk, reference-only/non-commercial evidence, detected copying, and a non-ready
 status each block approval. No approval here publishes or promotes a catalogue record.
+
+## Publication boundary
+
+Promotion preserves the enrichment review and source-reference IDs so published facts remain
+traceable. It rejects missing provenance, low confidence, high licensing risk, restricted copied
+content, and every status other than `approved_for_catalogue`. Its output allowlist prevents both
+supplier-commercial fields and third-party descriptive, media, review, rating, comment, or UGC
+content from crossing into the public catalogue.

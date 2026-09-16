@@ -11,7 +11,8 @@ from typing import Mapping, Protocol, Sequence
 
 NEEDS_HUMAN_REVIEW = "needs_human_review"
 READY_FOR_APPROVAL = "ready_for_approval"
-APPROVED = "approved"
+APPROVED = "approved_for_catalogue"
+PROFILE_APPROVED = "approved"
 REJECTED = "rejected"
 APPROVAL_CONFIDENCE_THRESHOLD = 0.75
 RESTRICTED_SOURCE_TYPES = {"reference_only", "restricted_non_commercial", "unknown"}
@@ -105,6 +106,7 @@ def build_enrichment_review(
         NEEDS_HUMAN_REVIEW,
         READY_FOR_APPROVAL,
         APPROVED,
+        PROFILE_APPROVED,
     }:
         raise ValueError("Profile draft is not approved or review-ready")
     brand = draft.brand.strip()
