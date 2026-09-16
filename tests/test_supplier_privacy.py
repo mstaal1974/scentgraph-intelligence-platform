@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from aromatwin.services.supplier_privacy import validate_public_supplier_sample
-from scripts.audit_supplier_data import audit
+from scripts.audit_supplier_data import audit, exposed_sample_columns
 
 ROOT = Path(__file__).resolve().parents[1]
 SAMPLE = ROOT / "data/samples/supplier_identity_sample.csv"
@@ -49,3 +49,16 @@ def test_private_supplier_paths_are_gitignored(relative_path: str) -> None:
 
 def test_supplier_privacy_audit_passes_for_tracked_repository() -> None:
     assert audit(ROOT) == []
+
+
+def test_product_variant_sku_exception_is_narrow() -> None:
+    headers = {"SKU", "SUPPLIER_CODE", "PRICE"}
+    assert exposed_sample_columns("data/samples/product_variants_sample.csv", headers) == {
+        "PRICE",
+        "SUPPLIER CODE",
+    }
+    assert exposed_sample_columns("data/samples/supplier_sample.csv", headers) == {
+        "PRICE",
+        "SKU",
+        "SUPPLIER CODE",
+    }

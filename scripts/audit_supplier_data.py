@@ -17,6 +17,15 @@ def tracked_files(root: Path) -> list[Path]:
     return [root / item for item in output.split("\0") if item]
 
 
+def exposed_sample_columns(relative: str, headers: set[str]) -> set[str]:
+    """Return private supplier columns, allowing SKU only in the product-variant sample."""
+    forbidden = {normalise_column(column) for column in FORBIDDEN_PUBLIC_SAMPLE_COLUMNS}
+    exposed = {normalise_column(header) for header in headers} & forbidden
+    if relative == "data/samples/product_variants_sample.csv":
+        exposed.discard(normalise_column("SKU"))
+    return exposed
+
+
 def audit(root: Path) -> list[str]:
     errors: list[str] = []
     sample = root / "data/samples/supplier_identity_sample.csv"
@@ -25,7 +34,6 @@ def audit(root: Path) -> list[str]:
     except (OSError, ValueError) as error:
         errors.append(str(error))
 
-    forbidden = {normalise_column(column) for column in FORBIDDEN_PUBLIC_SAMPLE_COLUMNS}
     for path in tracked_files(root):
         relative = path.relative_to(root).as_posix()
         if relative.startswith(("data/private/", "private/")):
@@ -39,7 +47,7 @@ def audit(root: Path) -> list[str]:
         if relative.startswith("data/samples/") and path.suffix.casefold() == ".csv":
             with path.open(encoding="utf-8-sig") as handle:
                 headers = {normalise_column(value) for value in handle.readline().split(",")}
-            exposed = headers & forbidden
+            exposed = exposed_sample_columns(relative, headers)
             if exposed:
                 errors.append(
                     f"Public sample exposes sensitive columns: {relative}: {sorted(exposed)}"
