@@ -9,7 +9,7 @@ The foundation exposes JSON and OpenAPI at `/docs` and `/openapi.json`.
 - Profile drafts: `GET /profile-drafts`, `GET /profile-drafts/{id}`, `POST /profile-drafts/generate`, `POST /profile-drafts/{id}/approve`, `POST /profile-drafts/{id}/reject`
 - Catalogue promotion: `GET /catalogue/brands`, `GET /catalogue/brands/{id}`, `GET /catalogue/fragrances`, `GET /catalogue/fragrances/{id}`, `POST /catalogue/promote`
 - Legacy catalogue discovery: `GET /brands`, `GET /fragrances`, `GET /fragrances/{id}`, `GET /notes`, `GET /accords`, `GET /search?q=`
-- Intelligence: `GET /similar/{fragrance_id}`, `POST /recommend`, `POST /scentprint`, `GET /clone-matches/{fragrance_id}`
+- Intelligence: recommendation routes below, `GET /similar/{fragrance_id}`, `POST /scentprint`, and `GET /clone-matches/{fragrance_id}`
 
 Foundation workflow endpoints may use in-memory previews until repositories are wired, but all requests and responses remain typed. Approved catalogue routes must never expose unapproved enrichment or restricted source content.
 
@@ -48,3 +48,13 @@ The `/catalogue` GET operations expose only this allowlisted projection.
 reason. `POST /scent-vectors/similarity` compares an input vector with requested candidates (or all
 candidates) and returns descending cosine similarity. Unknown IDs return 404; failed safety gates
 return 422.
+
+
+## Recommendations
+
+`GET /recommendations` and `GET /recommendations/{id}` expose only allowlisted public fields.
+`POST /recommendations/generate` creates duplicate-safe recommendations for an approved catalogue
+source. `POST /recommendations/similar-fragrances` returns vector-ranked results, and `POST
+/recommendations/contextual` filters approved candidates by mood, occasion, season, family, and
+intensity where those fields exist. `POST /recommendations/{id}/approve` enforces confidence and
+privacy/IP gates. `POST /recommendations/{id}/reject` requires and retains a rejection reason.

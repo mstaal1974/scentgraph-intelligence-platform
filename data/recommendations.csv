@@ -1,0 +1,2 @@
+id,source_fragrance_id,recommended_fragrance_id,recommendation_type,score,reason,shared_dimensions_json,difference_summary,confidence_score,generation_method,review_status,created_at,updated_at,rejection_reason
+1,101,102,similar_fragrance,0.84,"AromaTwin selected this similar fragrance for its shared woody, fresh, and green character.","{""vector_dimensions"": [""woody"", ""fresh"", ""green""]}",The option is slightly fresher and less warm.,0.82,public_safe_vector_context_v1,approved,2026-09-16T00:00:00+00:00,2026-09-16T00:00:00+00:00,

@@ -32,3 +32,12 @@ Scent vectors retain the provenance references of the approved catalogue record 
 only from allowlisted public fields. Source fingerprints document recalculation without retaining
 private inputs. Supplier-commercial fields and copied descriptions, reviews, ratings, comments,
 images, or UGC are rejected before generation and cannot appear in public vector responses.
+
+
+## Recommendation derivation
+
+Recommendations inherit the publication boundary of both inputs: approved public catalogue facts
+and approved or review-safe vectors. Their scores, reasons, and difference summaries are original
+AromaTwin derivations. Generation and approval reject supplier-private values and copied
+third-party descriptions, reviews, ratings, images, comments, or UGC. Confidence never overrides
+these licensing and privacy gates; review-safe inputs keep the result in human review.
