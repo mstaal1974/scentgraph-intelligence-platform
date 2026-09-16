@@ -60,6 +60,12 @@ def test_promotion_fails_with_low_source_confidence() -> None:
         promote_enrichment_review(review(source_confidence=0.74))
 
 
+@pytest.mark.parametrize("confidence", ["nan", "inf", "not-a-number"])
+def test_promotion_fails_with_invalid_source_confidence(confidence: str) -> None:
+    with pytest.raises(ValueError, match="confidence"):
+        promote_enrichment_review(review(source_confidence=confidence))
+
+
 def test_promotion_fails_with_high_licensing_risk() -> None:
     with pytest.raises(ValueError, match="licensing"):
         promote_enrichment_review(review(licensing_risk="high"))
@@ -75,6 +81,19 @@ def test_supplier_private_input_is_rejected_and_output_is_allowlisted() -> None:
         promote_enrichment_review(review(supplier_price="99.00"))
     item = promote_enrichment_review(review())
     assert PRIVATE_SUPPLIER_FIELDS.isdisjoint(vars(item))
+
+
+@pytest.mark.parametrize("field,value", [("stock", 0), ("SUPPLIER_CODE", "private")])
+def test_supplier_private_fields_are_rejected_even_when_zero_or_uppercase(
+    field: str, value: object
+) -> None:
+    with pytest.raises(ValueError, match="Supplier-private"):
+        promote_enrichment_review(review(**{field: value}))
+
+
+def test_truthy_csv_restricted_content_flag_is_rejected() -> None:
+    with pytest.raises(ValueError, match="Copied restricted"):
+        promote_enrichment_review(review(copied_restricted_content="yes"))
 
 
 def test_duplicate_promotion_is_idempotent_and_identity_collision_is_rejected() -> None:

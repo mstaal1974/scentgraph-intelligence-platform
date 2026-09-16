@@ -1,26 +1,24 @@
 """Promote approved enrichment-review CSV rows into the public catalogue CSV."""
 
 import argparse
-import csv
 from pathlib import Path
 
 from aromatwin.services.catalogue_promotion import (
-    APPROVED_FOR_CATALOGUE,
     CatalogueFragrance,
+    load_approved_enrichment_reviews,
     promote_enrichment_review,
     write_catalogue_csv,
 )
 
 
 def promote_rows(source_path: Path, output_path: Path) -> tuple[int, int]:
+    rows = load_approved_enrichment_reviews(source_path)
     with source_path.open(newline="", encoding="utf-8-sig") as source:
-        rows = list(csv.DictReader(source))
+        total_rows = max(sum(1 for _ in source) - 1, 0)
     catalogue: list[CatalogueFragrance] = []
-    accepted = rejected = 0
+    accepted = 0
+    rejected = total_rows - len(rows)
     for row in rows:
-        if row.get("review_status") != APPROVED_FOR_CATALOGUE:
-            rejected += 1
-            continue
         try:
             record = promote_enrichment_review(row, catalogue)
         except (KeyError, TypeError, ValueError):

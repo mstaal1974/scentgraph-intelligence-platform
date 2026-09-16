@@ -1,6 +1,7 @@
 """Guarded promotion of approved enrichment reviews into public catalogue records."""
 
 import csv
+import math
 import re
 import unicodedata
 from dataclasses import asdict, dataclass, is_dataclass
@@ -12,8 +13,9 @@ DEFAULT_CONFIDENCE_THRESHOLD = 0.75
 
 PRIVATE_SUPPLIER_FIELDS = frozenset(
     {
-        "supplier_price", "aed_price", "usd_price", "price", "supplier_code",
-        "supplier_cn_code", "cn_code", "stock", "quantity", "commercial_terms",
+        "supplier_price", "aed_price", "usd_price", "price", "supplier_code", "supplier_sku",
+        "supplier_cn_code", "cn_code", "stock", "stock_status", "quantity", "quantities",
+        "commercial_terms", "unit_cost", "wholesale_price",
         "supplier_commercial_terms",
     }
 )
@@ -58,8 +60,21 @@ def _values(review: object) -> Mapping[str, object]:
     return vars(review)
 
 
-def _has_value(data: Mapping[str, object], fields: frozenset[str]) -> bool:
-    return any(data.get(field) not in (None, "", False, (), [], {}) for field in fields)
+def _has_supplied_value(data: Mapping[str, object], fields: frozenset[str]) -> bool:
+    """Treat zero as supplied while allowing genuinely empty CSV columns."""
+    normalised = {str(key).strip().lower(): value for key, value in data.items()}
+    return any(
+        field in normalised and normalised[field] is not None
+        and (not isinstance(normalised[field], str) or bool(normalised[field].strip()))
+        and normalised[field] not in ((), [], {})
+        for field in fields
+    )
+
+
+def _is_true(value: object) -> bool:
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() in {"1", "true", "yes", "on"}
 
 
 def validate_review_for_promotion(
@@ -73,15 +88,21 @@ def validate_review_for_promotion(
         "profile_draft_id", "description_original", "copied_restricted_content"
     }.issubset(data):
         raise ValueError("Only enrichment reviews can be promoted")
-    if float(data.get("source_confidence") or 0) < confidence_threshold:
+    if not 0 <= confidence_threshold <= 1:
+        raise ValueError("Catalogue confidence threshold must be between zero and one")
+    try:
+        confidence = float(data.get("source_confidence") or 0)
+    except (TypeError, ValueError) as error:
+        raise ValueError("Source confidence must be a finite number") from error
+    if not math.isfinite(confidence) or confidence < confidence_threshold:
         raise ValueError("Source confidence is below the catalogue promotion threshold")
     if str(data.get("licensing_risk", "")).strip().lower() == "high":
         raise ValueError("High licensing risk prevents catalogue promotion")
-    if str(data.get("copied_restricted_content", "false")).strip().lower() in {"true", "1"}:
+    if _is_true(data.get("copied_restricted_content", False)):
         raise ValueError("Copied restricted content prevents catalogue promotion")
-    if _has_value(data, RESTRICTED_CONTENT_FIELDS):
+    if _has_supplied_value(data, RESTRICTED_CONTENT_FIELDS):
         raise ValueError("Restricted third-party content prevents catalogue promotion")
-    if _has_value(data, PRIVATE_SUPPLIER_FIELDS):
+    if _has_supplied_value(data, PRIVATE_SUPPLIER_FIELDS):
         raise ValueError("Supplier-private fields cannot be exposed by catalogue promotion")
     references = data.get("source_ids") or data.get("provenance_references")
     if not references or not _source_ids(references) or not str(
@@ -90,17 +111,30 @@ def validate_review_for_promotion(
         raise ValueError("Sufficient provenance is required for catalogue promotion")
     if not str(data.get("reviewer", "")).strip():
         raise ValueError("Human reviewer attribution is required for catalogue promotion")
-    if not str(data.get("brand", "")).strip() or not str(
-        data.get("fragrance_name", data.get("name", ""))
-    ).strip():
+    brand = str(data.get("brand", "")).strip()
+    fragrance_name = str(data.get("fragrance_name", data.get("name", ""))).strip()
+    if not brand or not fragrance_name:
         raise ValueError("Brand and fragrance name are required")
+    if not slugify(brand) or not slugify(fragrance_name):
+        raise ValueError("Brand and fragrance name must produce public-safe slugs")
     return data
 
 
 def _source_ids(value: object) -> tuple[int, ...]:
     if isinstance(value, str):
-        return tuple(int(item) for item in re.findall(r"\d+", value))
-    return tuple(int(item) for item in value)  # type: ignore[arg-type]
+        cleaned = value.strip().strip("[]()")
+        if not cleaned:
+            return ()
+        parts = [item.strip() for item in re.split(r"[|,;]", cleaned) if item.strip()]
+        if not parts or any(not item.isdigit() for item in parts):
+            return ()
+        source_ids = tuple(int(item) for item in parts)
+    else:
+        try:
+            source_ids = tuple(int(item) for item in value)  # type: ignore[arg-type]
+        except (TypeError, ValueError):
+            return ()
+    return source_ids if all(item > 0 for item in source_ids) else ()
 
 
 def promote_enrichment_review(
