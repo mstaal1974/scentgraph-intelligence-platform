@@ -1,0 +1,21 @@
+# Example only. Keep disabled until a human reviews it and sets both repository secrets.
+name: Staging smoke template (disabled)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  staging-smoke-example:
+    if: ${{ false }} # Remove only after human approval and staging secret configuration.
+    runs-on: ubuntu-latest
+    env:
+      AROMATWIN_STAGING_BASE_URL: ${{ secrets.AROMATWIN_STAGING_BASE_URL }}
+      AROMATWIN_STAGING_PRIVATE_API_KEY: ${{ secrets.AROMATWIN_STAGING_PRIVATE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install .
+      - name: Run staging smoke checks
+        run: python scripts/smoke_test_staging_api.py --include-openapi

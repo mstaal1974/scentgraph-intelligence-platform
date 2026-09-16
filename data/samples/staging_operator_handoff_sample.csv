@@ -1,0 +1,4 @@
+checklist_id,step,status,recommended_next_action,public_safe_summary
+handoff-example-001,staging_host_selected,complete,Confirm remaining manual steps,Host selection confirmed
+handoff-example-001,smoke_test_run,ready,Run after human staging deployment,Tooling is ready
+handoff-example-001,human_review_process_confirmed,manual_required,Obtain human confirmation,Manual confirmation has not been recorded

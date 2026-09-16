@@ -1,5 +1,9 @@
 # API Contract
 
+## Staging smoke coverage
+
+The operator smoke pack exercises `GET /health`, `GET /deployment/health`, `GET /deployment/readiness`, optional `GET /openapi.json`, authenticated readiness/health routes under `/platform-completion`, `/private-pilot`, `/review-workflow`, and `/operations`, plus an unauthenticated private-route denial. It is a client-side verification tool and adds no public API endpoint. See the [operator handoff guide](staging-smoke-test-operator-handoff.md).
+
 The foundation exposes JSON and OpenAPI at `/docs` and `/openapi.json`.
 
 Deployment may prepend `AROMATWIN_PUBLIC_API_PREFIX` to Maison routes and

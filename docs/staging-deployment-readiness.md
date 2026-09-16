@@ -1,5 +1,7 @@
 # Staging deployment readiness
 
+> After a human deploys an approved staging build, follow the [staging smoke test and operator handoff](staging-smoke-test-operator-handoff.md). The smoke pack verifies the live deployment but does not deploy or change readiness decisions.
+
 ## Scope
 
 This pack validates configuration, repository artifacts, migration syntax, runtime health, storage boundaries, and public-file privacy before a human deploys AromaTwin. It **does not deploy**, provision infrastructure, execute migrations, accept real data, publish products, or bypass review gates.

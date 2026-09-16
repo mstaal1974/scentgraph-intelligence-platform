@@ -1,5 +1,17 @@
 # Roadmap
 
+## Next manual staging steps
+
+The repository staging smoke tooling is complete; the following remain human-controlled and sequential:
+
+1. Configure staging secrets in the hosting provider.
+2. Deploy the staging API.
+3. Run the staging smoke tests and operator handoff.
+4. Upload supplier files to private runtime storage.
+5. Run the private supplier pilot.
+6. Complete human review.
+7. Connect Maison Obsidian only after approved data exists.
+
 1. **Foundation:** supplier-first ingestion, layered schema, matching, review workflow, licensing guardrails, typed API, and tests.
    The review-only fragrance profile draft builder and guarded catalogue promotion are available;
    Maison Obsidian can now consume approved catalogue profiles through a focused public-safe API.
