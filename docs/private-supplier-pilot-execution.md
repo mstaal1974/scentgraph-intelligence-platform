@@ -1,0 +1,51 @@
+# Private supplier pilot execution pack
+
+This pack is an operational safety layer over the existing import, matching, sourcing,
+profile, enrichment, launch-intelligence, persistence, audit, and review services. It does
+not add intelligence, publish records, approve records, create SKUs, or create campaigns.
+
+## Private inputs and intake
+
+Place real files only in `data/private/imports/`,
+`data/private/imports/suppliers/`, or a supplier-label directory below it. These paths are
+gitignored. Never commit a real supplier file: it can contain confidential commercial
+data. CSV, XLSX, and XLS are supported; PDFs are not. Recognised layouts are
+`existing_supplier`, `fatma`, and `generic_supplier`; an unknown layout requires an
+operator-approved mapping.
+
+Run `python scripts/prepare_private_supplier_inputs.py`. The scanner validates the path,
+extension, readable headers, likely format, and required structural columns. It records
+field *names* that appear private, never their values. The detailed manifest remains in
+`data/private/reports/`. Blocked files are not imported.
+
+## Preflight and modes
+
+An execution plan fixes the stage order, input selection, expected output boundary,
+privacy audits, persistence choice, and mandatory review gates before work begins.
+
+* `python scripts/run_private_supplier_pilot.py --dry-run` evaluates preflight and writes
+  no operational output.
+* `python scripts/run_private_supplier_pilot.py --private-run` writes only beneath
+  `data/private/runs/{run_id}/`.
+* `python scripts/run_private_supplier_pilot.py --review-only-run` prepares review work
+  from existing evidence and excludes import and matching reruns.
+
+Use `--run-id`, `--supplier-label`, and comma-separated `--stages` to constrain a run.
+Persistence is opt-in and must retain the existing audit trail. Recovery is deliberately
+simple: retain audit evidence, correct the private input or mapping, remove only the
+failed private run directory when policy permits, and rerun with a new reviewed plan.
+
+## Review, acceptance, and next steps
+
+Supplier match, provenance, launch-readiness, and final internal review gates remain
+mandatory. An acceptance report contains aggregate counts and statuses, not supplier
+values or private seller/consumer records. A blocker means an operator must correct or
+review the cited class of problem. Acceptance permits only the named **internal** next
+step—review, profile enrichment, supplier review, or launch planning—and never recommends
+public launch.
+
+After the first run, reconcile its audit record, resolve blockers, complete assigned human
+reviews, repeat the privacy audit, and approve a separate internal next-stage decision.
+Export a safe report with
+`python scripts/export_private_pilot_acceptance_report.py RUN_ID` and audit samples with
+`python scripts/audit_private_pilot_inputs.py`.
