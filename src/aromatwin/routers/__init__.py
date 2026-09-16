@@ -1,6 +1,7 @@
 from aromatwin.routers import (
     admin_review,
     brands,
+    bulk_profiles,
     catalogue,
     clone_matches,
     enrichment_reviews,
@@ -31,6 +32,7 @@ ROUTERS = (
     supplier_items.router,
     supplier_offers.router,
     supplier_sourcing.router,
+    bulk_profiles.router,
     match_candidates.router,
     enrichment_reviews.router,
     catalogue.router,

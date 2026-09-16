@@ -33,3 +33,7 @@ records omit supplier prices, supplier/CN codes, stock, quantities, and commerci
 Enrichment approval is still not catalogue approval. A later, separately controlled promotion step
 may convert approved reviews into catalogue records. Maison Obsidian will later consume only those
 approved catalogue profiles through the public API, never draft or enrichment-review queues.
+
+## Bulk research queue hand-off
+
+Bulk coverage can create an offline research queue for incomplete drafts. Tasks contain questions and permitted source-type suggestions only; they do not scrape or retain third-party copy. Completion still enters the existing human enrichment review gate.

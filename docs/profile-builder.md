@@ -50,3 +50,7 @@ python scripts/build_profile_drafts.py \
 ```
 
 Only the explicitly allowlisted public columns are written.
+
+## Bulk drafting
+
+The focused bulk workflow is documented in [Bulk fragrance profile generation](bulk-fragrance-profile-generation.md). It groups offers into fragrance identities and reuses the original placeholder-copy policy; every result remains `needs_human_review`, with unsupported sensory fields queued for enrichment.

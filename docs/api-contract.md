@@ -101,3 +101,7 @@ The `/supplier-sourcing` routes are internal, private-key protected routes. They
 ## Product catalogue
 
 Public reads are available at `/products`, `/products/{product_id}`, `/products/slug/{product_slug}`, `/products/{product_id}/variants`, `/products/bundles`, and the three `/products/export/*` routes. POST build routes require the admin workflow dependency and return review metadata but no commercial inputs. See [Maison product SKU catalogue](maison-product-sku-catalogue.md).
+
+## Internal bulk profile API
+
+When private supplier endpoints are enabled, `/internal/bulk-profiles` provides health, generation, draft summaries, coverage/summary, research-queue build/list, and audit routes. All routes require the private API key. Responses use public-safe schemas: generation and reads do not return supplier offer IDs, references, prices, codes, stock, quantities, costs, margins, or commercial terms. Build actions create review-only operational data and never catalogue records.

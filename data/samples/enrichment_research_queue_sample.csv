@@ -1,0 +1,2 @@
+canonical_brand,canonical_fragrance_name,profile_status,source_confidence,missing_fields,next_action,review_status,public_safe_summary
+Example Parfums,Blue Archive,needs_enrichment,0.55,notes|accords|moods,Research permitted sources and record provenance,needs_human_review,Fictional enrichment task
