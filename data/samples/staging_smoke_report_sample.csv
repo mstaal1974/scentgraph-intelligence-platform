@@ -1,0 +1,4 @@
+smoke_run_id,check_name,status,blocker_type,warning_count,recommended_next_action,public_safe_summary
+smoke-example-001,public_health,passed,,0,Complete manual operator handoff,Expected status received
+smoke-example-001,private_endpoint_without_key,passed,,0,Complete manual operator handoff,Unauthorised status received as expected
+smoke-example-001,cors_policy,warning,,1,Review staging CORS allowlist,Preflight requires operator review

@@ -1,5 +1,7 @@
 # Final platform completion orchestrator
 
+> Platform completion is repository readiness, not evidence that staging is live. After human deployment, use the [staging smoke and operator handoff pack](staging-smoke-test-operator-handoff.md) before any private pilot.
+
 The completion orchestrator is an internal, authenticated operator handoff layer. It inspects repository evidence, runs deterministic local/demo checks, classifies every remaining task, and emits status/count-only readiness output. It does not add fragrance intelligence, a storefront, campaign generation, or a public marketplace.
 
 ## Safe automation
