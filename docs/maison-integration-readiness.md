@@ -63,3 +63,7 @@ Maison integration remains an internal API group. A commercial plan definition d
 ## Profile production prerequisite
 
 A private production draft is not Maison-ready. Complete enrichment, provenance review, human profile review, and catalogue review first. Maison bundles remain a separate, explicitly invoked workflow and are never produced by profile-production endpoints or scripts.
+
+## Profile pipeline rehearsal
+
+The fictional, sample-safe rehearsal pack validates integration without real inputs or external side effects. It never approves drafts, creates products, publishes records, or exports to Maison. See [Profile pipeline rehearsal](profile-pipeline-rehearsal.md).

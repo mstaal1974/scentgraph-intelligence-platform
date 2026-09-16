@@ -1,0 +1,4 @@
+gap_id,category,severity,affected_stage,description,evidence,recommended_fix,can_fix_automatically,operator_action_required,status
+gap-staging,manual_operator_step,high,maison_readiness,Staging must be configured and smoke-tested before a real handoff.,Rehearsal intentionally performs no deployment or external call.,Configure staging and run reviewed smoke tests.,False,True,open
+gap-private-input,manual_operator_step,medium,supplier_intake,Real supplier input is absent by design.,Only fictional sample-safe records were rehearsed.,Place authorized files in private runtime storage after rehearsal approval.,False,True,open
+gap-approval,missing_review_gate,info,human_review_gate,Draft approval remains deliberately unsatisfied.,No rehearsal path may approve a profile.,A human reviewer must assess real drafts in the existing workflow.,False,True,expected

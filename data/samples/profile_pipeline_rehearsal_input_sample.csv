@@ -1,0 +1,2 @@
+rehearsal_id,candidate_id,fictional_brand,fictional_fragrance,status,confidence_band,review_gate,public_safe_summary
+fictional-rehearsal-001,fictional-candidate-001,Imaginary Atelier,Sample Aura,sample_safe,medium,human_review_required,Fictional identifier-only rehearsal input

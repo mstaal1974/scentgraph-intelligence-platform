@@ -69,3 +69,7 @@ performs an external sync. See [Maison integration readiness](maison-integration
 ## Private profile production handoff
 
 After intake and candidate matching, use the [private fragrance profile production pack](private-fragrance-profile-production.md). The production preflight must be ready, and operational drafts stay under the run's private `profiles/` directory. This handoff never approves or publishes a profile.
+
+## Profile pipeline rehearsal
+
+The fictional, sample-safe rehearsal pack validates integration without real inputs or external side effects. It never approves drafts, creates products, publishes records, or exports to Maison. See [Profile pipeline rehearsal](profile-pipeline-rehearsal.md).

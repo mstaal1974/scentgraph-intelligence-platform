@@ -169,3 +169,7 @@ The `/commercial-packaging` route family is private and credential-gated. It exp
 ## Private profile production
 
 When private endpoints are enabled, `/profile-production` provides health, readiness, batch-plan, run, draft-summary, review-packet, and audit operations. These authenticated internal endpoints return public-safe projections and cannot approve, publish, create products, or export to Maison. See [private fragrance profile production](private-fragrance-profile-production.md) for the endpoint list and operational boundary.
+
+## Profile pipeline rehearsal
+
+The fictional, sample-safe rehearsal pack validates integration without real inputs or external side effects. It never approves drafts, creates products, publishes records, or exports to Maison. See [Profile pipeline rehearsal](profile-pipeline-rehearsal.md).
