@@ -161,3 +161,7 @@ IDs only. Responses contain scent-preference weights, bands, counts, summaries, 
 explanations. The API neither persists submissions nor accepts identity, contact, sensitive-trait,
 or open-ended fields. See [`scentprint-quiz-contract.md`](scentprint-quiz-contract.md) for the full
 boundary.
+
+## Commercial packaging control plane
+
+The `/commercial-packaging` route family is private and credential-gated. It exposes public-safe plan summaries, deterministic entitlement decisions, reduced sample-context feature summaries, readiness evidence, and an audit status. It never provisions accounts, generates credentials, connects billing, or returns supplier, seller, consumer, or cross-context private records. See [Commercial packaging and API entitlements](commercial-packaging-api-entitlements.md).

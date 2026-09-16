@@ -173,3 +173,19 @@ After this focused contract PR, the manual sequence is:
 8. Later, build the Maison website quiz UI in the Maison repository.
 
 None of these operational steps is performed or automated by this contract pack.
+
+## Next manual steps after the commercial packaging pack
+
+1. Review the proposed commercial plans.
+2. Decide pricing externally.
+3. Complete external legal and commercial review.
+4. Configure staging secrets outside version control.
+5. Deploy the staging API through the approved manual process.
+6. Run staging smoke tests.
+7. Upload real supplier files to private runtime storage only.
+8. Run the private supplier pilot.
+9. Complete human review.
+10. Generate the Maison export bundle.
+11. Build the Maison website integration later in its separate repository.
+
+This pack does not perform, approve, or automate any of these steps.

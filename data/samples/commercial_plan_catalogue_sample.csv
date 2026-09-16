@@ -1,0 +1,4 @@
+plan_id,plan_name,target_customer_type,usage_limit_band,public_safe_summary
+plan_retailer_starter,Retailer Starter,retailer,contract_review_required,Proposed public-safe capabilities subject to manual approval
+plan_api_partner,API Partner,api_partner,contract_review_required,Proposed API access subject to contract and legal review
+plan_white_label_partner,White Label Partner,white_label_partner,contract_review_required,Public-safe exports only and manual approval required
