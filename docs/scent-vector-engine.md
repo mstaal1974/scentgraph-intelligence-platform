@@ -32,3 +32,6 @@ reviews, ratings, comments, images, and UGC cannot enter the layer.
 This layer is intentionally independent of recommendations. It provides the future numerical
 foundation for recommendations, Scentprint matching, clone comparison, fragrance discovery, and
 Maison Obsidian discovery tools without implementing or changing those systems now.
+
+## Consumer signal boundary
+Consumer Scentprint matching can consume an approved vector as one structured input. Consumer feedback remains a separate, thresholded signal and never rewrites the provenance-backed vector.

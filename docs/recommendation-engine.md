@@ -41,3 +41,6 @@ reports accepted and rejected counts. Input files with supplier-private headers 
 This focused layer can later power Maison Obsidian catalogue discovery, Scentprint preferences,
 reviewed clone alternatives, and personalised scent matching. Those consumers remain separate and
 must use this public-safe boundary rather than reaching into supplier or review workflow records.
+
+## Consumer signal boundary
+The consumer foundation adds pseudonymous structured preferences and explainable match bands. Future ranking may use those fields and thresholded community summaries, but must not expose private feedback or treat consumer aggregation as approved profile evidence.
