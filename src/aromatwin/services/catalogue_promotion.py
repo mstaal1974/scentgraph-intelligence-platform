@@ -24,10 +24,14 @@ RESTRICTED_CONTENT_FIELDS = frozenset(
     {"description", "third_party_description", "review", "reviews", "rating", "ratings", "image",
      "image_url", "comment", "comments", "ugc"}
 )
+# Taxonomy the public catalogue carries so downstream vector generation has structured input.
+# These are perfumery classification fields produced by reviewed enrichment, never copied
+# third-party descriptive content.
+TAXONOMY_FIELDS = ("family", "notes", "accords", "mood", "occasion", "season")
 CATALOGUE_FIELDS = (
     "id", "brand_id", "brand", "brand_slug", "name", "slug", "concentration",
-    "description", "source_confidence", "provenance_summary", "provenance_references",
-    "enrichment_review_id",
+    "description", *TAXONOMY_FIELDS, "source_confidence", "provenance_summary",
+    "provenance_references", "enrichment_review_id",
 )
 
 
@@ -41,6 +45,12 @@ class CatalogueFragrance:
     slug: str
     concentration: str | None
     description: str
+    family: str | None
+    notes: str
+    accords: str
+    mood: str
+    occasion: str
+    season: str
     source_confidence: float
     provenance_summary: str
     provenance_references: tuple[int, ...]
@@ -137,6 +147,16 @@ def validate_review_for_promotion(
     return data
 
 
+def _taxonomy_value(data: Mapping[str, object], field: str) -> str:
+    """Normalise a reviewed taxonomy column into a stable pipe-free, comma-separated string."""
+    value = data.get(field)
+    if isinstance(value, (list, tuple, set)):
+        parts = [str(item).strip() for item in value]
+    else:
+        parts = [item.strip() for item in str(value or "").replace("|", ",").split(",")]
+    return ", ".join(part for part in parts if part)
+
+
 def _source_ids(value: object) -> tuple[int, ...]:
     if isinstance(value, str):
         cleaned = value.strip().strip("[]()")
@@ -192,6 +212,12 @@ def promote_enrichment_review(
         slug=slugify(name),
         concentration=str(data.get("concentration") or "") or None,
         description=str(data.get("description_original") or "").strip(),
+        family=_taxonomy_value(data, "family") or None,
+        notes=_taxonomy_value(data, "notes"),
+        accords=_taxonomy_value(data, "accords"),
+        mood=_taxonomy_value(data, "mood"),
+        occasion=_taxonomy_value(data, "occasion"),
+        season=_taxonomy_value(data, "season"),
         source_confidence=float(data["source_confidence"]),
         provenance_summary=str(data["provenance_summary"]).strip(),
         provenance_references=_source_ids(data.get("source_ids")),

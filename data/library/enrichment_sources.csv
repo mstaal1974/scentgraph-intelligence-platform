@@ -1,0 +1,49 @@
+id,profile_draft_id,source_name,source_type,source_reference,source_url,licence_status,commercial_use_allowed,source_confidence,licensing_risk,reference_only
+1,1,Aster & Vale first-party profile record,first_party,AT-ASTER-VALE-MOONLIT-GROVE,,first-party-original-content,true,0.88,low,false
+2,2,Aster & Vale first-party profile record,first_party,AT-ASTER-VALE-SALTLINE,,first-party-original-content,true,0.9,low,false
+3,3,Aster & Vale first-party profile record,first_party,AT-ASTER-VALE-WHITE-REGISTER,,first-party-original-content,true,0.92,low,false
+4,4,Aster & Vale first-party profile record,first_party,AT-ASTER-VALE-NIGHT-RESIN,,first-party-original-content,true,0.94,low,false
+5,5,Cormorant Hall first-party profile record,first_party,AT-CORMORANT-HALL-GREEN-LEDGER,,first-party-original-content,true,0.96,low,false
+6,6,Cormorant Hall first-party profile record,first_party,AT-CORMORANT-HALL-ROSE-MERIDIAN,,first-party-original-content,true,0.88,low,false
+7,7,Cormorant Hall first-party profile record,first_party,AT-CORMORANT-HALL-SUGAR-LEDGER,,first-party-original-content,true,0.9,low,false
+8,8,Cormorant Hall first-party profile record,first_party,AT-CORMORANT-HALL-CITRINE-HOUR,,first-party-original-content,true,0.92,low,false
+9,9,Solene Atelier first-party profile record,first_party,AT-SOLENE-ATELIER-SMOKE-MERIDIAN,,first-party-original-content,true,0.94,low,false
+10,10,Solene Atelier first-party profile record,first_party,AT-SOLENE-ATELIER-SLATE-ORCHARD,,first-party-original-content,true,0.96,low,false
+11,11,Solene Atelier first-party profile record,first_party,AT-SOLENE-ATELIER-HARBOUR-GLASS,,first-party-original-content,true,0.88,low,false
+12,12,Solene Atelier first-party profile record,first_party,AT-SOLENE-ATELIER-TUBEROSE-WING,,first-party-original-content,true,0.9,low,false
+13,13,Meridian & Ash first-party profile record,first_party,AT-MERIDIAN-ASH-FIRST-TERRACE,,first-party-original-content,true,0.92,low,false
+14,14,Meridian & Ash first-party profile record,first_party,AT-MERIDIAN-ASH-FERN-PROTOCOL,,first-party-original-content,true,0.94,low,false
+15,15,Meridian & Ash first-party profile record,first_party,AT-MERIDIAN-ASH-SAFFRON-LETTER,,first-party-original-content,true,0.96,low,false
+16,16,Meridian & Ash first-party profile record,first_party,AT-MERIDIAN-ASH-WARM-PANTRY,,first-party-original-content,true,0.88,low,false
+17,17,Halcyon Rue first-party profile record,first_party,AT-HALCYON-RUE-NIGHT-BLOSSOM,,first-party-original-content,true,0.9,low,false
+18,18,Halcyon Rue first-party profile record,first_party,AT-HALCYON-RUE-OUD-PROTOCOL,,first-party-original-content,true,0.92,low,false
+19,19,Halcyon Rue first-party profile record,first_party,AT-HALCYON-RUE-QUIET-TIMBER,,first-party-original-content,true,0.94,low,false
+20,20,Halcyon Rue first-party profile record,first_party,AT-HALCYON-RUE-TIDEWATER-ROOM,,first-party-original-content,true,0.96,low,false
+21,21,Verdigris House first-party profile record,first_party,AT-VERDIGRIS-HOUSE-VANILLA-QUARTER,,first-party-original-content,true,0.88,low,false
+22,22,Verdigris House first-party profile record,first_party,AT-VERDIGRIS-HOUSE-LEMON-LEDGER,,first-party-original-content,true,0.9,low,false
+23,23,Verdigris House first-party profile record,first_party,AT-VERDIGRIS-HOUSE-CUT-STEMS,,first-party-original-content,true,0.92,low,false
+24,24,Verdigris House first-party profile record,first_party,AT-VERDIGRIS-HOUSE-CRIMSON-REGISTER,,first-party-original-content,true,0.94,low,false
+25,25,Lumen Botanica first-party profile record,first_party,AT-LUMEN-BOTANICA-COLD-SWIM,,first-party-original-content,true,0.96,low,false
+26,26,Lumen Botanica first-party profile record,first_party,AT-LUMEN-BOTANICA-PETAL-ARCHIVE,,first-party-original-content,true,0.88,low,false
+27,27,Lumen Botanica first-party profile record,first_party,AT-LUMEN-BOTANICA-CENSER-ROOM,,first-party-original-content,true,0.9,low,false
+28,28,Lumen Botanica first-party profile record,first_party,AT-LUMEN-BOTANICA-UMBRA-FERN,,first-party-original-content,true,0.92,low,false
+29,29,Ferrier & Cole first-party profile record,first_party,AT-FERRIER-COLE-VELVET-LEDGER,,first-party-original-content,true,0.94,low,false
+30,30,Ferrier & Cole first-party profile record,first_party,AT-FERRIER-COLE-LATE-CARAMEL,,first-party-original-content,true,0.96,low,false
+31,31,Ferrier & Cole first-party profile record,first_party,AT-FERRIER-COLE-BRIGHT-LATITUDE,,first-party-original-content,true,0.88,low,false
+32,32,Ferrier & Cole first-party profile record,first_party,AT-FERRIER-COLE-HERB-QUARTER,,first-party-original-content,true,0.9,low,false
+33,33,Saltwood Parfums first-party profile record,first_party,AT-SALTWOOD-PARFUMS-ASHWOOD-LETTER,,first-party-original-content,true,0.92,low,false
+34,34,Saltwood Parfums first-party profile record,first_party,AT-SALTWOOD-PARFUMS-DRIFTWOOD-SIGNAL,,first-party-original-content,true,0.94,low,false
+35,35,Saltwood Parfums first-party profile record,first_party,AT-SALTWOOD-PARFUMS-JASMINE-HOUR,,first-party-original-content,true,0.96,low,false
+36,36,Saltwood Parfums first-party profile record,first_party,AT-SALTWOOD-PARFUMS-DARK-LATITUDE,,first-party-original-content,true,0.88,low,false
+37,37,Ombra Fiore first-party profile record,first_party,AT-OMBRA-FIORE-VETIVER-STUDY,,first-party-original-content,true,0.9,low,false
+38,38,Ombra Fiore first-party profile record,first_party,AT-OMBRA-FIORE-AMBER-ROSE-STUDY,,first-party-original-content,true,0.92,low,false
+39,39,Ombra Fiore first-party profile record,first_party,AT-OMBRA-FIORE-COFFEE-ROOM,,first-party-original-content,true,0.94,low,false
+40,40,Ombra Fiore first-party profile record,first_party,AT-OMBRA-FIORE-NEROLI-POST,,first-party-original-content,true,0.96,low,false
+41,41,Northwind Apothecary first-party profile record,first_party,AT-NORTHWIND-APOTHECARY-EMBER-REGISTER,,first-party-original-content,true,0.88,low,false
+42,42,Northwind Apothecary first-party profile record,first_party,AT-NORTHWIND-APOTHECARY-LOW-MERIDIAN,,first-party-original-content,true,0.9,low,false
+43,43,Northwind Apothecary first-party profile record,first_party,AT-NORTHWIND-APOTHECARY-OPEN-WATER,,first-party-original-content,true,0.92,low,false
+44,44,Northwind Apothecary first-party profile record,first_party,AT-NORTHWIND-APOTHECARY-LANTERN-BLOOM,,first-party-original-content,true,0.94,low,false
+45,45,Calder & Wren first-party profile record,first_party,AT-CALDER-WREN-MORNING-RIND,,first-party-original-content,true,0.96,low,false
+46,46,Calder & Wren first-party profile record,first_party,AT-CALDER-WREN-CLEAN-FIELD,,first-party-original-content,true,0.88,low,false
+47,47,Calder & Wren first-party profile record,first_party,AT-CALDER-WREN-DEEP-BLOOM,,first-party-original-content,true,0.9,low,false
+48,48,Calder & Wren first-party profile record,first_party,AT-CALDER-WREN-SOFT-CONFECTION,,first-party-original-content,true,0.92,low,false

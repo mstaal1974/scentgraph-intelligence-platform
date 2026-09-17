@@ -8,7 +8,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from aromatwin.services.catalogue_promotion import _present_supplier_private_fields
-from aromatwin.services.scent_vector_engine import VECTOR_DIMENSIONS, generate_scent_vector
+from aromatwin.services.scent_vector_engine import (
+    VECTOR_DIMENSIONS,
+    approve_scent_vector,
+    generate_scent_vector,
+)
 
 OUTPUT_FIELDS = (
     "id", "fragrance_id", *VECTOR_DIMENSIONS, "confidence_score", "generation_method",
@@ -16,7 +20,14 @@ OUTPUT_FIELDS = (
 )
 
 
-def build_vectors(source: Path, output: Path) -> tuple[int, int]:
+def build_vectors(source: Path, output: Path, *, approve: bool = False) -> tuple[int, int]:
+    """Generate vectors from *source*; ``approve`` records review sign-off on each one.
+
+    Generation always leaves a vector at ``needs_human_review``, which the Maison gate excludes.
+    ``approve`` is the explicit sign-off step and is only appropriate for catalogue content whose
+    source fields are known public-safe, such as the first-party library seed. It still runs
+    ``approve_scent_vector``, so the confidence, restricted-content, and private-field gates apply.
+    """
     accepted = rejected = 0
     vectors = []
     with source.open(newline="", encoding="utf-8-sig") as stream:
@@ -37,6 +48,9 @@ def build_vectors(source: Path, output: Path) -> tuple[int, int]:
             accepted += 1
         else:
             rejected += 1
+
+    if approve:
+        vectors = [approve_scent_vector(vector) for vector in vectors]
 
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", newline="", encoding="utf-8") as stream:
@@ -62,8 +76,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, default=Path("data/catalogue_fragrances.csv"))
     parser.add_argument("--output", type=Path, default=Path("data/scent_vectors.csv"))
+    parser.add_argument(
+        "--approve",
+        action="store_true",
+        help="Record review sign-off on each generated vector. Only for catalogue content whose "
+        "source fields are known public-safe, such as the first-party library seed.",
+    )
     args = parser.parse_args()
-    accepted, rejected = build_vectors(args.source, args.output)
+    accepted, rejected = build_vectors(args.source, args.output, approve=args.approve)
     print(f"Scent vector generation complete: accepted={accepted} rejected={rejected}")
 
 

@@ -29,6 +29,31 @@ The console reads private profile runs and records internal review decisions und
 See [Development and testing](docs/development-and-testing.md) for the cloud, local, and CI test
 workflow.
 
+## Fragrance profile library
+
+The repository ships a first-party library of 48 original profiles across 12 fictional houses,
+with reviewed taxonomy, scent vectors, recommendations, and inspired-by relationships, so the
+whole pipeline runs end to end on realistic data:
+
+```bash
+python scripts/build_profile_library.py
+python scripts/build_scent_vectors.py --approve
+python scripts/build_recommendations.py
+```
+
+Everything in it is original AromaTwin content about fictional houses. A library of real-brand
+profiles is a separate commercial step requiring a permitted source. See
+[Fragrance profile library](docs/profile-library.md).
+
+## Authentication
+
+Authentication fails closed. `/maison`, `/products`, and `/scentprint-quiz` require
+`X-API-Key`; the operator surfaces require `X-Private-API-Key` or `X-Admin-API-Key`; only
+`/health`, `/deployment/health`, and the OpenAPI documents are anonymous. A non-local
+`AROMATWIN_ENVIRONMENT` refuses to start while any key is unset. For local development without
+keys, set `AROMATWIN_ALLOW_INSECURE_LOCAL_AUTH=true` explicitly. See
+[Security and deployment](docs/security-and-deployment.md).
+
 ## Foundation scope
 
 This repository establishes the supplier ingestion, candidate matching, independent enrichment, provenance, licensing guardrails, review workflow, catalogue, and proprietary intelligence boundaries. It intentionally excludes frontend, ecommerce, authentication, billing, full restricted-dataset imports, direct Maison Obsidian integration, and production deployment.
