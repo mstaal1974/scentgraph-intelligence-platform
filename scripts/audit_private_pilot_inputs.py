@@ -5,7 +5,8 @@ import csv
 import sys
 from pathlib import Path
 
-FORBIDDEN = {"supplier_price", "supplier_cost", "raw_margin", "aed_price", "usd_price",
+FORBIDDEN = {"code", "cn", "qty", "aed", "usd", "usd $", "price", "cost", "margin",
+             "supplier_price", "supplier_cost", "raw_margin", "aed_price", "usd_price",
              "stock", "quantity", "cn_code", "supplier_code", "commercial_terms",
              "seller_private_notes", "consumer_private_notes", "email", "phone", "address",
              "raw_individual_feedback"}
@@ -26,7 +27,7 @@ def audit_paths(paths: list[Path]) -> list[str]:
 
 
 def main() -> int:
-    samples = sorted(Path("data/samples").glob("private_*.csv"))
+    samples = sorted(Path("data/samples").glob("*.csv"))
     configured = Path("data/private/imports").resolve()
     if not configured.is_relative_to((Path("data").resolve() / "private")):
         print("configured input path is outside data/private/", file=sys.stderr)

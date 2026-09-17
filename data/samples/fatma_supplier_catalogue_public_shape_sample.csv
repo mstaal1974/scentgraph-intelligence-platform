@@ -1,0 +1,3 @@
+supplier_public_label,brand_display_name,fragrance_display_name,source_format,candidate_reference,confidence_band,review_status,public_safe_summary
+fictional_supplier_beta,Imaginary House,Sample Bloom,xlsx,fictional-candidate-101,medium,needs_human_review,Fictional schema example for parser validation
+fictional_supplier_beta,Imaginary House,Sample Woods,csv,fictional-candidate-102,low,needs_enrichment,Fictional schema example with no source-derived claims

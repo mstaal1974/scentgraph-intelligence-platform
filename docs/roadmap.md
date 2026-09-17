@@ -7,7 +7,7 @@ The repository staging smoke tooling is complete; the following remain human-con
 1. Configure staging secrets in the hosting provider.
 2. Deploy the staging API.
 3. Run the staging smoke tests and operator handoff.
-4. Upload supplier files to private runtime storage.
+4. Place supplier files only in `data/private/imports/suppliers/{supplier_label}/` at runtime.
 5. Run the private supplier pilot.
 6. Complete human review.
 7. Connect Maison Obsidian only after approved data exists.
@@ -34,6 +34,12 @@ backup/restore automation, and monitoring remain future work.
 The repository now has a Python 3.12 GitHub Actions gate for linting, compilation, the complete
 offline test suite, public data validation, and supplier privacy auditing. Development and test
 environment guidance is maintained in [development-and-testing.md](development-and-testing.md).
+
+Real supplier price files must never be stored under `data/samples/`. The `data/private/`
+tree must remain gitignored, and real supplier files belong only under
+`data/private/imports/suppliers/{supplier_label}/` at runtime. Public samples must be
+fictional and value-free. Any supplier file accidentally committed under `data/samples/`
+must be removed from the repository.
 
 ## Current enrichment-review boundary
 

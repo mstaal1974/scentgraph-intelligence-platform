@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import csv
 import subprocess
 from pathlib import Path
 
@@ -14,7 +15,7 @@ def tracked_files(root: Path) -> list[Path]:
     output = subprocess.check_output(
         ["git", "ls-files", "-z"], cwd=root, text=True, encoding="utf-8"
     )
-    return [root / item for item in output.split("\0") if item]
+    return [root / item for item in output.split("\0") if item and (root / item).is_file()]
 
 
 def exposed_sample_columns(relative: str, headers: set[str]) -> set[str]:
@@ -44,9 +45,11 @@ def audit(root: Path) -> list[str]:
             ".xlsx",
         }:
             errors.append(f"Raw supplier import is tracked: {relative}")
+        if relative.startswith("data/samples/") and path.suffix.casefold() in {".xls", ".xlsx"}:
+            errors.append(f"Tracked spreadsheet is not allowed in public samples: {relative}")
         if relative.startswith("data/samples/") and path.suffix.casefold() == ".csv":
-            with path.open(encoding="utf-8-sig") as handle:
-                headers = {normalise_column(value) for value in handle.readline().split(",")}
+            with path.open(encoding="utf-8-sig", newline="") as handle:
+                headers = {normalise_column(value) for value in next(csv.reader(handle), [])}
             exposed = exposed_sample_columns(relative, headers)
             if exposed:
                 errors.append(

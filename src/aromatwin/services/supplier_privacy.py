@@ -4,17 +4,26 @@ from pathlib import Path
 FORBIDDEN_PUBLIC_SAMPLE_COLUMNS = frozenset(
     {
         "AED",
+        "CODE",
+        "CN",
         "USD",
+        "USD $",
         "QTY",
         "QUANTITY",
         "CN CODE",
         "CN_CODE",
         "COST",
         "COST PRICE",
+        "MARGIN",
         "PRICE",
         "SKU",
+        "STOCK",
         "SUPPLIER CODE",
         "SUPPLIER_CODE",
+        "SUPPLIER PRICE",
+        "SUPPLIER_PRICE",
+        "COMMERCIAL TERMS",
+        "COMMERCIAL_TERMS",
     }
 )
 REQUIRED_PUBLIC_SAMPLE_COLUMNS = frozenset({"BRAND", "NAME", "ORI"})

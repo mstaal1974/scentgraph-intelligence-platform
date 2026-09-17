@@ -2,7 +2,14 @@
 
 This pack exercises the existing supplier intake, matching, batch planning, draft generation, enrichment, provenance, review, Maison-readiness, and completion boundaries using **fictional, sample-safe identifiers**. It makes no network request and cannot approve or publish a profile, create a product, export to Maison, or deploy infrastructure.
 
-Real supplier files are never required or committed. This prevents confidential commercial values and private seller or consumer material from entering source control. Draft approval remains a human decision because the rehearsal provides integration evidence, not factual fragrance evidence.
+Real supplier price files must never be stored under `data/samples/`. Real supplier files
+belong only under `data/private/imports/suppliers/{supplier_label}/` at runtime, and the
+entire `data/private/` tree must remain gitignored. Public rehearsal samples must be
+fictional and value-free. If a supplier file is accidentally committed under
+`data/samples/`, remove it from the repository. These boundaries prevent confidential
+commercial values and private seller or consumer material from entering source control.
+Draft approval remains a human decision because the rehearsal provides integration
+evidence, not factual fragrance evidence.
 
 ## Modes and commands
 
