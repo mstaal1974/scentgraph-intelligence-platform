@@ -17,6 +17,15 @@ uvicorn aromatwin.main:app --reload
 
 OpenAPI documentation is served at `http://localhost:8000/docs`.
 
+Run the private profile draft review console from the repository root:
+
+```bash
+streamlit run apps/private_profile_review_console.py
+```
+
+The console reads private profile runs and records internal review decisions under
+`data/private/` only. It does not publish catalogue content or initiate downstream actions.
+
 See [Development and testing](docs/development-and-testing.md) for the cloud, local, and CI test
 workflow.
 
