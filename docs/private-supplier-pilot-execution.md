@@ -8,12 +8,25 @@ not add intelligence, publish records, approve records, create SKUs, or create c
 
 ## Private inputs and intake
 
-Place real files only in `data/private/imports/`,
-`data/private/imports/suppliers/`, or a supplier-label directory below it. These paths are
-gitignored. Never commit a real supplier file: it can contain confidential commercial
-data. CSV, XLSX, and XLS are supported; PDFs are not. Recognised layouts are
+Real supplier price files must never be stored under `data/samples/`. Place real files
+only in `data/private/imports/suppliers/{supplier_label}/` at runtime, and keep the entire
+`data/private/` tree gitignored. Never commit a real supplier file: it can contain
+confidential commercial data. Public samples must be fictional and value-free. CSV,
+XLSX, and XLS are supported as private runtime inputs; PDFs are not. Recognised layouts are
 `existing_supplier`, `fatma`, and `generic_supplier`; an unknown layout requires an
 operator-approved mapping.
+
+Create the local private directory and place the workbook there manually. Never copy a
+tracked public sample into private runtime storage:
+
+```text
+mkdir -p data/private/imports/suppliers/fatma
+# place the real workbook manually here:
+data/private/imports/suppliers/fatma/<supplier-file>.xlsx
+```
+
+If a supplier file is accidentally committed under `data/samples/`, remove it from the
+repository before continuing.
 
 Run `python scripts/prepare_private_supplier_inputs.py`. The scanner validates the path,
 extension, readable headers, likely format, and required structural columns. It records

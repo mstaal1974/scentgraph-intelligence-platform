@@ -8,7 +8,7 @@ It does **not** publish, approve a profile, create a product, create a campaign,
 
 ## Private inputs and outputs
 
-Place real supplier files only in untracked runtime storage below `data/private/imports/`. Run the established supplier intake and matching workflows first. Never commit real supplier files, generated operational profiles, seller briefs, consumer records, credentials, or commercial values. Operational output is constrained to `data/private/runs/{run_id}/profiles/`; detailed plans and readiness reports may also use `data/private/reports/`.
+Real supplier price files must never be stored under `data/samples/`. Place real supplier files only in untracked runtime storage at `data/private/imports/suppliers/{supplier_label}/`, and keep the entire `data/private/` tree gitignored. Run the established supplier intake and matching workflows first. Never commit real supplier files, generated operational profiles, seller briefs, consumer records, credentials, or commercial values. Public samples must be fictional and value-free. If a supplier file is accidentally committed under `data/samples/`, remove it from the repository before continuing. Operational output is constrained to `data/private/runs/{run_id}/profiles/`; detailed plans and readiness reports may also use `data/private/reports/`.
 
 The planner selects only public supplier labels and candidate identifiers. It applies the batch maximum, confidence threshold, duplicate policy, intake-ready requirement, and match requirement. Low-confidence or blocked candidates are excluded unless an operator explicitly enables the low-confidence option; every selected record still requires human review.
 

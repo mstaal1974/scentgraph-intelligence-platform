@@ -11,13 +11,17 @@ ROOT = Path(__file__).resolve().parents[1]
 SAMPLE = ROOT / "data/samples/supplier_identity_sample.csv"
 SENSITIVE_COLUMNS = {
     "AED",
+    "CODE",
+    "CN",
     "USD",
     "QTY",
     "QUANTITY",
     "CN CODE",
     "COST",
     "PRICE",
+    "MARGIN",
     "SKU",
+    "STOCK",
     "SUPPLIER CODE",
 }
 
@@ -62,3 +66,11 @@ def test_product_variant_sku_exception_is_narrow() -> None:
         "SKU",
         "SUPPLIER CODE",
     }
+
+
+@pytest.mark.parametrize(
+    "header",
+    ["CODE", "CN", "QTY", "AED", "USD", "USD $", "price", "cost", "margin", "stock", "quantity", "supplier_code", "supplier_price", "commercial_terms"],
+)
+def test_public_supplier_audit_detects_commercial_headers(header: str) -> None:
+    assert exposed_sample_columns("data/samples/unsafe.csv", {header})
