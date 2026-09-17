@@ -1,5 +1,8 @@
 # Private fragrance profile production
 
+Operators must complete the [private supplier import operator runbook](private-supplier-import-operator-runbook.md)
+before starting a real private profile batch.
+
 ## Purpose and boundary
 
 This pack turns reviewed private supplier intake and match-candidate summaries into bounded **draft** profile batches. It reuses the existing intake, matching, bulk-generation, enrichment, provenance, review-gate, persistence, audit, and Maison-readiness foundations; it does not replace them. It provides planning, preflight readiness, private execution, public-safe status summaries, enrichment tasks, provenance requirements, and human-review packets.

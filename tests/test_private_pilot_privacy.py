@@ -1,4 +1,5 @@
 import csv
+import re
 from pathlib import Path
 
 import pytest
@@ -100,6 +101,38 @@ def test_private_workflow_docs_define_runtime_path_and_sample_boundary():
         text = path.read_text(encoding="utf-8")
         assert "data/private/imports/suppliers/{supplier_label}/" in text
         assert "data/samples/" in text
+
+
+def test_private_supplier_operator_runbook_documents_safe_operation():
+    path = ROOT / "docs/private-supplier-import-operator-runbook.md"
+    assert path.is_file()
+    text = path.read_text(encoding="utf-8")
+    folded = text.casefold()
+
+    assert "data/private/imports/suppliers/{supplier_label}/" in text
+    assert "never place a real supplier file under `data/samples/`" in folded
+    assert "never commit a real supplier file" in folded
+    assert "local" in folded
+    assert "github codespaces" in folded
+    for audit in (
+        "audit_private_pilot_inputs.py",
+        "audit_profile_production_privacy.py",
+        "audit_profile_pipeline_rehearsal_privacy.py",
+        "run_all_safe_audits.py",
+    ):
+        assert audit in text
+
+
+def test_private_supplier_operator_runbook_contains_no_commercial_values():
+    text = (ROOT / "docs/private-supplier-import-operator-runbook.md").read_text(
+        encoding="utf-8"
+    )
+    commercial_value = re.compile(
+        r"(?:AED|USD|QTY|CN|price|cost|margin|stock|quantity|supplier[ _-]?code)"
+        r"\s*[:=]\s*[0-9]+",
+        re.IGNORECASE,
+    )
+    assert commercial_value.search(text) is None
 
 
 def test_no_private_outputs_are_tracked():
