@@ -7,6 +7,7 @@ invitation to invent a plausible pyramid.
 
 from __future__ import annotations
 
+import json
 import os
 from abc import ABC, abstractmethod
 from typing import Any, Mapping
@@ -21,6 +22,16 @@ OUTPUT_FIELDS = (
     "enrichment_sources", "provenance_notes", "fields_requiring_human_review",
     "enrichment_status", "review_status",
 )
+
+AI_DRAFT_FIELDS = (
+    "fragrance_family", "top_notes", "heart_notes", "base_notes", "accords",
+    "mood_tags", "occasion_tags", "season_tags", "strength_band", "longevity_band",
+    "projection_band", "draft_scent_description", "ai_confidence_band",
+    "fields_requiring_human_review",
+)
+IDENTITY_FIELDS = ("brand_display_name", "fragrance_display_name")
+MISSING_KEY_WARNING = "OpenAI API key is not configured. Using offline demo enrichment."
+ALLOWED_PROVIDERS = ("offline", "openai")
 
 # Keywords are evidence for broad classification only, never for an exact note pyramid.
 _FAMILY_RULES: tuple[tuple[str, str, tuple[str, ...], tuple[str, ...], tuple[str, ...]], ...] = (
@@ -101,25 +112,94 @@ class OfflineHeuristicEnrichmentProvider(ProfileEnrichmentProvider):
 
 
 class OpenAIEnrichmentProvider(ProfileEnrichmentProvider):
-    """Reserved provider boundary; live generation is intentionally not implemented yet."""
+    """Generate original, review-required drafts from identity fields alone."""
 
-    def __init__(self, api_key: str | None = None) -> None:
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+    def __init__(self, api_key: str | None = None, *, client: Any = None) -> None:
+        if api_key is None and "OPENAI_API_KEY" in os.environ:
+            api_key = os.environ["OPENAI_API_KEY"]
+        self._available = bool(api_key)
+        if client is None and api_key:
+            from openai import OpenAI
+
+            client = OpenAI(api_key=api_key)
+        self._client = client
 
     @property
     def is_available(self) -> bool:
-        return bool(self.api_key)
+        return self._available
 
     def enrich(self, profile: Mapping[str, Any]) -> dict[str, Any]:
         if not self.is_available:
             raise RuntimeError("OpenAI enrichment skipped: OPENAI_API_KEY is not configured")
-        raise NotImplementedError(
-            "OpenAI enrichment is a placeholder. Any implementation must generate original text, "
-            "store source summaries only, and retain mandatory human review."
+        identity = sanitise_ai_identity(profile)
+        response = self._client.responses.create(
+            model="gpt-4o-mini",
+            input=[
+                {"role": "system", "content": (
+                    "Create an original speculative scent-profile draft using only the supplied "
+                    "brand and fragrance identity. Do not retrieve, quote, imitate, or copy any "
+                    "third-party description or review. Treat every field as requiring human review."
+                )},
+                {"role": "user", "content": json.dumps(identity, ensure_ascii=True)},
+            ],
+            text={"format": _response_format()},
         )
+        payload = json.loads(response.output_text)
+        missing = [field for field in AI_DRAFT_FIELDS if field not in payload]
+        if missing:
+            raise ValueError(f"OpenAI response omitted required fields: {', '.join(missing)}")
+        result = {
+            "profile_draft_id": str(profile.get("profile_draft_id", "openai-draft")),
+            **identity,
+            **{field: payload[field] for field in AI_DRAFT_FIELDS},
+            "enrichment_sources": [{
+                "source_type": "openai_original_draft",
+                "summary": "Generated only from brand and fragrance identity; no third-party text used.",
+            }],
+            "provenance_notes": WARNING,
+            "enrichment_status": "enriched_pending_review",
+            "review_status": "needs_human_review",
+        }
+        return {field: result[field] for field in OUTPUT_FIELDS}
+
+
+def sanitise_ai_identity(profile: Mapping[str, Any]) -> dict[str, str]:
+    """Return the complete and exclusive payload permitted to leave the application."""
+    identity = {field: str(profile.get(field, "")).strip() for field in IDENTITY_FIELDS}
+    missing = [field for field, value in identity.items() if not value]
+    if missing:
+        raise ValueError(f"Missing required profile fields: {', '.join(missing)}")
+    return identity
+
+
+def _response_format() -> dict[str, Any]:
+    string_list = {"type": "array", "items": {"type": "string"}}
+    properties = {field: string_list for field in (
+        "top_notes", "heart_notes", "base_notes", "accords", "mood_tags",
+        "occasion_tags", "season_tags", "fields_requiring_human_review",
+    )}
+    properties.update({field: {"type": "string"} for field in (
+        "fragrance_family", "strength_band", "longevity_band", "projection_band",
+        "draft_scent_description", "ai_confidence_band",
+    )})
+    return {
+        "type": "json_schema", "name": "scent_profile_draft", "strict": True,
+        "schema": {
+            "type": "object", "properties": properties,
+            "required": list(AI_DRAFT_FIELDS), "additionalProperties": False,
+        },
+    }
+
+
+def configured_provider(value: str | None = None) -> str:
+    """Validate the explicit provider setting, defaulting safely to offline."""
+    provider = value if value is not None else os.environ.get("AROMATWIN_AI_PROVIDER", "offline")
+    provider = provider.strip().casefold()
+    if provider not in ALLOWED_PROVIDERS:
+        raise ValueError("AROMATWIN_AI_PROVIDER must be one of: offline, openai")
+    return provider
 
 
 def enrich_profile(profile: Mapping[str, Any], provider: ProfileEnrichmentProvider | None = None) -> dict[str, Any]:
     """Enrich a draft using the safe offline provider by default."""
     return (provider or OfflineHeuristicEnrichmentProvider()).enrich(profile)
-
