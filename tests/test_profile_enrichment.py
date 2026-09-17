@@ -14,6 +14,8 @@ from aromatwin.services.profile_enrichment import (
     OUTPUT_FIELDS,
     OfflineHeuristicEnrichmentProvider,
     OpenAIEnrichmentProvider,
+    RateLimitError,
+    ai_fallback_allowed,
     configured_provider,
     sanitise_ai_identity,
 )
@@ -77,8 +79,11 @@ def test_openai_provider_skips_safely_without_key(monkeypatch: pytest.MonkeyPatc
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     provider = OpenAIEnrichmentProvider()
     assert not provider.is_available
-    with pytest.raises(RuntimeError, match="skipped"):
-        provider.enrich(_draft())
+    enriched = provider.enrich(_draft())
+    assert enriched["enrichment_sources"][-1] == {
+        "source_type": "offline_fallback",
+        "summary": "OpenAI enrichment was unavailable; offline draft generated for human review.",
+    }
 
 
 def test_missing_key_falls_back_without_crashing(monkeypatch: pytest.MonkeyPatch):
@@ -111,6 +116,17 @@ class _FakeClient:
         self.responses = _FakeResponses(payload)
 
 
+class _FailingResponses:
+    def create(self, **kwargs):
+        error = RateLimitError.__new__(RateLimitError)
+        Exception.__init__(error, "mocked rate limit")
+        raise error
+
+
+class _FailingClient:
+    responses = _FailingResponses()
+
+
 def _ai_payload() -> dict[str, object]:
     list_fields = {
         "top_notes", "heart_notes", "base_notes", "accords", "mood_tags",
@@ -141,6 +157,20 @@ def test_openai_call_contains_identity_only_and_returns_required_fields():
     ):
         assert forbidden not in sent
     assert set(AI_DRAFT_FIELDS) <= enriched.keys()
+
+
+def test_rate_limit_error_uses_offline_fallback():
+    enriched = OpenAIEnrichmentProvider(api_key="test-key", client=_FailingClient()).enrich(
+        _draft()
+    )
+
+    assert enriched["fragrance_family"] == "citrus"
+    assert enriched["enrichment_sources"][-1]["source_type"] == "offline_fallback"
+
+
+def test_fallback_setting_defaults_true(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.delenv("AROMATWIN_AI_ALLOW_FALLBACK", raising=False)
+    assert ai_fallback_allowed()
 
 
 def test_safe_existing_scent_metadata_can_be_sent_without_commercial_fields():

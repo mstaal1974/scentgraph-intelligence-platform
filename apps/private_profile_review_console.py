@@ -31,6 +31,10 @@ SAFETY_COPY = (
     "approve public catalogue content, create products, or export to Maison Obsidian."
 )
 ENRICHMENT_WARNING = "AI enrichment is draft-only and requires human review before catalogue use."
+OPENAI_FALLBACK_WARNING = (
+    "OpenAI enrichment is currently unavailable or rate-limited. Offline draft enrichment "
+    "was used instead."
+)
 COMMERCIAL_FIELD_PARTS = (
     "price", "cost", "margin", "stock", "inventory", "wholesale", "commercial_terms",
     "moq", "minimum_order", "supplier_code", "aed", "usd",
@@ -203,9 +207,16 @@ def save_enrichments(
 
 def enrichment_provider(provider_name: str, openai_key: str | None):
     """Select a provider, falling back deterministically when no key exists."""
-    if provider_name == "openai" and openai_key:
+    if provider_name == "openai":
         return OpenAIEnrichmentProvider(api_key=openai_key)
     return OfflineHeuristicEnrichmentProvider()
+
+
+def batch_enrichment_limit(*, cloud_demo: bool, requested: int = 1) -> int:
+    """Return a bounded batch size, with a single-profile cloud-demo default."""
+    if requested < 1:
+        raise ValueError("Batch enrichment must include at least one profile")
+    return 1 if cloud_demo and requested == 1 else requested
 
 
 def _options(rows: Iterable[dict[str, Any]], field: str) -> list[str]:
@@ -319,10 +330,20 @@ def main() -> None:
     action_one, action_batch = st.columns(2)
     enrich_selected = action_one.button("Enrich selected profile", type="primary")
     batch_enrich = False
+    max_profiles = 1
     if demo_mode:
-        batch_enrich = action_batch.button("Batch enrich visible profiles")
+        max_profiles = action_batch.number_input(
+            "Max profiles", min_value=1, max_value=max(1, len(filtered)), value=1, step=1
+        )
+        confirm_batch = action_batch.checkbox(
+            "Confirm OpenAI enrichment for visible profiles", value=False
+        )
+        batch_enrich = action_batch.button(
+            "Batch enrich visible profiles", disabled=not confirm_batch
+        )
 
-    targets = filtered if batch_enrich else ([selected] if enrich_selected else [])
+    batch_limit = batch_enrichment_limit(cloud_demo=demo_mode, requested=int(max_profiles))
+    targets = filtered[:batch_limit] if batch_enrich else ([selected] if enrich_selected else [])
     if targets:
         try:
             generated = [provider.enrich(target) for target in targets]
@@ -336,6 +357,12 @@ def main() -> None:
             for row in rows:
                 row.update(by_id.get(str(row.get("profile_draft_id")), {}))
             selected.update(by_id.get(selected_id, {}))
+            if any(
+                source.get("source_type") == "offline_fallback"
+                for enrichment in generated
+                for source in enrichment.get("enrichment_sources", [])
+            ):
+                st.warning(OPENAI_FALLBACK_WARNING)
             st.success(f"Created {len(generated)} enrichment draft(s). Human review is required.")
         except (OSError, RuntimeError, ValueError, json.JSONDecodeError) as exc:
             st.error(f"Enrichment could not be created: {exc}")

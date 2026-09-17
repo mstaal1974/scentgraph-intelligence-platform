@@ -36,6 +36,7 @@ class Settings(BaseSettings):
     )
     enable_admin_console: bool = True
     enable_private_supplier_endpoints: bool = True
+    ai_allow_fallback: bool = True
     log_level: str = "INFO"
     public_api_prefix: str = ""
     internal_api_prefix: str = ""

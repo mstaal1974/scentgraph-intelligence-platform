@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from apps.private_profile_review_console import (
+    batch_enrichment_limit,
     build_review_item,
     load_review_data,
     private_path,
@@ -81,3 +82,7 @@ def test_enrichment_is_upserted_only_at_the_private_run_path(tmp_path: Path):
     saved = json.loads(destination.read_text(encoding="utf-8"))
     assert len(saved) == 1 and saved[0]["accords"] == ["woody"]
     assert "supplier_price" not in saved[0]
+
+
+def test_cloud_demo_batch_enrichment_defaults_to_one_profile():
+    assert batch_enrichment_limit(cloud_demo=True) == 1
