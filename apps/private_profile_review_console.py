@@ -13,8 +13,17 @@ SRC_ROOT = REPOSITORY_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
+from aromatwin.services.profile_enrichment import (  # noqa: E402
+    EVIDENCE_PROVENANCE,
+    MODEL_PROVENANCE,
+)
 from aromatwin.services.review_decisions import apply_review_decision  # noqa: E402
 from aromatwin.services.review_gates import ALLOWED_DECISIONS  # noqa: E402
+
+PROVENANCE_LABELS = {
+    EVIDENCE_PROVENANCE: "✅ supplier evidence",
+    MODEL_PROVENANCE: "⚠️ model proposal — unverified",
+}
 
 PRIVATE_ROOT = (REPOSITORY_ROOT / "data" / "private").resolve()
 DEFAULT_RUN_ID = "first_private_supplier_profile_run_20260917"
@@ -268,11 +277,35 @@ def main() -> None:
         scent_fields = ("fragrance_family", "top_notes", "heart_notes", "base_notes", "accords",
                         "mood_tags", "occasion_tags", "season_tags", "strength_band",
                         "longevity_band", "projection_band", "draft_scent_description")
-        st.json({field: selected.get(field) for field in scent_fields})
+        provenance = selected.get("field_provenance") or {}
+        asserted = [field for field in scent_fields
+                    if provenance.get(field) == MODEL_PROVENANCE]
+        if asserted:
+            st.warning(
+                f"{len(asserted)} of these fields are unverified model proposals with no source "
+                "evidence. Approving this profile approves each of them as fact.",
+                icon="⚠️",
+            )
+        # A field-by-field table, not one JSON blob: the reviewer should be able to see at a
+        # glance which specific claims carry evidence and which are the model's guess.
+        st.dataframe(
+            [
+                {
+                    "field": field,
+                    "value": selected.get(field),
+                    "basis": PROVENANCE_LABELS.get(
+                        provenance.get(field, ""), "not populated"
+                    ),
+                }
+                for field in scent_fields
+            ],
+            width="stretch",
+            hide_index=True,
+        )
     with evidence:
         st.json({field: selected.get(field) for field in (
             "ai_confidence_band", "enrichment_sources", "provenance_notes",
-            "fields_requiring_human_review")})
+            "fields_requiring_human_review", "field_provenance")})
     with review:
         st.subheader("Record internal decision")
         if st.button("Mark for enrichment"):
