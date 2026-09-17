@@ -15,6 +15,7 @@ from aromatwin.services.profile_enrichment import (
     OfflineHeuristicEnrichmentProvider,
     OpenAIEnrichmentProvider,
     configured_provider,
+    sanitise_ai_identity,
 )
 from scripts.enrich_private_profile_batch import enrich_batch
 
@@ -140,6 +141,18 @@ def test_openai_call_contains_identity_only_and_returns_required_fields():
     ):
         assert forbidden not in sent
     assert set(AI_DRAFT_FIELDS) <= enriched.keys()
+
+
+def test_safe_existing_scent_metadata_can_be_sent_without_commercial_fields():
+    payload = sanitise_ai_identity({
+        **_draft(), "accords": ["fresh", "woody"], "season_tags": ["summer"],
+        "price": "99", "quantity": 12, "provenance_notes": "not allow-listed",
+    })
+
+    assert payload["accords"] == ["fresh", "woody"]
+    assert payload["season_tags"] == ["summer"]
+    assert "price" not in payload and "quantity" not in payload
+    assert "provenance_notes" not in payload
 
 
 def test_api_key_is_not_logged_or_written(tmp_path: Path, caplog: pytest.LogCaptureFixture):
