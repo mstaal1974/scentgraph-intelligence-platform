@@ -13,8 +13,8 @@ SRC_ROOT = REPOSITORY_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
-from aromatwin.services.review_decisions import apply_review_decision
-from aromatwin.services.review_gates import ALLOWED_DECISIONS
+from aromatwin.services.review_decisions import apply_review_decision  # noqa: E402
+from aromatwin.services.review_gates import ALLOWED_DECISIONS  # noqa: E402
 
 PRIVATE_ROOT = (REPOSITORY_ROOT / "data" / "private").resolve()
 DEFAULT_RUN_ID = "first_private_supplier_profile_run_20260917"
@@ -23,10 +23,17 @@ SAFETY_COPY = (
     "This console records internal human review decisions only. It does not publish, "
     "approve public catalogue content, create products, or export to Maison Obsidian."
 )
+ENRICHMENT_WARNING = "AI enrichment is draft-only and requires human review before catalogue use."
 COMMERCIAL_FIELD_PARTS = (
     "price", "cost", "margin", "stock", "inventory", "wholesale", "commercial_terms",
-    "moq", "minimum_order", "supplier_code",
+    "moq", "minimum_order", "supplier_code", "aed", "usd",
 )
+STATUS_BADGES = {
+    "needs_enrichment": "🟠 needs_enrichment",
+    "enriched_pending_review": "🔵 enriched_pending_review",
+    "provenance_review_required": "🟣 provenance_review_required",
+    "approved_for_catalogue_review": "🟢 approved_for_catalogue_review",
+}
 
 
 def private_path(path: str | Path, *, private_root: str | Path = PRIVATE_ROOT) -> Path:
@@ -61,11 +68,64 @@ def load_review_data(
     drafts_path = private_path(base / "drafts.json", private_root=private_root)
     if not drafts_path.is_file():
         raise FileNotFoundError(f"No private drafts found for run {run_id!r}")
+    drafts = _load_list(drafts_path, private_root=private_root)
+    enriched = {
+        str(row.get("profile_draft_id")): row
+        for row in _load_list(base / "enriched_profiles.json", private_root=private_root)
+    }
+    drafts = [{**draft, **enriched.get(str(draft.get("profile_draft_id")), {})} for draft in drafts]
     return (
-        _load_list(drafts_path, private_root=private_root),
+        drafts,
         _load_list(base / "review_packets.json", private_root=private_root),
         _load_list("reports/review_decisions.json", private_root=private_root),
     )
+
+
+def demo_review_data() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    """Return fictional, commercially sanitised data for public demo deployments."""
+    records = [
+        {
+            "profile_draft_id": "demo-aurora-01", "brand_display_name": "Lumen Atelier",
+            "fragrance_display_name": "Citrus Aurora", "supplier_public_label": "Demo source",
+            "confidence_band": "medium", "blocking_issues": [], "fragrance_family": "citrus",
+            "top_notes": [], "heart_notes": [], "base_notes": [],
+            "accords": ["citrus", "fresh"], "mood_tags": ["bright", "uplifting"],
+            "occasion_tags": ["daytime", "casual"], "season_tags": ["spring", "summer"],
+            "strength_band": "unknown", "longevity_band": "unknown", "projection_band": "unknown",
+            "draft_scent_description": "A bright, fresh citrus direction shaped for an easy daytime mood.",
+            "ai_confidence_band": "low",
+            "enrichment_sources": [{"source_type": "demo_taxonomy", "summary": "Fictional name keyword classification."}],
+            "provenance_notes": ENRICHMENT_WARNING,
+            "fields_requiring_human_review": ["top_notes", "heart_notes", "base_notes", "performance"],
+            "enrichment_status": "enriched_pending_review", "review_status": "needs_human_review",
+        },
+        {
+            "profile_draft_id": "demo-ember-02", "brand_display_name": "Northstar Parfums",
+            "fragrance_display_name": "Ember Woods", "supplier_public_label": "Demo source",
+            "confidence_band": "low", "blocking_issues": [], "fragrance_family": "woody",
+            "top_notes": [], "heart_notes": [], "base_notes": [], "accords": ["woody"],
+            "mood_tags": ["grounded", "calm"], "occasion_tags": ["evening"],
+            "season_tags": ["autumn", "winter"], "strength_band": "unknown",
+            "longevity_band": "unknown", "projection_band": "unknown",
+            "draft_scent_description": "A calm woody direction suggested only by its fictional name.",
+            "ai_confidence_band": "low",
+            "enrichment_sources": [{"source_type": "demo_taxonomy", "summary": "Fictional name keyword classification."}],
+            "provenance_notes": ENRICHMENT_WARNING,
+            "fields_requiring_human_review": ["top_notes", "heart_notes", "base_notes", "performance"],
+            "enrichment_status": "enriched_pending_review", "review_status": "needs_human_review",
+        },
+    ]
+    return records, [], []
+
+
+def load_console_data(run_id: str, *, private_root: str | Path = PRIVATE_ROOT) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], bool]:
+    """Load private records, falling back to safe fictional demo records."""
+    try:
+        drafts, packets, decisions = load_review_data(run_id, private_root=private_root)
+        return drafts, packets, decisions, False
+    except FileNotFoundError:
+        drafts, packets, decisions = demo_review_data()
+        return drafts, packets, decisions, True
 
 
 def without_commercial_fields(value: Any) -> Any:
@@ -125,10 +185,14 @@ def main() -> None:
     st.warning(SAFETY_COPY)
     run_id = st.text_input("Run ID", value=DEFAULT_RUN_ID)
     try:
-        drafts, packets, decisions = load_review_data(run_id)
-    except (FileNotFoundError, ValueError, json.JSONDecodeError) as exc:
+        drafts, packets, decisions, demo_mode = load_console_data(run_id)
+    except (ValueError, json.JSONDecodeError) as exc:
         st.error(str(exc))
         st.stop()
+    if demo_mode:
+        st.info("Demo mode: showing sanitised fictional records. Decisions remain in this browser session only.")
+        decisions = st.session_state.setdefault("demo_review_decisions", [])
+    st.warning(ENRICHMENT_WARNING)
 
     latest = {str(row.get("review_item_id")): row for row in decisions}
     packet_by_draft = {str(row.get("profile_draft_id")): row for row in packets}
@@ -189,15 +253,39 @@ def main() -> None:
     selected_id = st.selectbox("Selected profile", labels, format_func=labels.get)
     selected = next(row for row in filtered if str(row["profile_draft_id"]) == selected_id)
     packet = packet_by_draft.get(selected_id)
-    detail, decision_panel = st.columns((3, 2))
-    with detail:
-        st.subheader("Profile detail")
-        st.json(without_commercial_fields(selected))
+    overview, scent_profile, evidence, review = st.tabs(
+        ["Overview", "Scent Profile", "Evidence & Provenance", "Review Decision"]
+    )
+    with overview:
+        st.subheader(f"{selected.get('brand_display_name')} — {selected.get('fragrance_display_name')}")
+        for status in (selected.get("enrichment_status", "needs_enrichment"), selected.get("review_status")):
+            if status:
+                st.markdown(f"**Status:** `{STATUS_BADGES.get(str(status), status)}`")
         if packet:
             st.subheader("Review packet")
             st.json(without_commercial_fields(packet))
-    with decision_panel:
+    with scent_profile:
+        scent_fields = ("fragrance_family", "top_notes", "heart_notes", "base_notes", "accords",
+                        "mood_tags", "occasion_tags", "season_tags", "strength_band",
+                        "longevity_band", "projection_band", "draft_scent_description")
+        st.json({field: selected.get(field) for field in scent_fields})
+    with evidence:
+        st.json({field: selected.get(field) for field in (
+            "ai_confidence_band", "enrichment_sources", "provenance_notes",
+            "fields_requiring_human_review")})
+    with review:
         st.subheader("Record internal decision")
+        if st.button("Mark for enrichment"):
+            item = build_review_item(selected, packet)
+            if demo_mode:
+                result = {**item, "decision": "request_enrichment", "next_status": "needs_enrichment"}
+                st.session_state["demo_review_decisions"] = [
+                    row for row in decisions if row.get("review_item_id") != item["review_item_id"]
+                ] + [result]
+                st.success("Demo decision saved to session state only.")
+            else:
+                record_decision(item, "request_enrichment", "catalogue_reviewer")
+                st.success("Profile marked for enrichment in the private review report.")
         with st.form("decision_form"):
             decision = st.selectbox("Decision", ALLOWED_DECISIONS)
             reviewer_role = st.text_input("Reviewer role", value="catalogue_reviewer")
@@ -206,8 +294,16 @@ def main() -> None:
             submitted = st.form_submit_button("Save decision", type="primary")
         if submitted:
             try:
-                record_decision(build_review_item(selected, packet), decision, reviewer_role,
-                                decision_reason=reason, reviewer_alias=reviewer_alias)
+                if demo_mode:
+                    result = apply_review_decision(build_review_item(selected, packet), decision,
+                                                   reviewer_role, decision_reason=reason or None,
+                                                   reviewer_alias=reviewer_alias or None)
+                    st.session_state["demo_review_decisions"] = [
+                        row for row in decisions if row.get("review_item_id") != result["review_item_id"]
+                    ] + [result]
+                else:
+                    record_decision(build_review_item(selected, packet), decision, reviewer_role,
+                                    decision_reason=reason, reviewer_alias=reviewer_alias)
             except (ValueError, OSError, json.JSONDecodeError) as exc:
                 st.error(f"Decision could not be recorded: {exc}")
             else:
