@@ -47,7 +47,7 @@ else:  # Keep offline-only installations usable; OpenAI remains a declared produ
 
 WARNING = "AI enrichment is draft-only and requires human review before catalogue use."
 OPENAI_FALLBACK_SUMMARY = (
-    "OpenAI enrichment was unavailable; offline draft generated for human review."
+    "OpenAI enrichment was unavailable or rate-limited; offline draft generated for human review."
 )
 
 OUTPUT_FIELDS = (

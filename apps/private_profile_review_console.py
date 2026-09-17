@@ -16,8 +16,10 @@ if str(SRC_ROOT) not in sys.path:
 
 from aromatwin.services.profile_enrichment import (  # noqa: E402
     MISSING_KEY_WARNING,
+    OPENAI_FALLBACK_SUMMARY,
     OfflineHeuristicEnrichmentProvider,
     OpenAIEnrichmentProvider,
+    OpenAIError,
     configured_provider,
 )
 from aromatwin.services.review_decisions import apply_review_decision  # noqa: E402
@@ -347,6 +349,18 @@ def main() -> None:
     if targets:
         try:
             generated = [provider.enrich(target) for target in targets]
+        except OpenAIError:
+            # The provider normally handles SDK failures itself. Keep this UI-level
+            # safety net free of exception details so credentials and provider
+            # responses can never be exposed in the console.
+            generated = [OfflineHeuristicEnrichmentProvider().enrich(target) for target in targets]
+            for enrichment in generated:
+                enrichment["enrichment_sources"].append({
+                    "source_type": "offline_fallback",
+                    "summary": OPENAI_FALLBACK_SUMMARY,
+                })
+
+        try:
             if demo_mode:
                 cached = st.session_state.setdefault("demo_profile_enrichments", {})
                 for enrichment in generated:
