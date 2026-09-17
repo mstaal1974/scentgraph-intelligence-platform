@@ -4,22 +4,60 @@ The offline provider deliberately infers only broad families and accords from na
 An empty note list means that no note-level evidence was supplied; it is not an
 invitation to invent a plausible pyramid.
 
-The model-backed provider may propose a note pyramid, but nothing it returns is trusted:
-output is validated against controlled vocabularies, bounded in size, stripped of private
-and restricted keys, and every field is tagged in ``field_provenance`` with whether it came
-from supplied evidence or from model inference. Reviewers approve specific claims, not a blob.
-No enriched record can reach the catalogue without a human decision.
+The model-backed provider sends only an allow-listed identity payload, requests a strict JSON
+schema, and falls back to the offline provider on any API failure. Nothing it returns is then
+trusted: the response is validated against controlled vocabularies, bounded in size, stripped of
+private and restricted keys, and every field is tagged in ``field_provenance`` with whether it
+came from supplied evidence or from model inference. A schema guarantees shape, not that a value
+is a real season, a sane list length, or original prose. Reviewers approve specific claims, not a
+blob, and no enriched record can reach the catalogue without a human decision.
 """
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import re
 from abc import ABC, abstractmethod
 from typing import Any, Mapping
 
+if importlib.util.find_spec("openai") is not None:
+    from openai import (
+        APIConnectionError,
+        APIError,
+        AuthenticationError,
+        OpenAIError,
+        RateLimitError,
+    )
+else:  # Keep offline-only installations usable; OpenAI remains a declared production dependency.
+    class OpenAIError(Exception):
+        """Compatibility base used only when the optional runtime package is absent."""
+
+    class APIError(OpenAIError):
+        """Compatibility API error."""
+
+        pass
+
+    class APIConnectionError(APIError):
+        """Compatibility connection error."""
+
+        pass
+
+    class AuthenticationError(APIError):
+        """Compatibility authentication error."""
+
+        pass
+
+    class RateLimitError(APIError):
+        """Compatibility rate-limit error."""
+
+        pass
+
 WARNING = "AI enrichment is draft-only and requires human review before catalogue use."
+OPENAI_FALLBACK_SUMMARY = (
+    "OpenAI enrichment was unavailable or rate-limited; offline draft generated for human review."
+)
 
 OUTPUT_FIELDS = (
     "profile_draft_id", "brand_display_name", "fragrance_display_name",
@@ -29,6 +67,24 @@ OUTPUT_FIELDS = (
     "enrichment_sources", "provenance_notes", "fields_requiring_human_review",
     "field_provenance", "enrichment_status", "review_status",
 )
+
+AI_DRAFT_FIELDS = (
+    "fragrance_family", "top_notes", "heart_notes", "base_notes", "accords",
+    "mood_tags", "occasion_tags", "season_tags", "strength_band", "longevity_band",
+    "projection_band", "draft_scent_description", "ai_confidence_band",
+    "fields_requiring_human_review",
+)
+IDENTITY_FIELDS = ("brand_display_name", "fragrance_display_name")
+# This is deliberately an allow-list rather than a deny-list.  New fields from a
+# supplier import therefore cannot accidentally become part of an AI request.
+SAFE_METADATA_FIELDS = (
+    "fragrance_family", "top_notes", "heart_notes", "base_notes", "accords",
+    "mood_tags", "occasion_tags", "season_tags", "strength_band",
+    "longevity_band", "projection_band", "ai_confidence_band",
+    "fields_requiring_human_review", "enrichment_status", "review_status",
+)
+MISSING_KEY_WARNING = "OpenAI API key is not configured. Using offline demo enrichment."
+ALLOWED_PROVIDERS = ("offline", "openai")
 
 # Fields a reviewer signs off on individually. Anything here that a model asserted without
 # supporting evidence is surfaced as such rather than folded into an overall confidence score.
@@ -155,9 +211,9 @@ def validate_enrichment_payload(
 
     family = _clean_term(payload.get("fragrance_family")) or "unclassified"
     result: dict[str, Any] = {
-        "profile_draft_id": str(profile["profile_draft_id"]),
-        "brand_display_name": str(profile["brand_display_name"]),
-        "fragrance_display_name": str(profile["fragrance_display_name"]),
+        "profile_draft_id": str(profile.get("profile_draft_id") or "openai-draft"),
+        "brand_display_name": str(profile.get("brand_display_name", "")),
+        "fragrance_display_name": str(profile.get("fragrance_display_name", "")),
         "fragrance_family": family,
         "top_notes": _clean_list(payload.get("top_notes")),
         "heart_notes": _clean_list(payload.get("heart_notes")),
@@ -215,6 +271,18 @@ def validate_enrichment_payload(
     result["enrichment_status"] = "enriched_pending_review"
     result["review_status"] = "needs_human_review"
     return {field: result[field] for field in OUTPUT_FIELDS}
+
+
+# Keywords are evidence for broad classification only, never for an exact note pyramid.
+_FAMILY_RULES: tuple[tuple[str, str, tuple[str, ...], tuple[str, ...], tuple[str, ...]], ...] = (
+    (("oud", "amber", "oriental"), "amber woody", ("amber", "woody"), ("opulent", "warm"), ("evening", "special occasion")),
+    (("rose", "jasmine", "floral", "bouquet"), "floral", ("floral",), ("romantic", "elegant"), ("daytime", "special occasion")),
+    (("citrus", "lemon", "bergamot", "orange"), "citrus", ("citrus", "fresh"), ("bright", "uplifting"), ("daytime", "casual")),
+    (("ocean", "aqua", "marine", "sea"), "fresh aquatic", ("aquatic", "fresh"), ("clean", "energising"), ("daytime", "casual")),
+    (("wood", "cedar", "sandal"), "woody", ("woody",), ("grounded", "calm"), ("daytime", "evening")),
+    (("vanilla", "sweet", "caramel", "gourmand"), "gourmand", ("sweet", "gourmand"), ("comforting", "playful"), ("evening", "casual")),
+    (("spice", "pepper", "saffron"), "spicy", ("spicy",), ("bold", "warm"), ("evening",)),
+)
 
 
 class ProfileEnrichmentProvider(ABC):
@@ -290,129 +358,133 @@ class OfflineHeuristicEnrichmentProvider(ProfileEnrichmentProvider):
         return {field: result[field] for field in OUTPUT_FIELDS}
 
 
-DEFAULT_MODEL = "gpt-4o-mini"
-SYSTEM_PROMPT = (
-    "You classify fragrances for a commercial fragrance-intelligence platform. "
-    "Return JSON only, matching the requested keys exactly.\n"
-    "Rules you must follow:\n"
-    "1. Write the description in your own words. Never reproduce marketing copy, retailer "
-    "text, a third-party database entry, a review, or any quoted material.\n"
-    "2. Do not include URLs, ratings, review text, prices, or supplier identifiers.\n"
-    "3. Report genuine uncertainty. Set ai_confidence_band to \"low\" when you are inferring "
-    "from a name alone, and leave a list empty rather than guessing to fill it.\n"
-    "4. Use only these vocabularies. season_tags: "
-    + ", ".join(SEASONS)
-    + ". occasion_tags: "
-    + ", ".join(OCCASIONS)
-    + ". strength_band: "
-    + ", ".join(STRENGTH_BANDS)
-    + ". longevity_band: "
-    + ", ".join(LONGEVITY_BANDS)
-    + ". projection_band: "
-    + ", ".join(PROJECTION_BANDS)
-    + "."
-)
-REQUESTED_KEYS = (
-    "fragrance_family", "top_notes", "heart_notes", "base_notes", "accords", "mood_tags",
-    "occasion_tags", "season_tags", "strength_band", "longevity_band", "projection_band",
-    "draft_scent_description", "ai_confidence_band",
-)
-
-
-def build_user_prompt(profile: Mapping[str, Any]) -> str:
-    """Describe one draft to the model using identity and stated evidence only."""
-    evidence = _supplied_evidence(profile)
-    lines = [
-        f"Brand: {profile['brand_display_name']}",
-        f"Fragrance: {profile['fragrance_display_name']}",
-    ]
-    concentration = _clean_term(profile.get("concentration"))
-    if concentration:
-        lines.append(f"Concentration: {concentration}")
-    if evidence:
-        lines.append("Evidence stated by the supplier record (treat as authoritative):")
-        lines.extend(
-            f"  {field}: {', '.join(values) if isinstance(values, list) else values}"
-            for field, values in evidence.items()
-        )
-    else:
-        lines.append("No scent evidence was supplied. Infer only what the identity supports.")
-    lines.append("Return JSON with exactly these keys: " + ", ".join(REQUESTED_KEYS) + ".")
-    return "\n".join(lines)
-
-
 class OpenAIEnrichmentProvider(ProfileEnrichmentProvider):
-    """Model-backed enrichment whose every output is validated and review-gated.
-
-    The model proposes; it never decides. Responses pass through
-    ``validate_enrichment_payload``, so an unparseable, out-of-vocabulary, oversized, or
-    private-field-carrying answer degrades into a flagged draft instead of bad catalogue data.
-    """
+    """Generate original, review-required drafts from identity fields alone."""
 
     def __init__(
-        self,
-        api_key: str | None = None,
-        *,
-        model: str = DEFAULT_MODEL,
-        client: Any | None = None,
+        self, api_key: str | None = None, *, client: Any = None,
+        allow_fallback: bool | None = None,
     ) -> None:
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        self.model = model
+        if api_key is None and "OPENAI_API_KEY" in os.environ:
+            api_key = os.environ["OPENAI_API_KEY"]
+        self._available = bool(api_key)
+        if client is None and api_key:
+            from openai import OpenAI
+
+            client = OpenAI(api_key=api_key)
         self._client = client
+        self._allow_fallback = ai_fallback_allowed() if allow_fallback is None else allow_fallback
 
     @property
     def is_available(self) -> bool:
-        return bool(self._client or self.api_key)
-
-    def _get_client(self) -> Any:
-        if self._client is not None:
-            return self._client
-        try:
-            from openai import OpenAI
-        except ModuleNotFoundError as error:  # pragma: no cover - depends on optional extra
-            raise RuntimeError(
-                "OpenAI enrichment needs the optional dependency: pip install -e '.[ai]'"
-            ) from error
-        self._client = OpenAI(api_key=self.api_key)
-        return self._client
-
-    def _complete(self, profile: Mapping[str, Any]) -> str:
-        response = self._get_client().chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": build_user_prompt(profile)},
-            ],
-            response_format={"type": "json_object"},
-            temperature=0.2,
-        )
-        return response.choices[0].message.content or ""
+        return self._available
 
     def enrich(self, profile: Mapping[str, Any]) -> dict[str, Any]:
         if not self.is_available:
-            raise RuntimeError("OpenAI enrichment skipped: OPENAI_API_KEY is not configured")
-        required = ("profile_draft_id", "brand_display_name", "fragrance_display_name")
-        missing = [field for field in required if not str(profile.get(field, "")).strip()]
-        if missing:
-            raise ValueError(f"Missing required profile fields: {', '.join(missing)}")
+            return self._offline_fallback(profile, reason="missing API key")
+        identity = sanitise_ai_identity(profile)
         try:
-            payload = json.loads(self._complete(profile))
-        except (json.JSONDecodeError, KeyError, IndexError, AttributeError, TypeError):
-            # A malformed answer must not lose the record: fall back to the deterministic
-            # provider so the draft still reaches review, marked for full human attention.
-            fallback = OfflineHeuristicEnrichmentProvider().enrich(profile)
-            fallback["provenance_notes"] = (
-                f"{WARNING} The model response could not be parsed; this record was built by "
-                "the deterministic offline provider and needs full human enrichment."
+            response = self._client.responses.create(
+                model="gpt-4o-mini",
+                input=[
+                    {"role": "system", "content": (
+                        "Create an original speculative scent-profile draft using only the supplied "
+                        "safe identity and non-commercial scent metadata. Do not retrieve, quote, imitate, or copy any "
+                        "third-party description or review. Treat every field as requiring human review."
+                    )},
+                    {"role": "user", "content": json.dumps(identity, ensure_ascii=True)},
+                ],
+                text={"format": _response_format()},
             )
-            fallback["ai_confidence_band"] = "low"
-            return fallback
-        if not isinstance(payload, Mapping):
-            payload = {}
-        return validate_enrichment_payload(payload, profile)
+        except (RateLimitError, APIError, APIConnectionError, AuthenticationError, OpenAIError):
+            return self._offline_fallback(profile, reason="OpenAI API failure")
+        payload = json.loads(response.output_text)
+        missing = [field for field in AI_DRAFT_FIELDS if field not in payload]
+        if missing:
+            raise ValueError(f"OpenAI response omitted required fields: {', '.join(missing)}")
+        # The JSON schema guarantees the response shape. It does not guarantee the values are
+        # in-vocabulary, bounded, free of copied marketing copy, or distinguishable from
+        # supplier-stated evidence, so the payload is still validated before it is trusted.
+        result = validate_enrichment_payload({**identity, **payload}, profile)
+        result["enrichment_sources"] = [
+            {
+                "source_type": "openai_original_draft",
+                "summary": (
+                    "Generated only from brand and fragrance identity; no third-party text used."
+                ),
+            }
+        ]
+        return result
+
+    def _offline_fallback(self, profile: Mapping[str, Any], *, reason: str) -> dict[str, Any]:
+        """Return a safe draft without retaining or exposing provider error details."""
+        if not self._allow_fallback:
+            raise RuntimeError(
+                f"OpenAI enrichment unavailable ({reason}) and offline fallback is disabled"
+            ) from None
+        result = OfflineHeuristicEnrichmentProvider().enrich(profile)
+        result["enrichment_sources"].append({
+            "source_type": "offline_fallback",
+            "summary": OPENAI_FALLBACK_SUMMARY,
+        })
+        return result
+
+
+def sanitise_ai_identity(profile: Mapping[str, Any]) -> dict[str, Any]:
+    """Return the complete and exclusive payload permitted to leave the application."""
+    identity = {field: str(profile.get(field, "")).strip() for field in IDENTITY_FIELDS}
+    missing = [field for field, value in identity.items() if not value]
+    if missing:
+        raise ValueError(f"Missing required profile fields: {', '.join(missing)}")
+    for field in SAFE_METADATA_FIELDS:
+        value = profile.get(field)
+        if isinstance(value, str) and value.strip():
+            identity[field] = value.strip()
+        elif isinstance(value, (list, tuple)):
+            # Scalars only: nested source/provenance objects never leave the app.
+            identity[field] = [item for item in value if isinstance(item, (str, int, float, bool))]
+    return identity
+
+
+def _response_format() -> dict[str, Any]:
+    string_list = {"type": "array", "items": {"type": "string"}}
+    properties = {field: string_list for field in (
+        "top_notes", "heart_notes", "base_notes", "accords", "mood_tags",
+        "occasion_tags", "season_tags", "fields_requiring_human_review",
+    )}
+    properties.update({field: {"type": "string"} for field in (
+        "fragrance_family", "strength_band", "longevity_band", "projection_band",
+        "draft_scent_description", "ai_confidence_band",
+    )})
+    return {
+        "type": "json_schema", "name": "scent_profile_draft", "strict": True,
+        "schema": {
+            "type": "object", "properties": properties,
+            "required": list(AI_DRAFT_FIELDS), "additionalProperties": False,
+        },
+    }
+
+
+def configured_provider(value: str | None = None) -> str:
+    """Validate the explicit provider setting, defaulting safely to offline."""
+    provider = value if value is not None else os.environ.get("AROMATWIN_AI_PROVIDER", "offline")
+    provider = provider.strip().casefold()
+    if provider not in ALLOWED_PROVIDERS:
+        raise ValueError("AROMATWIN_AI_PROVIDER must be one of: offline, openai")
+    return provider
+
+
+def ai_fallback_allowed(value: str | None = None) -> bool:
+    """Read the fallback switch, defaulting to the resilient and privacy-safe path."""
+    configured = value if value is not None else os.environ.get(
+        "AROMATWIN_AI_ALLOW_FALLBACK", "true"
+    )
+    normalised = configured.strip().casefold()
+    if normalised not in {"true", "false"}:
+        raise ValueError("AROMATWIN_AI_ALLOW_FALLBACK must be true or false")
+    return normalised == "true"
 
 
 def enrich_profile(profile: Mapping[str, Any], provider: ProfileEnrichmentProvider | None = None) -> dict[str, Any]:
     """Enrich a draft using the safe offline provider by default."""
     return (provider or OfflineHeuristicEnrichmentProvider()).enrich(profile)
-

@@ -39,6 +39,7 @@ class Settings(BaseSettings):
     # Opt-in, local-only escape hatch. Authentication fails closed unless this is set
     # explicitly, so an unconfigured or half-configured deployment denies rather than allows.
     allow_insecure_local_auth: bool = False
+    ai_allow_fallback: bool = True
     log_level: str = "INFO"
     public_api_prefix: str = ""
     internal_api_prefix: str = ""

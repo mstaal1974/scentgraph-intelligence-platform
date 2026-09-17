@@ -50,14 +50,13 @@ profiles is a separate commercial step requiring a permitted source. See
 Supplier drafts can be enriched into full scent profiles with a model-backed provider:
 
 ```bash
-pip install -e '.[ai]'
 export OPENAI_API_KEY=...
 python scripts/enrich_private_profile_batch.py --run-id <run> --provider openai
 ```
 
-Model output is never trusted: it is validated against controlled vocabularies, stripped of
-private and restricted fields, marked per field as supplier evidence or model inference, and
-always returned needing human review. See
+Only an allow-listed identity payload leaves the application, and model output is never trusted:
+it is validated against controlled vocabularies, stripped of private and restricted fields, marked
+per field as supplier evidence or model inference, and always returned needing human review. See
 [Model-backed scent profile generation](docs/ai-profile-generation.md), which also sets out the
 provenance risk this approach carries.
 

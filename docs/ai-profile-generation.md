@@ -8,11 +8,13 @@ default and asserts no notes at all.
 ## Running it
 
 ```bash
-pip install -e '.[ai]'
 export OPENAI_API_KEY=...
-python scripts/enrich_private_profile_batch.py \
-    --run-id <run> --provider openai --max-profiles 25 [--model gpt-4o-mini]
+python scripts/enrich_private_profile_batch.py --run-id <run> --provider openai --max-profiles 25
 ```
+
+`openai` is a core dependency, so no extra install step is needed. `AROMATWIN_AI_PROVIDER`
+selects the default provider and `AROMATWIN_AI_ALLOW_FALLBACK` controls whether an API failure
+degrades to the offline provider or raises.
 
 Input is `data/private/runs/<run>/profiles/drafts.json`; output is `enriched_profiles.json`
 beside it. The script refuses to write outside `data/private/`, and the run reports how many
@@ -26,8 +28,17 @@ streamlit run apps/private_profile_review_console.py
 
 ## What the model is and is not trusted with
 
-The model proposes; it never decides. Every response goes through
-`validate_enrichment_payload`, which:
+The model proposes; it never decides. Two layers do the work.
+
+**Before the request**, `sanitise_ai_identity` builds the payload from an explicit allow-list
+(`IDENTITY_FIELDS` plus `SAFE_METADATA_FIELDS`). It is an allow-list rather than a deny-list, so a
+new column from a supplier import cannot accidentally become part of an AI request. The request
+asks for a strict JSON schema, and any API failure — rate limit, auth, connection — degrades to
+the offline provider rather than crashing the batch.
+
+**After the response**, `validate_enrichment_payload` runs. The schema guarantees the shape of the
+answer; it does not guarantee a value is a real season, a sane list length, or original prose, and
+it carries no notion of which fields rest on evidence. So the payload is still validated:
 
 - drops unknown keys and any private or restricted key (prices, supplier codes, stock, ratings,
   reviews, images, URLs), at any depth;

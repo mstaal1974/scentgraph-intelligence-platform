@@ -15,7 +15,6 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from aromatwin.services.profile_enrichment import (  # noqa: E402
-    DEFAULT_MODEL,
     MODEL_PROVENANCE,
     OfflineHeuristicEnrichmentProvider,
     OpenAIEnrichmentProvider,
@@ -30,7 +29,6 @@ def enrich_batch(
     provider_name: str = "offline",
     *,
     private_root: Path = PRIVATE_ROOT,
-    model: str = DEFAULT_MODEL,
 ) -> Path:
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", run_id):
         raise ValueError("Invalid run ID")
@@ -47,7 +45,7 @@ def enrich_batch(
     provider = (
         OfflineHeuristicEnrichmentProvider()
         if provider_name == "offline"
-        else OpenAIEnrichmentProvider(model=model)
+        else OpenAIEnrichmentProvider()
     )
     if not provider.is_available:
         raise RuntimeError("OpenAI enrichment skipped: OPENAI_API_KEY is not configured")
@@ -73,10 +71,9 @@ def main() -> int:
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--max-profiles", type=int, default=25)
     parser.add_argument("--provider", choices=("offline", "openai"), default="offline")
-    parser.add_argument("--model", default=DEFAULT_MODEL, help="Model id for --provider openai.")
     args = parser.parse_args()
     try:
-        print(enrich_batch(args.run_id, args.max_profiles, args.provider, model=args.model))
+        print(enrich_batch(args.run_id, args.max_profiles, args.provider))
     except (OSError, ValueError, RuntimeError, json.JSONDecodeError) as exc:
         parser.error(str(exc))
     return 0

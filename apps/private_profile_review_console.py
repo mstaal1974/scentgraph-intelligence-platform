@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -15,7 +16,13 @@ if str(SRC_ROOT) not in sys.path:
 
 from aromatwin.services.profile_enrichment import (  # noqa: E402
     EVIDENCE_PROVENANCE,
+    MISSING_KEY_WARNING,
     MODEL_PROVENANCE,
+    OPENAI_FALLBACK_SUMMARY,
+    OfflineHeuristicEnrichmentProvider,
+    OpenAIEnrichmentProvider,
+    OpenAIError,
+    configured_provider,
 )
 from aromatwin.services.review_decisions import apply_review_decision  # noqa: E402
 from aromatwin.services.review_gates import ALLOWED_DECISIONS  # noqa: E402
@@ -33,6 +40,10 @@ SAFETY_COPY = (
     "approve public catalogue content, create products, or export to Maison Obsidian."
 )
 ENRICHMENT_WARNING = "AI enrichment is draft-only and requires human review before catalogue use."
+OPENAI_FALLBACK_WARNING = (
+    "OpenAI enrichment is currently unavailable or rate-limited. Offline draft enrichment "
+    "was used instead."
+)
 COMMERCIAL_FIELD_PARTS = (
     "price", "cost", "margin", "stock", "inventory", "wholesale", "commercial_terms",
     "moq", "minimum_order", "supplier_code", "aed", "usd",
@@ -182,8 +193,56 @@ def record_decision(
     return result
 
 
+def save_enrichments(
+    run_id: str, enrichments: Iterable[dict[str, Any]], *,
+    private_root: str | Path = PRIVATE_ROOT,
+) -> Path:
+    """Upsert enrichments at the one permitted private run destination."""
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", run_id):
+        raise ValueError("run_id may contain only letters, numbers, dots, underscores, and hyphens")
+    destination = private_path(
+        Path("runs") / run_id / "profiles" / "enriched_profiles.json",
+        private_root=private_root,
+    )
+    existing = _load_list(destination, private_root=private_root)
+    indexed = {str(row.get("profile_draft_id")): row for row in existing}
+    for enrichment in enrichments:
+        safe = without_commercial_fields(dict(enrichment))
+        indexed[str(safe.get("profile_draft_id"))] = safe
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(json.dumps(list(indexed.values()), indent=2) + "\n", encoding="utf-8")
+    return destination
+
+
+def enrichment_provider(provider_name: str, openai_key: str | None):
+    """Select a provider, falling back deterministically when no key exists."""
+    if provider_name == "openai":
+        return OpenAIEnrichmentProvider(api_key=openai_key)
+    return OfflineHeuristicEnrichmentProvider()
+
+
+def batch_enrichment_limit(*, cloud_demo: bool, requested: int = 1) -> int:
+    """Return a bounded batch size, with a single-profile cloud-demo default."""
+    if requested < 1:
+        raise ValueError("Batch enrichment must include at least one profile")
+    return 1 if cloud_demo and requested == 1 else requested
+
+
 def _options(rows: Iterable[dict[str, Any]], field: str) -> list[str]:
     return sorted({str(row.get(field)) for row in rows if row.get(field) is not None})
+
+
+def streamlit_openai_key(secrets: Any) -> str | None:
+    """Read the key from Streamlit secrets, then the process environment, and nowhere else."""
+    try:
+        secret_key = secrets["OPENAI_API_KEY"]
+    except (KeyError, FileNotFoundError):
+        secret_key = None
+    if secret_key:
+        return str(secret_key)
+    if "OPENAI_API_KEY" in os.environ:
+        return os.environ["OPENAI_API_KEY"]
+    return None
 
 
 def main() -> None:
@@ -201,7 +260,21 @@ def main() -> None:
     if demo_mode:
         st.info("Demo mode: showing sanitised fictional records. Decisions remain in this browser session only.")
         decisions = st.session_state.setdefault("demo_review_decisions", [])
+        demo_enrichments = st.session_state.setdefault("demo_profile_enrichments", {})
+        drafts = [
+            {**draft, **demo_enrichments.get(str(draft.get("profile_draft_id")), {})}
+            for draft in drafts
+        ]
     st.warning(ENRICHMENT_WARNING)
+    try:
+        provider_name = configured_provider()
+    except ValueError as exc:
+        st.error(str(exc))
+        st.stop()
+    openai_key = streamlit_openai_key(st.secrets)
+    if not openai_key:
+        st.info(MISSING_KEY_WARNING)
+    provider = enrichment_provider(provider_name, openai_key)
 
     latest = {str(row.get("review_item_id")): row for row in decisions}
     packet_by_draft = {str(row.get("profile_draft_id")): row for row in packets}
@@ -262,6 +335,59 @@ def main() -> None:
     selected_id = st.selectbox("Selected profile", labels, format_func=labels.get)
     selected = next(row for row in filtered if str(row["profile_draft_id"]) == selected_id)
     packet = packet_by_draft.get(selected_id)
+
+    action_one, action_batch = st.columns(2)
+    enrich_selected = action_one.button("Enrich selected profile", type="primary")
+    batch_enrich = False
+    max_profiles = 1
+    if demo_mode:
+        max_profiles = action_batch.number_input(
+            "Max profiles", min_value=1, max_value=max(1, len(filtered)), value=1, step=1
+        )
+        confirm_batch = action_batch.checkbox(
+            "Confirm OpenAI enrichment for visible profiles", value=False
+        )
+        batch_enrich = action_batch.button(
+            "Batch enrich visible profiles", disabled=not confirm_batch
+        )
+
+    batch_limit = batch_enrichment_limit(cloud_demo=demo_mode, requested=int(max_profiles))
+    targets = filtered[:batch_limit] if batch_enrich else ([selected] if enrich_selected else [])
+    if targets:
+        try:
+            generated = [provider.enrich(target) for target in targets]
+        except OpenAIError:
+            # The provider normally handles SDK failures itself. Keep this UI-level
+            # safety net free of exception details so credentials and provider
+            # responses can never be exposed in the console.
+            generated = [OfflineHeuristicEnrichmentProvider().enrich(target) for target in targets]
+            for enrichment in generated:
+                enrichment["enrichment_sources"].append({
+                    "source_type": "offline_fallback",
+                    "summary": OPENAI_FALLBACK_SUMMARY,
+                })
+
+        try:
+            if demo_mode:
+                cached = st.session_state.setdefault("demo_profile_enrichments", {})
+                for enrichment in generated:
+                    cached[str(enrichment["profile_draft_id"])] = enrichment
+            else:
+                save_enrichments(run_id, generated)
+            by_id = {str(row["profile_draft_id"]): row for row in generated}
+            for row in rows:
+                row.update(by_id.get(str(row.get("profile_draft_id")), {}))
+            selected.update(by_id.get(selected_id, {}))
+            if any(
+                source.get("source_type") == "offline_fallback"
+                for enrichment in generated
+                for source in enrichment.get("enrichment_sources", [])
+            ):
+                st.warning(OPENAI_FALLBACK_WARNING)
+            st.success(f"Created {len(generated)} enrichment draft(s). Human review is required.")
+        except (OSError, RuntimeError, ValueError, json.JSONDecodeError) as exc:
+            st.error(f"Enrichment could not be created: {exc}")
+
     overview, scent_profile, evidence, review = st.tabs(
         ["Overview", "Scent Profile", "Evidence & Provenance", "Review Decision"]
     )
@@ -274,6 +400,7 @@ def main() -> None:
             st.subheader("Review packet")
             st.json(without_commercial_fields(packet))
     with scent_profile:
+        st.caption(f"AI provider: {provider_name}")
         scent_fields = ("fragrance_family", "top_notes", "heart_notes", "base_notes", "accords",
                         "mood_tags", "occasion_tags", "season_tags", "strength_band",
                         "longevity_band", "projection_band", "draft_scent_description")

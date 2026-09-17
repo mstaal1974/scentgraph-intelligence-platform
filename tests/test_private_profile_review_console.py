@@ -4,10 +4,12 @@ from pathlib import Path
 import pytest
 
 from apps.private_profile_review_console import (
+    batch_enrichment_limit,
     build_review_item,
     load_review_data,
     private_path,
     record_decision,
+    save_enrichments,
     without_commercial_fields,
 )
 
@@ -67,3 +69,20 @@ def test_commercial_supplier_fields_are_not_rendered_or_written_publicly(tmp_pat
     assert not (tmp_path / "public").exists()
     saved = (root / "reports" / "review_decisions.json").read_text(encoding="utf-8")
     assert "supplier_price" not in saved and "margin_band" not in saved
+
+
+def test_enrichment_is_upserted_only_at_the_private_run_path(tmp_path: Path):
+    root = tmp_path / "data" / "private"
+    enrichment = {**_draft(), "accords": ["fresh"], "supplier_price": "secret"}
+
+    destination = save_enrichments("run-1", [enrichment], private_root=root)
+    save_enrichments("run-1", [{**enrichment, "accords": ["woody"]}], private_root=root)
+
+    assert destination == root / "runs" / "run-1" / "profiles" / "enriched_profiles.json"
+    saved = json.loads(destination.read_text(encoding="utf-8"))
+    assert len(saved) == 1 and saved[0]["accords"] == ["woody"]
+    assert "supplier_price" not in saved[0]
+
+
+def test_cloud_demo_batch_enrichment_defaults_to_one_profile():
+    assert batch_enrichment_limit(cloud_demo=True) == 1
