@@ -167,6 +167,9 @@ Remaining manual/external tasks:
 9. Update the Maison Obsidian website later, in its own repository.
 # Scentprint quiz contract handoff
 
+The local and GitHub Codespaces procedure for the private runtime workflow is documented
+in the [private supplier import operator runbook](private-supplier-import-operator-runbook.md).
+
 After this focused contract PR, the manual sequence is:
 
 1. Merge the Scentprint quiz contract pack.

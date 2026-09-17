@@ -1,5 +1,8 @@
 # Profile pipeline rehearsal
 
+For the separate human-operated real-input workflow, use the
+[private supplier import operator runbook](private-supplier-import-operator-runbook.md); never use rehearsal samples as supplier input.
+
 This pack exercises the existing supplier intake, matching, batch planning, draft generation, enrichment, provenance, review, Maison-readiness, and completion boundaries using **fictional, sample-safe identifiers**. It makes no network request and cannot approve or publish a profile, create a product, export to Maison, or deploy infrastructure.
 
 Real supplier price files must never be stored under `data/samples/`. Real supplier files

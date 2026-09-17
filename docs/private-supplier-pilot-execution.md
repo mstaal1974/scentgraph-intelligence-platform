@@ -1,5 +1,8 @@
 # Private supplier pilot execution pack
 
+For local or GitHub Codespaces setup, file-placement safeguards, exact commands, and
+cleanup guidance, follow the [private supplier import operator runbook](private-supplier-import-operator-runbook.md).
+
 > Prerequisite: a human must complete the [staging smoke test and operator handoff](staging-smoke-test-operator-handoff.md) before placing supplier files in private runtime storage or starting this workflow.
 
 This pack is an operational safety layer over the existing import, matching, sourcing,
