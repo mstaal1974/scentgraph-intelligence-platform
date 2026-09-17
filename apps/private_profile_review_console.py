@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -13,6 +14,12 @@ SRC_ROOT = REPOSITORY_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
+from aromatwin.services.profile_enrichment import (  # noqa: E402
+    MISSING_KEY_WARNING,
+    OfflineHeuristicEnrichmentProvider,
+    OpenAIEnrichmentProvider,
+    configured_provider,
+)
 from aromatwin.services.review_decisions import apply_review_decision  # noqa: E402
 from aromatwin.services.review_gates import ALLOWED_DECISIONS  # noqa: E402
 
@@ -177,6 +184,19 @@ def _options(rows: Iterable[dict[str, Any]], field: str) -> list[str]:
     return sorted({str(row.get(field)) for row in rows if row.get(field) is not None})
 
 
+def streamlit_openai_key(secrets: Any) -> str | None:
+    """Read the key from Streamlit secrets, then the process environment, and nowhere else."""
+    try:
+        secret_key = secrets["OPENAI_API_KEY"]
+    except (KeyError, FileNotFoundError):
+        secret_key = None
+    if secret_key:
+        return str(secret_key)
+    if "OPENAI_API_KEY" in os.environ:
+        return os.environ["OPENAI_API_KEY"]
+    return None
+
+
 def main() -> None:
     import streamlit as st
 
@@ -193,6 +213,14 @@ def main() -> None:
         st.info("Demo mode: showing sanitised fictional records. Decisions remain in this browser session only.")
         decisions = st.session_state.setdefault("demo_review_decisions", [])
     st.warning(ENRICHMENT_WARNING)
+    try:
+        provider_name = configured_provider()
+    except ValueError as exc:
+        st.error(str(exc))
+        st.stop()
+    openai_key = streamlit_openai_key(st.secrets)
+    if not openai_key:
+        st.info(MISSING_KEY_WARNING)
 
     latest = {str(row.get("review_item_id")): row for row in decisions}
     packet_by_draft = {str(row.get("profile_draft_id")): row for row in packets}
@@ -265,6 +293,21 @@ def main() -> None:
             st.subheader("Review packet")
             st.json(without_commercial_fields(packet))
     with scent_profile:
+        st.caption(f"AI provider: {provider_name}")
+        if st.button("Create enrichment draft", help="Creates a draft from brand and fragrance identity only."):
+            provider = (
+                OpenAIEnrichmentProvider(api_key=openai_key)
+                if provider_name == "openai" and openai_key
+                else OfflineHeuristicEnrichmentProvider()
+            )
+            # Demo deployments can reach this path only with the built-in sanitised records.
+            try:
+                enriched = provider.enrich(selected)
+            except (RuntimeError, ValueError, json.JSONDecodeError) as exc:
+                st.error(f"Enrichment could not be created: {exc}")
+            else:
+                selected.update(enriched)
+                st.success("Draft enrichment created. Human review is required.")
         scent_fields = ("fragrance_family", "top_notes", "heart_notes", "base_notes", "accords",
                         "mood_tags", "occasion_tags", "season_tags", "strength_band",
                         "longevity_band", "projection_band", "draft_scent_description")

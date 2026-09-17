@@ -3,11 +3,18 @@ from pathlib import Path
 
 import pytest
 
-from apps.private_profile_review_console import demo_review_data, load_console_data
+from apps.private_profile_review_console import (
+    demo_review_data,
+    load_console_data,
+    streamlit_openai_key,
+)
 from aromatwin.services.profile_enrichment import (
+    AI_DRAFT_FIELDS,
+    MISSING_KEY_WARNING,
     OUTPUT_FIELDS,
     OfflineHeuristicEnrichmentProvider,
     OpenAIEnrichmentProvider,
+    configured_provider,
 )
 from scripts.enrich_private_profile_batch import enrich_batch
 
@@ -71,3 +78,85 @@ def test_openai_provider_skips_safely_without_key(monkeypatch: pytest.MonkeyPatc
     assert not provider.is_available
     with pytest.raises(RuntimeError, match="skipped"):
         provider.enrich(_draft())
+
+
+def test_missing_key_falls_back_without_crashing(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    assert streamlit_openai_key({}) is None
+    assert MISSING_KEY_WARNING == (
+        "OpenAI API key is not configured. Using offline demo enrichment."
+    )
+    assert OfflineHeuristicEnrichmentProvider().enrich(_draft())["fragrance_family"] == "citrus"
+
+
+def test_key_is_read_only_from_streamlit_secrets_or_environment(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "environment-secret")
+    assert streamlit_openai_key({}) == "environment-secret"
+    assert streamlit_openai_key({"OPENAI_API_KEY": "streamlit-secret"}) == "streamlit-secret"
+
+
+class _FakeResponses:
+    def __init__(self, payload: dict[str, object]) -> None:
+        self.payload = payload
+        self.calls: list[dict[str, object]] = []
+
+    def create(self, **kwargs):
+        self.calls.append(kwargs)
+        return type("Response", (), {"output_text": json.dumps(self.payload)})()
+
+
+class _FakeClient:
+    def __init__(self, payload: dict[str, object]) -> None:
+        self.responses = _FakeResponses(payload)
+
+
+def _ai_payload() -> dict[str, object]:
+    list_fields = {
+        "top_notes", "heart_notes", "base_notes", "accords", "mood_tags",
+        "occasion_tags", "season_tags", "fields_requiring_human_review",
+    }
+    return {
+        field: (["human verification"] if field in list_fields else "unknown")
+        for field in AI_DRAFT_FIELDS
+    }
+
+
+def test_openai_call_contains_identity_only_and_returns_required_fields():
+    client = _FakeClient(_ai_payload())
+    draft = {
+        **_draft(), "supplier_code": "SECRET-SKU", "price": "90", "AED": "330",
+        "USD": "90", "stock": 12, "cost": 30, "margin": 60, "quantity": 2,
+        "commercial_terms": "private", "description": "third-party copy",
+        "reviews": ["third-party review"],
+    }
+
+    enriched = OpenAIEnrichmentProvider(api_key="test-key", client=client).enrich(draft)
+
+    sent = json.dumps(client.responses.calls)
+    assert "Fictional Atelier" in sent and "Citrus Woods" in sent
+    for forbidden in (
+        "supplier_code", "SECRET-SKU", "price", "AED", "USD", "stock", "cost",
+        "margin", "quantity", "commercial_terms", "third-party copy", "third-party review",
+    ):
+        assert forbidden not in sent
+    assert set(AI_DRAFT_FIELDS) <= enriched.keys()
+
+
+def test_api_key_is_not_logged_or_written(tmp_path: Path, caplog: pytest.LogCaptureFixture):
+    key = "test-secret-never-persist"
+    client = _FakeClient(_ai_payload())
+    OpenAIEnrichmentProvider(api_key=key, client=client).enrich(_draft())
+
+    assert key not in caplog.text
+    assert all(key not in path.read_text(errors="ignore") for path in tmp_path.rglob("*") if path.is_file())
+    assert key not in json.dumps(client.responses.calls)
+
+
+@pytest.mark.parametrize("value", ["offline", "openai", "OPENAI"])
+def test_allowed_provider_values(value: str):
+    assert configured_provider(value) in {"offline", "openai"}
+
+
+def test_invalid_provider_is_rejected():
+    with pytest.raises(ValueError, match="offline, openai"):
+        configured_provider("other")
