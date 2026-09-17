@@ -30,6 +30,14 @@ AI_DRAFT_FIELDS = (
     "fields_requiring_human_review",
 )
 IDENTITY_FIELDS = ("brand_display_name", "fragrance_display_name")
+# This is deliberately an allow-list rather than a deny-list.  New fields from a
+# supplier import therefore cannot accidentally become part of an AI request.
+SAFE_METADATA_FIELDS = (
+    "fragrance_family", "top_notes", "heart_notes", "base_notes", "accords",
+    "mood_tags", "occasion_tags", "season_tags", "strength_band",
+    "longevity_band", "projection_band", "ai_confidence_band",
+    "fields_requiring_human_review", "enrichment_status", "review_status",
+)
 MISSING_KEY_WARNING = "OpenAI API key is not configured. Using offline demo enrichment."
 ALLOWED_PROVIDERS = ("offline", "openai")
 
@@ -137,7 +145,7 @@ class OpenAIEnrichmentProvider(ProfileEnrichmentProvider):
             input=[
                 {"role": "system", "content": (
                     "Create an original speculative scent-profile draft using only the supplied "
-                    "brand and fragrance identity. Do not retrieve, quote, imitate, or copy any "
+                    "safe identity and non-commercial scent metadata. Do not retrieve, quote, imitate, or copy any "
                     "third-party description or review. Treat every field as requiring human review."
                 )},
                 {"role": "user", "content": json.dumps(identity, ensure_ascii=True)},
@@ -163,12 +171,19 @@ class OpenAIEnrichmentProvider(ProfileEnrichmentProvider):
         return {field: result[field] for field in OUTPUT_FIELDS}
 
 
-def sanitise_ai_identity(profile: Mapping[str, Any]) -> dict[str, str]:
+def sanitise_ai_identity(profile: Mapping[str, Any]) -> dict[str, Any]:
     """Return the complete and exclusive payload permitted to leave the application."""
     identity = {field: str(profile.get(field, "")).strip() for field in IDENTITY_FIELDS}
     missing = [field for field, value in identity.items() if not value]
     if missing:
         raise ValueError(f"Missing required profile fields: {', '.join(missing)}")
+    for field in SAFE_METADATA_FIELDS:
+        value = profile.get(field)
+        if isinstance(value, str) and value.strip():
+            identity[field] = value.strip()
+        elif isinstance(value, (list, tuple)):
+            # Scalars only: nested source/provenance objects never leave the app.
+            identity[field] = [item for item in value if isinstance(item, (str, int, float, bool))]
     return identity
 
 
