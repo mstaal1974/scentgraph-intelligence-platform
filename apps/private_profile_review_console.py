@@ -4,13 +4,18 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 from typing import Any, Iterable
+
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+SRC_ROOT = REPOSITORY_ROOT / "src"
+if str(SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(SRC_ROOT))
 
 from aromatwin.services.review_decisions import apply_review_decision
 from aromatwin.services.review_gates import ALLOWED_DECISIONS
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 PRIVATE_ROOT = (REPOSITORY_ROOT / "data" / "private").resolve()
 DEFAULT_RUN_ID = "first_private_supplier_profile_run_20260917"
 DECISIONS_PATH = PRIVATE_ROOT / "reports" / "review_decisions.json"
