@@ -20,6 +20,21 @@ REPLACEMENT_SAMPLES = (
     "supplier_catalogue_public_shape_sample.csv",
     "fatma_supplier_catalogue_public_shape_sample.csv",
 )
+FORBIDDEN_REPLACEMENT_TERMS = {
+    "code",
+    "cn",
+    "qty",
+    "aed",
+    "usd",
+    "price",
+    "cost",
+    "margin",
+    "stock",
+    "quantity",
+    "supplier_code",
+    "supplier_price",
+    "commercial_terms",
+}
 
 
 def test_public_samples_pass_private_audit():
@@ -70,6 +85,8 @@ def test_replacement_samples_use_only_safe_shape(name: str):
     assert set(reader.fieldnames or ()) == ALLOWED_PUBLIC_SHAPE_COLUMNS
     assert rows
     assert all("fictional" in " ".join(row.values()).casefold() for row in rows)
+    sample_text = " ".join(value for row in rows for value in row.values()).casefold()
+    assert all(term not in sample_text for term in FORBIDDEN_REPLACEMENT_TERMS)
 
 
 def test_private_workflow_docs_define_runtime_path_and_sample_boundary():
