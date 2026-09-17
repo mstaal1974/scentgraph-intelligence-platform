@@ -1,0 +1,76 @@
+{
+  "audits": [
+    {
+      "audit": "scripts/validate_data.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_supplier_data.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_supplier_offers.py",
+      "status": "failed"
+    },
+    {
+      "audit": "scripts/audit_seller_supplier_matching.py",
+      "status": "failed"
+    },
+    {
+      "audit": "scripts/audit_consumer_scent_privacy.py",
+      "status": "failed"
+    },
+    {
+      "audit": "scripts/audit_launch_intelligence_privacy.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_pilot_workflow_privacy.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_persistence_privacy.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_review_workflow_privacy.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_private_pilot_inputs.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_platform_completion_privacy.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_deployment_privacy.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_staging_smoke_privacy.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_maison_integration_privacy.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_scentprint_quiz_privacy.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_commercial_packaging_privacy.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_profile_production_privacy.py",
+      "status": "passed"
+    },
+    {
+      "audit": "scripts/audit_profile_pipeline_rehearsal_privacy.py",
+      "status": "passed"
+    }
+  ]
+}
