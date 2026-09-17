@@ -25,3 +25,4 @@ staging/
 /data/private/exports/**
 /data/private/runs/**
 /private/**
+data/private/
