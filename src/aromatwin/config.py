@@ -36,6 +36,9 @@ class Settings(BaseSettings):
     )
     enable_admin_console: bool = True
     enable_private_supplier_endpoints: bool = True
+    # Opt-in, local-only escape hatch. Authentication fails closed unless this is set
+    # explicitly, so an unconfigured or half-configured deployment denies rather than allows.
+    allow_insecure_local_auth: bool = False
     log_level: str = "INFO"
     public_api_prefix: str = ""
     internal_api_prefix: str = ""
@@ -61,17 +64,26 @@ class Settings(BaseSettings):
         return value
 
     @model_validator(mode="after")
-    def validate_production(self) -> "Settings":
-        if self.environment == "production":
-            missing = []
-            if self.enable_admin_console and not self.admin_api_key:
-                missing.append("AROMATWIN_ADMIN_API_KEY")
-            if self.enable_private_supplier_endpoints and not self.private_api_key:
-                missing.append("AROMATWIN_PRIVATE_API_KEY")
-            if missing:
-                raise ValueError("Production requires configured secrets: " + ", ".join(missing))
-            if "*" in self.allowed_origins:
-                raise ValueError("Wildcard CORS origins are not permitted in production")
+    def validate_deployed_environment(self) -> "Settings":
+        """Refuse to start a non-local environment that cannot authenticate its surfaces."""
+        if self.is_local:
+            return self
+        missing = ["AROMATWIN_API_KEY"] if not self.api_key else []
+        if self.enable_admin_console and not self.admin_api_key:
+            missing.append("AROMATWIN_ADMIN_API_KEY")
+        if self.enable_private_supplier_endpoints and not self.private_api_key:
+            missing.append("AROMATWIN_PRIVATE_API_KEY")
+        if missing:
+            raise ValueError(
+                f"Environment '{self.environment}' requires configured secrets: "
+                + ", ".join(missing)
+            )
+        if "*" in self.allowed_origins:
+            raise ValueError("Wildcard CORS origins are not permitted outside local environments")
+        if self.allow_insecure_local_auth:
+            raise ValueError(
+                "AROMATWIN_ALLOW_INSECURE_LOCAL_AUTH is only permitted in local environments"
+            )
         return self
 
     @property

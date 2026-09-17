@@ -1,6 +1,6 @@
 """Stateless public-safe Scentprint quiz endpoints."""
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from aromatwin.schemas.scentprint_quiz import (
     ScentprintQuizAuditReport,
@@ -10,6 +10,7 @@ from aromatwin.schemas.scentprint_quiz import (
     ScentprintQuizResultRead,
     ScentprintQuizVectorRead,
 )
+from aromatwin.security import require_public_api_key
 from aromatwin.services.scentprint_quiz_contracts import (
     QUIZ_CONTRACT_VERSION,
     get_quiz_contract,
@@ -18,7 +19,7 @@ from aromatwin.services.scentprint_quiz_contracts import (
 from aromatwin.services.scentprint_quiz_results import build_quiz_result
 from aromatwin.services.scentprint_quiz_scoring import score_quiz_responses
 
-router = APIRouter(prefix="/scentprint-quiz", tags=["public scentprint quiz"])
+router = APIRouter(prefix="/scentprint-quiz", tags=["public scentprint quiz"], dependencies=[Depends(require_public_api_key)])
 
 
 @router.get("/health")

@@ -13,6 +13,30 @@ Maison responses remain schema-allowlisted, approved-catalogue projections. They
 supplier rows, review records, supplier prices/codes, inventory, commercial terms, or copied
 third-party content.
 
+## Authentication boundary
+
+Authentication **fails closed**. A surface with no configured key authenticates nobody, and
+`Settings` refuses to start any non-local `AROMATWIN_ENVIRONMENT` while `AROMATWIN_API_KEY`,
+`AROMATWIN_ADMIN_API_KEY`, or `AROMATWIN_PRIVATE_API_KEY` is blank. There is no implicit
+development bypass: `AROMATWIN_ALLOW_INSECURE_LOCAL_AUTH` must be set explicitly, and settings
+validation rejects it outside `development`, `dev`, `local`, `test`, and `testing`.
+
+| Surface | Header | Routes |
+| --- | --- | --- |
+| Licensed retailer API | `X-API-Key` | `/maison/*`, `/products/*`, `/scentprint-quiz/*` |
+| Private operator API | `X-Private-API-Key` | supplier, pilot, review, operations, and the intelligence workbench (`/catalogue`, `/profile-drafts`, `/enrichment-reviews`, `/match-candidates`, `/scent-vectors`, `/recommendations`, `/brands`, `/fragrances`, `/notes`, `/search`) |
+| Admin console | `X-Admin-API-Key` | `/admin/*` |
+| Anonymous | none | `/health`, `/deployment/health`, OpenAPI documents |
+
+`X-API-Key` is accepted as a fallback for the admin and private surfaces so a single operator
+credential can be issued, but the specific headers take precedence.
+
+The retailer surface requires a key because it is the boundary every metered plan is attributed
+against; `require_public_api_key` returns the caller's key so quota and usage accounting can hang
+off it once tenant identity exists. `tests/test_auth_route_coverage.py` fails if any route outside
+the anonymous allowlist loses its credential dependency.
+
+
 ## Configuration
 
 | Variable | Purpose |

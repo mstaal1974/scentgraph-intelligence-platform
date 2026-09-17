@@ -12,11 +12,11 @@ from aromatwin.schemas.maison import (
     MaisonScentprintResult,
     MaisonSimilarFragranceResult,
 )
-from aromatwin.security import optional_public_api_key
+from aromatwin.security import require_public_api_key
 from aromatwin.services.maison_integration import MaisonIntegrationService
 
 router = APIRouter(
-    prefix="/maison", tags=["maison"], dependencies=[Depends(optional_public_api_key)]
+    prefix="/maison", tags=["maison"], dependencies=[Depends(require_public_api_key)]
 )
 SERVICE = MaisonIntegrationService()
 

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from aromatwin.routers.enrichment_reviews import _REVIEWS
 from aromatwin.schemas.catalogue import (
@@ -8,9 +8,14 @@ from aromatwin.schemas.catalogue import (
     CataloguePromotionRequest,
     CataloguePromotionResult,
 )
+from aromatwin.security import require_private_api_key
 from aromatwin.services.catalogue_promotion import CatalogueFragrance, promote_enrichment_review
 
-router = APIRouter(prefix="/catalogue", tags=["catalogue promotion"])
+router = APIRouter(
+    prefix="/catalogue",
+    tags=["catalogue promotion"],
+    dependencies=[Depends(require_private_api_key)],
+)
 _CATALOGUE: list[CatalogueFragrance] = []
 
 
@@ -47,8 +52,10 @@ def promote_catalogue(request: CataloguePromotionRequest) -> CataloguePromotionR
 @router.get("/brands", response_model=list[CatalogueBrandRead])
 def list_catalogue_brands() -> list[CatalogueBrandRead]:
     unique = {item.brand_id: item for item in _CATALOGUE}
-    return [CatalogueBrandRead(id=item.brand_id, name=item.brand, slug=item.brand_slug)
-            for item in unique.values()]
+    return [
+        CatalogueBrandRead(id=item.brand_id, name=item.brand, slug=item.brand_slug)
+        for item in unique.values()
+    ]
 
 
 @router.get("/brands/{brand_id}", response_model=CatalogueBrandRead)

@@ -13,7 +13,7 @@ from aromatwin.schemas.product_catalogue import (
     ProductVariantBuildResult,
     ProductVariantPublicRead,
 )
-from aromatwin.security import optional_public_api_key, require_admin_api_key
+from aromatwin.security import require_admin_api_key, require_public_api_key
 from aromatwin.services.product_bundle_builder import ProductBundleBuilder
 from aromatwin.services.product_catalogue import ProductCatalogueService
 from aromatwin.services.product_variant_builder import ProductVariantBuilder
@@ -29,7 +29,7 @@ def _public(row: dict[str, object], schema: type) -> object:
     return schema.model_validate(row)
 
 
-@router.get("/health", dependencies=[Depends(optional_public_api_key)])
+@router.get("/health", dependencies=[Depends(require_public_api_key)])
 def health() -> dict[str, object]:
     return {"status": "ok", "service": "maison-product-catalogue", "product_count": len(PRODUCTS)}
 
@@ -56,7 +56,7 @@ def build_products(request: ProductCatalogueBuildRequest) -> dict[str, object]:
 @router.get(
     "",
     response_model=list[ProductCataloguePublicRead],
-    dependencies=[Depends(optional_public_api_key)],
+    dependencies=[Depends(require_public_api_key)],
 )
 def products() -> list[object]:
     return [_public(item, ProductCataloguePublicRead) for item in PRODUCTS]
@@ -65,7 +65,7 @@ def products() -> list[object]:
 @router.get(
     "/slug/{product_slug}",
     response_model=ProductCataloguePublicRead,
-    dependencies=[Depends(optional_public_api_key)],
+    dependencies=[Depends(require_public_api_key)],
 )
 def product_by_slug(product_slug: str) -> object:
     row = next((item for item in PRODUCTS if item["product_slug"] == product_slug), None)
@@ -91,7 +91,7 @@ def build_variants(request: ProductVariantBuildRequest) -> dict[str, object]:
 @router.get(
     "/bundles",
     response_model=list[ProductBundlePublicRead],
-    dependencies=[Depends(optional_public_api_key)],
+    dependencies=[Depends(require_public_api_key)],
 )
 def bundles() -> list[object]:
     return [_public(item, ProductBundlePublicRead) for item in BUNDLES]
@@ -114,7 +114,7 @@ def build_bundles(request: ProductBundleBuildRequest) -> dict[str, object]:
 @router.get(
     "/bundles/{bundle_id}",
     response_model=ProductBundlePublicRead,
-    dependencies=[Depends(optional_public_api_key)],
+    dependencies=[Depends(require_public_api_key)],
 )
 def bundle(bundle_id: str) -> object:
     row = next((item for item in BUNDLES if item["bundle_id"] == bundle_id), None)
@@ -126,7 +126,7 @@ def bundle(bundle_id: str) -> object:
 @router.get(
     "/export/maison",
     response_model=list[ProductCataloguePublicRead],
-    dependencies=[Depends(optional_public_api_key)],
+    dependencies=[Depends(require_public_api_key)],
 )
 def export_products() -> list[object]:
     return products()
@@ -135,7 +135,7 @@ def export_products() -> list[object]:
 @router.get(
     "/export/variants",
     response_model=list[ProductVariantPublicRead],
-    dependencies=[Depends(optional_public_api_key)],
+    dependencies=[Depends(require_public_api_key)],
 )
 def export_variants() -> list[object]:
     return [_public(item, ProductVariantPublicRead) for item in VARIANTS]
@@ -144,7 +144,7 @@ def export_variants() -> list[object]:
 @router.get(
     "/export/bundles",
     response_model=list[ProductBundlePublicRead],
-    dependencies=[Depends(optional_public_api_key)],
+    dependencies=[Depends(require_public_api_key)],
 )
 def export_bundles() -> list[object]:
     return bundles()
@@ -153,7 +153,7 @@ def export_bundles() -> list[object]:
 @router.get(
     "/{product_id}/variants",
     response_model=list[ProductVariantPublicRead],
-    dependencies=[Depends(optional_public_api_key)],
+    dependencies=[Depends(require_public_api_key)],
 )
 def product_variants(product_id: str) -> list[object]:
     if not any(item["product_id"] == product_id for item in PRODUCTS):
@@ -168,7 +168,7 @@ def product_variants(product_id: str) -> list[object]:
 @router.get(
     "/{product_id}",
     response_model=ProductCataloguePublicRead,
-    dependencies=[Depends(optional_public_api_key)],
+    dependencies=[Depends(require_public_api_key)],
 )
 def product(product_id: str) -> object:
     row = next((item for item in PRODUCTS if item["product_id"] == product_id), None)
