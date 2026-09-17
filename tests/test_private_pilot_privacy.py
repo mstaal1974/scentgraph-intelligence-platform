@@ -41,11 +41,24 @@ def test_audit_rejects_forbidden_public_sample_headers(tmp_path: Path, field: st
 
 
 def test_unsafe_supplier_price_samples_are_absent():
+    samples = ROOT / "data/samples"
     unsafe_names = (
         "FATMA PERFUME PRICE LIST(Table 1).csv",
         "PERFUME OIL PRICE LIST  26.04.2026 (1).csv",
+        "PERFUME OIL PRICE LIST  26.04.2026 (1).xlsx",
     )
-    assert all(not (ROOT / "data/samples" / name).exists() for name in unsafe_names)
+    assert all(not (samples / name).exists() for name in unsafe_names)
+
+    unsafe_filename_markers = ("price list", "supplier price", "commercial terms")
+    unsafe_named_files = [
+        path
+        for path in samples.iterdir()
+        if any(marker in path.name.casefold() for marker in unsafe_filename_markers)
+    ]
+    assert unsafe_named_files == []
+    assert list(samples.glob("*.xls")) == []
+    assert list(samples.glob("*.xlsx")) == []
+    assert audit_paths(list(samples.glob("*.csv"))) == []
 
 
 @pytest.mark.parametrize("name", REPLACEMENT_SAMPLES)
