@@ -12,6 +12,7 @@ from aromatwin.services.profile_enrichment import (
     AI_DRAFT_FIELDS,
     MISSING_KEY_WARNING,
     OUTPUT_FIELDS,
+    AuthenticationError,
     OfflineHeuristicEnrichmentProvider,
     OpenAIEnrichmentProvider,
     RateLimitError,
@@ -82,7 +83,10 @@ def test_openai_provider_skips_safely_without_key(monkeypatch: pytest.MonkeyPatc
     enriched = provider.enrich(_draft())
     assert enriched["enrichment_sources"][-1] == {
         "source_type": "offline_fallback",
-        "summary": "OpenAI enrichment was unavailable; offline draft generated for human review.",
+        "summary": (
+            "OpenAI enrichment was unavailable or rate-limited; offline draft generated "
+            "for human review."
+        ),
     }
 
 
@@ -127,6 +131,17 @@ class _FailingClient:
     responses = _FailingResponses()
 
 
+class _AuthenticationFailingResponses:
+    def create(self, **kwargs):
+        error = AuthenticationError.__new__(AuthenticationError)
+        Exception.__init__(error, "mocked authentication failure containing secret-key")
+        raise error
+
+
+class _AuthenticationFailingClient:
+    responses = _AuthenticationFailingResponses()
+
+
 def _ai_payload() -> dict[str, object]:
     list_fields = {
         "top_notes", "heart_notes", "base_notes", "accords", "mood_tags",
@@ -166,6 +181,18 @@ def test_rate_limit_error_uses_offline_fallback():
 
     assert enriched["fragrance_family"] == "citrus"
     assert enriched["enrichment_sources"][-1]["source_type"] == "offline_fallback"
+
+
+def test_authentication_error_uses_safe_offline_fallback():
+    enriched = OpenAIEnrichmentProvider(
+        api_key="test-key", client=_AuthenticationFailingClient()
+    ).enrich(_draft())
+
+    serialised = json.dumps(enriched)
+    assert enriched["fragrance_family"] == "citrus"
+    assert enriched["enrichment_sources"][-1]["source_type"] == "offline_fallback"
+    assert "secret-key" not in serialised
+    assert "authentication failure" not in serialised
 
 
 def test_fallback_setting_defaults_true(monkeypatch: pytest.MonkeyPatch):
