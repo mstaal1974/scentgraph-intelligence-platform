@@ -7,12 +7,48 @@ invitation to invent a plausible pyramid.
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 from abc import ABC, abstractmethod
 from typing import Any, Mapping
 
+if importlib.util.find_spec("openai") is not None:
+    from openai import (
+        APIConnectionError,
+        APIError,
+        AuthenticationError,
+        OpenAIError,
+        RateLimitError,
+    )
+else:  # Keep offline-only installations usable; OpenAI remains a declared production dependency.
+    class OpenAIError(Exception):
+        """Compatibility base used only when the optional runtime package is absent."""
+
+    class APIError(OpenAIError):
+        """Compatibility API error."""
+
+        pass
+
+    class APIConnectionError(APIError):
+        """Compatibility connection error."""
+
+        pass
+
+    class AuthenticationError(APIError):
+        """Compatibility authentication error."""
+
+        pass
+
+    class RateLimitError(APIError):
+        """Compatibility rate-limit error."""
+
+        pass
+
 WARNING = "AI enrichment is draft-only and requires human review before catalogue use."
+OPENAI_FALLBACK_SUMMARY = (
+    "OpenAI enrichment was unavailable; offline draft generated for human review."
+)
 
 OUTPUT_FIELDS = (
     "profile_draft_id", "brand_display_name", "fragrance_display_name",
@@ -122,7 +158,10 @@ class OfflineHeuristicEnrichmentProvider(ProfileEnrichmentProvider):
 class OpenAIEnrichmentProvider(ProfileEnrichmentProvider):
     """Generate original, review-required drafts from identity fields alone."""
 
-    def __init__(self, api_key: str | None = None, *, client: Any = None) -> None:
+    def __init__(
+        self, api_key: str | None = None, *, client: Any = None,
+        allow_fallback: bool | None = None,
+    ) -> None:
         if api_key is None and "OPENAI_API_KEY" in os.environ:
             api_key = os.environ["OPENAI_API_KEY"]
         self._available = bool(api_key)
@@ -131,6 +170,7 @@ class OpenAIEnrichmentProvider(ProfileEnrichmentProvider):
 
             client = OpenAI(api_key=api_key)
         self._client = client
+        self._allow_fallback = ai_fallback_allowed() if allow_fallback is None else allow_fallback
 
     @property
     def is_available(self) -> bool:
@@ -138,20 +178,23 @@ class OpenAIEnrichmentProvider(ProfileEnrichmentProvider):
 
     def enrich(self, profile: Mapping[str, Any]) -> dict[str, Any]:
         if not self.is_available:
-            raise RuntimeError("OpenAI enrichment skipped: OPENAI_API_KEY is not configured")
+            return self._offline_fallback(profile, reason="missing API key")
         identity = sanitise_ai_identity(profile)
-        response = self._client.responses.create(
-            model="gpt-4o-mini",
-            input=[
-                {"role": "system", "content": (
-                    "Create an original speculative scent-profile draft using only the supplied "
-                    "safe identity and non-commercial scent metadata. Do not retrieve, quote, imitate, or copy any "
-                    "third-party description or review. Treat every field as requiring human review."
-                )},
-                {"role": "user", "content": json.dumps(identity, ensure_ascii=True)},
-            ],
-            text={"format": _response_format()},
-        )
+        try:
+            response = self._client.responses.create(
+                model="gpt-4o-mini",
+                input=[
+                    {"role": "system", "content": (
+                        "Create an original speculative scent-profile draft using only the supplied "
+                        "safe identity and non-commercial scent metadata. Do not retrieve, quote, imitate, or copy any "
+                        "third-party description or review. Treat every field as requiring human review."
+                    )},
+                    {"role": "user", "content": json.dumps(identity, ensure_ascii=True)},
+                ],
+                text={"format": _response_format()},
+            )
+        except (RateLimitError, APIError, APIConnectionError, AuthenticationError, OpenAIError):
+            return self._offline_fallback(profile, reason="OpenAI API failure")
         payload = json.loads(response.output_text)
         missing = [field for field in AI_DRAFT_FIELDS if field not in payload]
         if missing:
@@ -169,6 +212,19 @@ class OpenAIEnrichmentProvider(ProfileEnrichmentProvider):
             "review_status": "needs_human_review",
         }
         return {field: result[field] for field in OUTPUT_FIELDS}
+
+    def _offline_fallback(self, profile: Mapping[str, Any], *, reason: str) -> dict[str, Any]:
+        """Return a safe draft without retaining or exposing provider error details."""
+        if not self._allow_fallback:
+            raise RuntimeError(
+                f"OpenAI enrichment unavailable ({reason}) and offline fallback is disabled"
+            ) from None
+        result = OfflineHeuristicEnrichmentProvider().enrich(profile)
+        result["enrichment_sources"].append({
+            "source_type": "offline_fallback",
+            "summary": OPENAI_FALLBACK_SUMMARY,
+        })
+        return result
 
 
 def sanitise_ai_identity(profile: Mapping[str, Any]) -> dict[str, Any]:
@@ -213,6 +269,17 @@ def configured_provider(value: str | None = None) -> str:
     if provider not in ALLOWED_PROVIDERS:
         raise ValueError("AROMATWIN_AI_PROVIDER must be one of: offline, openai")
     return provider
+
+
+def ai_fallback_allowed(value: str | None = None) -> bool:
+    """Read the fallback switch, defaulting to the resilient and privacy-safe path."""
+    configured = value if value is not None else os.environ.get(
+        "AROMATWIN_AI_ALLOW_FALLBACK", "true"
+    )
+    normalised = configured.strip().casefold()
+    if normalised not in {"true", "false"}:
+        raise ValueError("AROMATWIN_AI_ALLOW_FALLBACK must be true or false")
+    return normalised == "true"
 
 
 def enrich_profile(profile: Mapping[str, Any], provider: ProfileEnrichmentProvider | None = None) -> dict[str, Any]:
