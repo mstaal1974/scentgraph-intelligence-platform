@@ -15,9 +15,9 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from aromatwin.services.profile_enrichment import (  # noqa: E402
+    ALLOWED_PROVIDERS,
     MODEL_PROVENANCE,
-    OfflineHeuristicEnrichmentProvider,
-    OpenAIEnrichmentProvider,
+    build_provider,
 )
 
 PRIVATE_ROOT = (REPOSITORY_ROOT / "data/private").resolve()
@@ -42,13 +42,11 @@ def enrich_batch(
     drafts = json.loads(drafts_path.read_text(encoding="utf-8"))
     if not isinstance(drafts, list):
         raise ValueError("drafts.json must contain a list")
-    provider = (
-        OfflineHeuristicEnrichmentProvider()
-        if provider_name == "offline"
-        else OpenAIEnrichmentProvider()
-    )
+    provider = build_provider(provider_name)
     if not provider.is_available:
-        raise RuntimeError("OpenAI enrichment skipped: OPENAI_API_KEY is not configured")
+        raise RuntimeError(
+            f"{provider_name} enrichment skipped: no API key is configured for it"
+        )
     enriched = [provider.enrich(row) for row in drafts[:max_profiles]]
     asserted = sum(
         1
@@ -70,7 +68,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--max-profiles", type=int, default=25)
-    parser.add_argument("--provider", choices=("offline", "openai"), default="offline")
+    parser.add_argument("--provider", choices=ALLOWED_PROVIDERS, default="offline")
     args = parser.parse_args()
     try:
         print(enrich_batch(args.run_id, args.max_profiles, args.provider))

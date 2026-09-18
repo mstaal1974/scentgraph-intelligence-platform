@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -15,11 +16,15 @@ from aromatwin.services.profile_enrichment import (
     MISSING_KEY_WARNING,
     MODEL_PROVENANCE,
     OUTPUT_FIELDS,
+    AnthropicEnrichmentProvider,
     AuthenticationError,
+    ChainedEnrichmentProvider,
     OfflineHeuristicEnrichmentProvider,
     OpenAIEnrichmentProvider,
+    ProfileEnrichmentProvider,
     RateLimitError,
     ai_fallback_allowed,
+    build_provider,
     configured_provider,
     sanitise_ai_identity,
 )
@@ -325,3 +330,177 @@ def test_offline_fallback_still_carries_field_provenance():
     assert set(enriched) == set(OUTPUT_FIELDS)
     assert set(enriched["field_provenance"].values()) <= {MODEL_PROVENANCE}
     assert enriched["review_status"] == "needs_human_review"
+
+
+LIST_DRAFT_FIELDS = {
+    "top_notes", "heart_notes", "base_notes", "accords", "mood_tags",
+    "occasion_tags", "season_tags", "fields_requiring_human_review",
+}
+
+
+def _claude_payload(**changes: object) -> dict[str, object]:
+    payload: dict[str, object] = {
+        field: (["saffron"] if field in LIST_DRAFT_FIELDS else "unknown")
+        for field in AI_DRAFT_FIELDS
+    }
+    payload.update({
+        "fragrance_family": "amber woody",
+        "base_notes": ["oud", "labdanum"],
+        "season_tags": ["winter"],
+        "occasion_tags": ["evening"],
+        "draft_scent_description": "A dense resinous reading led by oud over warm labdanum.",
+        "ai_confidence_band": "low",
+    })
+    payload.update(changes)
+    return payload
+
+
+class _FakeMessages:
+    def __init__(self, body: str, stop_reason: str = "end_turn") -> None:
+        self.body = body
+        self.stop_reason = stop_reason
+        self.calls: list[dict[str, object]] = []
+
+    def create(self, **kwargs: object) -> SimpleNamespace:
+        self.calls.append(kwargs)
+        return SimpleNamespace(
+            stop_reason=self.stop_reason,
+            content=[SimpleNamespace(type="text", text=self.body)],
+        )
+
+
+class _FakeAnthropicClient:
+    def __init__(self, body: str, stop_reason: str = "end_turn") -> None:
+        self.messages = _FakeMessages(body, stop_reason)
+
+
+class _FailingResponsesClient:
+    """An OpenAI client whose every call is rate limited."""
+
+    class _Responses:
+        def create(self, **kwargs):
+            error = RateLimitError.__new__(RateLimitError)
+            Exception.__init__(error, "mocked rate limit")
+            raise error
+
+    responses = _Responses()
+
+
+def _anthropic(body: str | dict[str, object], stop_reason: str = "end_turn"):
+    text = body if isinstance(body, str) else json.dumps(body)
+    client = _FakeAnthropicClient(text, stop_reason)
+    return AnthropicEnrichmentProvider(api_key="test-key", client=client), client
+
+
+def test_claude_call_sends_identity_only_and_validates_the_response():
+    provider, client = _anthropic(_claude_payload())
+    draft = {
+        **_draft(), "supplier_code": "SECRET-SKU", "price": "90", "stock": 12,
+        "commercial_terms": "private", "reviews": ["third-party review"],
+    }
+
+    enriched = provider.enrich(draft)
+
+    sent = json.dumps(client.messages.calls)
+    assert "Fictional Atelier" in sent and "Citrus Woods" in sent
+    for forbidden in ("SECRET-SKU", "stock", "commercial_terms", "third-party review"):
+        assert forbidden not in sent
+    assert client.messages.calls[0]["model"] == "claude-opus-5"
+    assert client.messages.calls[0]["output_config"]["format"]["type"] == "json_schema"
+    assert set(enriched) == set(OUTPUT_FIELDS)
+    assert enriched["review_status"] == "needs_human_review"
+    assert enriched["base_notes"] == ["oud", "labdanum"]
+    assert set(enriched["field_provenance"].values()) == {MODEL_PROVENANCE}
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "expected"),
+    [
+        ("season_tags", ["winter", "narnia"], ["winter"]),
+        ("strength_band", "nuclear", "unknown"),
+        ("draft_scent_description", "Shop now at our official website!", ""),
+    ],
+)
+def test_claude_output_is_validated_like_every_other_provider(field, value, expected):
+    provider, _ = _anthropic(_claude_payload(**{field: value}))
+    assert provider.enrich(_draft())[field] == expected
+
+
+@pytest.mark.parametrize(
+    ("body", "stop_reason"),
+    [("not json at all {{{", "end_turn"), ('{"fragrance_family": "x"}', "refusal")],
+)
+def test_claude_degrades_safely_on_bad_or_refused_responses(body, stop_reason):
+    """An unparseable answer and a safety decline both fall back rather than crash."""
+    provider, _ = _anthropic(body, stop_reason)
+    enriched = provider.enrich(_draft())
+
+    assert set(enriched) == set(OUTPUT_FIELDS)
+    assert enriched["review_status"] == "needs_human_review"
+    assert any(
+        source["source_type"] == "offline_fallback" for source in enriched["enrichment_sources"]
+    )
+
+
+def test_claude_without_a_key_falls_back_instead_of_raising(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    provider = AnthropicEnrichmentProvider()
+    assert not provider.is_available
+    assert provider.enrich(_draft())["review_status"] == "needs_human_review"
+
+
+def test_chain_uses_claude_when_the_primary_provider_is_rate_limited():
+    """The point of the chain: one vendor failing must not drop a batch to keyword inference."""
+    chain = ChainedEnrichmentProvider(
+        OpenAIEnrichmentProvider(
+            api_key="test-key", client=_FailingResponsesClient(), allow_fallback=True
+        ),
+        AnthropicEnrichmentProvider(
+            api_key="test-key",
+            client=_FakeAnthropicClient(json.dumps(_claude_payload())),
+            allow_fallback=True,
+        ),
+    )
+
+    enriched = chain.enrich(_draft())
+
+    assert [s["source_type"] for s in enriched["enrichment_sources"]] == [
+        "anthropic_original_draft"
+    ]
+    assert enriched["fragrance_family"] == "amber woody"
+
+
+def test_chain_returns_the_offline_draft_only_when_every_provider_degrades():
+    chain = ChainedEnrichmentProvider(
+        OpenAIEnrichmentProvider(
+            api_key="test-key", client=_FailingResponsesClient(), allow_fallback=True
+        ),
+        AnthropicEnrichmentProvider(
+            api_key="test-key", client=_FakeAnthropicClient("not json"), allow_fallback=True
+        ),
+    )
+
+    enriched = chain.enrich(_draft())
+
+    assert set(enriched) == set(OUTPUT_FIELDS)
+    assert enriched["review_status"] == "needs_human_review"
+    assert any(
+        source["source_type"] == "offline_fallback" for source in enriched["enrichment_sources"]
+    )
+
+
+def test_chain_requires_at_least_one_provider():
+    with pytest.raises(ValueError, match="at least one provider"):
+        ChainedEnrichmentProvider()
+
+
+@pytest.mark.parametrize("value", ["offline", "openai", "anthropic", "chain"])
+def test_every_allowed_provider_can_be_built(value: str, monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    assert isinstance(build_provider(value), ProfileEnrichmentProvider)
+
+
+def test_unknown_provider_names_every_allowed_value():
+    with pytest.raises(ValueError, match="offline, openai, anthropic, chain"):
+        build_provider("gemini")

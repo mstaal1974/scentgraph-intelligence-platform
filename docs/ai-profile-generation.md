@@ -9,12 +9,38 @@ default and asserts no notes at all.
 
 ```bash
 export OPENAI_API_KEY=...
-python scripts/enrich_private_profile_batch.py --run-id <run> --provider openai --max-profiles 25
+export ANTHROPIC_API_KEY=...      # only for --provider anthropic or chain
+python scripts/enrich_private_profile_batch.py --run-id <run> --provider chain --max-profiles 25
 ```
 
-`openai` is a core dependency, so no extra install step is needed. `AROMATWIN_AI_PROVIDER`
-selects the default provider and `AROMATWIN_AI_ALLOW_FALLBACK` controls whether an API failure
-degrades to the offline provider or raises.
+`--provider` accepts `offline`, `openai`, `anthropic`, or `chain`.
+
+`openai` and `anthropic` are core dependencies, so no extra install step is needed.
+`AROMATWIN_AI_PROVIDER` selects the default provider and `AROMATWIN_AI_ALLOW_FALLBACK` controls
+whether an API failure degrades to the offline provider or raises.
+
+## Providers and the fallback chain
+
+| Provider | Behaviour |
+| --- | --- |
+| `offline` | Deterministic keyword inference. No network, no key, no note pyramid. |
+| `openai` | GPT via the Responses API, falling back to `offline`. |
+| `anthropic` | Claude Opus 5 via the Messages API, falling back to `offline`. |
+| `chain` | OpenAI, then Claude, then `offline`. |
+
+`chain` exists because a rate limit on one vendor otherwise drops a whole batch to keyword
+inference, which produces records with no note pyramid that a reviewer then has to fill in by
+hand. The chain treats a provider that degraded to the offline heuristic as not having answered
+and moves to the next one; the offline draft is kept and returned only if every provider degrades.
+
+Both model-backed providers enforce the same boundaries: `sanitise_ai_identity` builds the
+request from the same allow-list, the response is schema-constrained and then still passed
+through `validate_enrichment_payload`, and the record always comes back needing human review.
+The Claude provider additionally treats a `stop_reason` of `refusal` as a fallback rather than an
+error, since a safety decline arrives as a successful HTTP response.
+
+Neither provider has run against a live API. Both are covered by tests driving injected stub
+clients, so the first real batch should be small.
 
 Input is `data/private/runs/<run>/profiles/drafts.json`; output is `enriched_profiles.json`
 beside it. The script refuses to write outside `data/private/`, and the run reports how many

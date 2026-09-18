@@ -50,9 +50,13 @@ profiles is a separate commercial step requiring a permitted source. See
 Supplier drafts can be enriched into full scent profiles with a model-backed provider:
 
 ```bash
-export OPENAI_API_KEY=...
-python scripts/enrich_private_profile_batch.py --run-id <run> --provider openai
+export OPENAI_API_KEY=... ANTHROPIC_API_KEY=...
+python scripts/enrich_private_profile_batch.py --run-id <run> --provider chain
 ```
+
+`--provider` accepts `offline`, `openai`, `anthropic`, or `chain`; `chain` runs OpenAI first and
+falls back to Claude before the offline provider, so one vendor rate-limiting does not drop a
+batch to keyword inference.
 
 Only an allow-listed identity payload leaves the application, and model output is never trusted:
 it is validated against controlled vocabularies, stripped of private and restricted fields, marked

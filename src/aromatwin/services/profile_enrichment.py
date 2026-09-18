@@ -54,6 +54,27 @@ else:  # Keep offline-only installations usable; OpenAI remains a declared produ
 
         pass
 
+if importlib.util.find_spec("anthropic") is not None:
+    from anthropic import (
+        AnthropicError,
+    )
+    from anthropic import (
+        APIConnectionError as AnthropicConnectionError,
+    )
+    from anthropic import (
+        APIStatusError as AnthropicStatusError,
+    )
+else:  # Keep offline-only installations usable; anthropic is a declared production dependency.
+    class AnthropicError(Exception):
+        """Compatibility base used only when the optional runtime package is absent."""
+
+    class AnthropicStatusError(AnthropicError):
+        """Compatibility status error."""
+
+    class AnthropicConnectionError(AnthropicError):
+        """Compatibility connection error."""
+
+
 WARNING = "AI enrichment is draft-only and requires human review before catalogue use."
 OPENAI_FALLBACK_SUMMARY = (
     "OpenAI enrichment was unavailable or rate-limited; offline draft generated for human review."
@@ -83,8 +104,17 @@ SAFE_METADATA_FIELDS = (
     "longevity_band", "projection_band", "ai_confidence_band",
     "fields_requiring_human_review", "enrichment_status", "review_status",
 )
+ANTHROPIC_FALLBACK_SUMMARY = (
+    "Claude enrichment was unavailable or rate-limited; offline draft generated for human review."
+)
+ANTHROPIC_BACKUP_SUMMARY = (
+    "Primary provider was unavailable; Claude generated this draft for human review."
+)
 MISSING_KEY_WARNING = "OpenAI API key is not configured. Using offline demo enrichment."
-ALLOWED_PROVIDERS = ("offline", "openai")
+ANTHROPIC_MODEL = "claude-opus-5"
+# "chain" runs OpenAI first and falls back to Claude before the offline provider, so a rate
+# limit on one vendor does not drop a whole batch to keyword inference.
+ALLOWED_PROVIDERS = ("offline", "openai", "anthropic", "chain")
 
 # Fields a reviewer signs off on individually. Anything here that a model asserted without
 # supporting evidence is surfaced as such rather than folded into an overall confidence score.
@@ -470,7 +500,9 @@ def configured_provider(value: str | None = None) -> str:
     provider = value if value is not None else os.environ.get("AROMATWIN_AI_PROVIDER", "offline")
     provider = provider.strip().casefold()
     if provider not in ALLOWED_PROVIDERS:
-        raise ValueError("AROMATWIN_AI_PROVIDER must be one of: offline, openai")
+        raise ValueError(
+            "AROMATWIN_AI_PROVIDER must be one of: " + ", ".join(ALLOWED_PROVIDERS)
+        )
     return provider
 
 
@@ -483,6 +515,181 @@ def ai_fallback_allowed(value: str | None = None) -> bool:
     if normalised not in {"true", "false"}:
         raise ValueError("AROMATWIN_AI_ALLOW_FALLBACK must be true or false")
     return normalised == "true"
+
+
+def _anthropic_schema() -> dict[str, Any]:
+    """JSON schema constraining the model response to the enrichment draft fields."""
+    list_fields = {
+        "top_notes", "heart_notes", "base_notes", "accords", "mood_tags",
+        "occasion_tags", "season_tags", "fields_requiring_human_review",
+    }
+    properties: dict[str, Any] = {
+        field: {"type": "array", "items": {"type": "string"}}
+        for field in list_fields
+    }
+    properties.update(
+        {
+            field: {"type": "string"}
+            for field in AI_DRAFT_FIELDS
+            if field not in list_fields
+        }
+    )
+    return {
+        "type": "json_schema",
+        "schema": {
+            "type": "object",
+            "properties": properties,
+            "required": list(AI_DRAFT_FIELDS),
+            "additionalProperties": False,
+        },
+    }
+
+
+class AnthropicEnrichmentProvider(ProfileEnrichmentProvider):
+    """Claude-backed enrichment, usable on its own or as the backup in a provider chain.
+
+    Mirrors the OpenAI provider's boundaries exactly: only the allow-listed identity payload
+    leaves the application, the response is constrained by a JSON schema and then still passed
+    through ``validate_enrichment_payload``, and the record always comes back needing review.
+    """
+
+    def __init__(
+        self, api_key: str | None = None, *, client: Any = None,
+        allow_fallback: bool | None = None, model: str = ANTHROPIC_MODEL,
+    ) -> None:
+        if api_key is None and "ANTHROPIC_API_KEY" in os.environ:
+            api_key = os.environ["ANTHROPIC_API_KEY"]
+        self._available = bool(api_key or client)
+        if client is None and api_key:
+            from anthropic import Anthropic
+
+            client = Anthropic(api_key=api_key)
+        self._client = client
+        self._model = model
+        self._allow_fallback = ai_fallback_allowed() if allow_fallback is None else allow_fallback
+
+    @property
+    def is_available(self) -> bool:
+        return self._available
+
+    def enrich(self, profile: Mapping[str, Any]) -> dict[str, Any]:
+        if not self.is_available:
+            return self._offline_fallback(profile, reason="missing API key")
+        identity = sanitise_ai_identity(profile)
+        try:
+            response = self._client.messages.create(
+                model=self._model,
+                max_tokens=16000,
+                system=(
+                    "Create an original speculative scent-profile draft using only the supplied "
+                    "safe identity and non-commercial scent metadata. Do not retrieve, quote, "
+                    "imitate, or copy any third-party description or review. Treat every field "
+                    "as requiring human review."
+                ),
+                messages=[{"role": "user", "content": json.dumps(identity, ensure_ascii=True)}],
+                output_config={"format": _anthropic_schema()},
+            )
+        except (AnthropicStatusError, AnthropicConnectionError, AnthropicError):
+            return self._offline_fallback(profile, reason="Claude API failure")
+
+        # A safety decline is a valid outcome, not an exception: fall back rather than crash.
+        if getattr(response, "stop_reason", None) == "refusal":
+            return self._offline_fallback(profile, reason="Claude declined the request")
+        try:
+            payload = json.loads(
+                "".join(
+                    block.text for block in response.content if getattr(block, "type", "") == "text"
+                )
+            )
+        except (json.JSONDecodeError, AttributeError, TypeError):
+            return self._offline_fallback(profile, reason="unparseable Claude response")
+        if not isinstance(payload, Mapping):
+            payload = {}
+
+        result = validate_enrichment_payload({**identity, **payload}, profile)
+        result["enrichment_sources"] = [
+            {
+                "source_type": "anthropic_original_draft",
+                "summary": (
+                    "Generated only from brand and fragrance identity; no third-party text used."
+                ),
+            }
+        ]
+        return result
+
+    def _offline_fallback(self, profile: Mapping[str, Any], *, reason: str) -> dict[str, Any]:
+        """Return a safe draft without retaining or exposing provider error details."""
+        if not self._allow_fallback:
+            raise RuntimeError(
+                f"Claude enrichment unavailable ({reason}) and offline fallback is disabled"
+            ) from None
+        result = OfflineHeuristicEnrichmentProvider().enrich(profile)
+        result["enrichment_sources"].append(
+            {"source_type": "offline_fallback", "summary": ANTHROPIC_FALLBACK_SUMMARY}
+        )
+        return result
+
+
+class ChainedEnrichmentProvider(ProfileEnrichmentProvider):
+    """Try each provider in order, using the next when one cannot produce a model draft.
+
+    A provider that has degraded to the offline heuristic is treated as not having answered:
+    the point of the chain is that one vendor being rate-limited does not drop a whole batch to
+    keyword inference. The offline result is kept and returned only if every provider degrades.
+    """
+
+    def __init__(self, *providers: ProfileEnrichmentProvider) -> None:
+        if not providers:
+            raise ValueError("A provider chain needs at least one provider")
+        self._providers = providers
+
+    @property
+    def is_available(self) -> bool:
+        return any(provider.is_available for provider in self._providers)
+
+    def enrich(self, profile: Mapping[str, Any]) -> dict[str, Any]:
+        degraded: dict[str, Any] | None = None
+        for provider in self._providers:
+            if not provider.is_available:
+                continue
+            try:
+                result = provider.enrich(profile)
+            except RuntimeError:
+                # Fallback disabled on this provider; let the next one try.
+                continue
+            if not _is_offline_draft(result):
+                return result
+            degraded = degraded or result
+        if degraded is not None:
+            return degraded
+        return OfflineHeuristicEnrichmentProvider().enrich(profile)
+
+
+def _is_offline_draft(result: Mapping[str, Any]) -> bool:
+    """Return whether a record came from the offline heuristic rather than a model."""
+    return any(
+        str(source.get("source_type", "")) == "offline_fallback"
+        for source in result.get("enrichment_sources", [])
+        if isinstance(source, Mapping)
+    )
+
+
+def build_provider(
+    name: str | None = None, *, allow_fallback: bool | None = None
+) -> ProfileEnrichmentProvider:
+    """Construct the configured provider, including the OpenAI-then-Claude chain."""
+    selected = configured_provider(name)
+    if selected == "offline":
+        return OfflineHeuristicEnrichmentProvider()
+    if selected == "openai":
+        return OpenAIEnrichmentProvider(allow_fallback=allow_fallback)
+    if selected == "anthropic":
+        return AnthropicEnrichmentProvider(allow_fallback=allow_fallback)
+    # "chain": Claude backs up OpenAI, and the offline provider backs up both.
+    return ChainedEnrichmentProvider(
+        OpenAIEnrichmentProvider(allow_fallback=True),
+        AnthropicEnrichmentProvider(allow_fallback=True),
+    )
 
 
 def enrich_profile(profile: Mapping[str, Any], provider: ProfileEnrichmentProvider | None = None) -> dict[str, Any]:
