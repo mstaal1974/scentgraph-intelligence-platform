@@ -1,1 +1,13 @@
-id,name,slug,country,website,verified,review_status,created_at,updated_at
+id,name,slug,review_status
+1,Aster & Vale,aster-vale,approved
+2,Cormorant Hall,cormorant-hall,approved
+3,Solene Atelier,solene-atelier,approved
+4,Meridian & Ash,meridian-ash,approved
+5,Halcyon Rue,halcyon-rue,approved
+6,Verdigris House,verdigris-house,approved
+7,Lumen Botanica,lumen-botanica,approved
+8,Ferrier & Cole,ferrier-cole,approved
+9,Saltwood Parfums,saltwood-parfums,approved
+10,Ombra Fiore,ombra-fiore,approved
+11,Northwind Apothecary,northwind-apothecary,approved
+12,Calder & Wren,calder-wren,approved

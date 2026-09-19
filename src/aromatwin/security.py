@@ -1,5 +1,6 @@
 """Small, dependency-free security primitives for HTTP boundaries."""
 
+import logging
 from collections.abc import Mapping
 from secrets import compare_digest
 from typing import Any
@@ -7,6 +8,8 @@ from typing import Any
 from fastapi import Depends, Header, HTTPException, status
 
 from aromatwin.config import Settings, get_settings
+
+LOGGER = logging.getLogger("aromatwin.security")
 
 SENSITIVE_FIELDS = frozenset(
     {
@@ -49,11 +52,32 @@ def validate_cors_origins(settings: Settings) -> list[str]:
     return list(dict.fromkeys(origins))
 
 
-def _require_key(provided: str | None, expected: str | None, settings: Settings) -> None:
-    if settings.is_local:
-        return
-    if not expected or not provided or not compare_digest(provided, expected):
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "A valid API key is required")
+def _unauthorised() -> HTTPException:
+    """Return one indistinguishable rejection for every authentication failure mode."""
+    return HTTPException(status.HTTP_401_UNAUTHORIZED, "A valid API key is required")
+
+
+def _require_key(
+    provided: str | None, expected: str | None, settings: Settings, surface: str
+) -> None:
+    """Authenticate a request, denying by default.
+
+    A surface with no configured credential cannot authenticate anyone, so it denies unless a
+    local environment has explicitly opted in via AROMATWIN_ALLOW_INSECURE_LOCAL_AUTH. Settings
+    validation already refuses to start a non-local environment with missing keys, so the
+    unconfigured path is only reachable during local development.
+    """
+    if not expected:
+        if settings.is_local and settings.allow_insecure_local_auth:
+            return
+        LOGGER.warning(
+            "Denying %s request: no API key is configured for this surface in environment %r",
+            surface,
+            settings.environment,
+        )
+        raise _unauthorised()
+    if not provided or not compare_digest(provided, expected):
+        raise _unauthorised()
 
 
 def require_admin_api_key(
@@ -61,7 +85,7 @@ def require_admin_api_key(
     x_api_key: str | None = Header(default=None, alias="X-API-Key"),
     settings: Settings = Depends(get_settings),
 ) -> None:
-    _require_key(x_admin_api_key or x_api_key, settings.admin_api_key, settings)
+    _require_key(x_admin_api_key or x_api_key, settings.admin_api_key, settings, "admin")
 
 
 def require_private_api_key(
@@ -69,14 +93,18 @@ def require_private_api_key(
     x_api_key: str | None = Header(default=None, alias="X-API-Key"),
     settings: Settings = Depends(get_settings),
 ) -> None:
-    _require_key(x_private_api_key or x_api_key, settings.private_api_key, settings)
+    _require_key(x_private_api_key or x_api_key, settings.private_api_key, settings, "private")
 
 
-def optional_public_api_key(
+def require_public_api_key(
     x_api_key: str | None = Header(default=None, alias="X-API-Key"),
     settings: Settings = Depends(get_settings),
 ) -> str | None:
-    """Accept an optional public key, rejecting only an incorrect configured key."""
-    if x_api_key and settings.api_key and not compare_digest(x_api_key, settings.api_key):
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid public API key")
+    """Require a valid public key on the licensed retailer surface.
+
+    This is the boundary every metered plan is attributed against, so an anonymous caller is
+    rejected rather than served. The returned key is the caller identity later quota and usage
+    accounting will hang off.
+    """
+    _require_key(x_api_key, settings.api_key, settings, "public")
     return x_api_key

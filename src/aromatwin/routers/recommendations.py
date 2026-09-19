@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from aromatwin.routers.catalogue import _CATALOGUE
 from aromatwin.routers.scent_vectors import _VECTORS
@@ -10,6 +10,7 @@ from aromatwin.schemas.recommendation import (
     RecommendationResult,
     SimilarFragranceRequest,
 )
+from aromatwin.security import require_private_api_key
 from aromatwin.services.recommendation_engine import (
     Recommendation,
     approve_recommendation,
@@ -19,7 +20,7 @@ from aromatwin.services.recommendation_engine import (
     reject_recommendation,
 )
 
-router = APIRouter(prefix="/recommendations", tags=["recommendations"])
+router = APIRouter(prefix="/recommendations", tags=["recommendations"], dependencies=[Depends(require_private_api_key)])
 _RECOMMENDATIONS: list[Recommendation] = []
 
 

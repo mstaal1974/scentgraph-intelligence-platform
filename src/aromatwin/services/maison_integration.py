@@ -274,7 +274,13 @@ class MaisonIntegrationService:
         }
         if not requested or any(value < 0 or value > 1 for value in requested.values()):
             raise ValueError("At least one known scent dimension between 0 and 1 is required")
-        norm = math.sqrt(sum(value * value for value in requested.values()))
+        # Score across every dimension, treating unrequested ones as zero, rather than
+        # cosining the requested subset alone. Comparing only the requested keys normalises
+        # magnitude away: a profile with woody 0.1 scored identically to one with woody 1.0,
+        # and a profile whose strength lies in dimensions the caller did not ask for was never
+        # penalised for it.
+        query = [requested.get(name, 0.0) for name in VECTOR_DIMENSIONS]
+        norm = math.sqrt(sum(value * value for value in query))
         ranked = []
         for row in self.catalogue:
             vector = self.vectors.get(int(row["id"]))
@@ -291,14 +297,22 @@ class MaisonIntegrationService:
                 )
             ):
                 continue
-            values = {key: float(vector.get(key) or 0) for key in requested}
-            other_norm = math.sqrt(sum(value * value for value in values.values()))
-            score = (
-                sum(requested[key] * values[key] for key in requested) / (norm * other_norm)
-                if other_norm
-                else 0
+            values = [float(vector.get(name) or 0) for name in VECTOR_DIMENSIONS]
+            other_norm = math.sqrt(sum(value * value for value in values))
+            direction = (
+                sum(q * v for q, v in zip(query, values, strict=True)) / (norm * other_norm)
+                if other_norm and norm
+                else 0.0
             )
-            ranked.append((score, row, vector))
+            # Cosine is scale-invariant, so direction alone cannot separate a profile that is
+            # strongly woody from one that is faintly woody. Coverage is how much of the
+            # requested intensity the profile actually delivers, and the two multiply.
+            wanted = sum(requested.values())
+            covered = sum(
+                min(value, float(vector.get(name) or 0)) for name, value in requested.items()
+            )
+            coverage = covered / wanted if wanted else 0.0
+            ranked.append((direction * coverage, row, vector))
         ranked.sort(key=lambda item: (-item[0], int(item[1]["id"])))
         return [
             MaisonScentprintResult(

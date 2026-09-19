@@ -1,12 +1,13 @@
 from types import SimpleNamespace
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from aromatwin.schemas.profile_draft import (
     ProfileDraftDecisionRequest,
     ProfileDraftGenerateRequest,
     ProfileDraftRead,
 )
+from aromatwin.security import require_private_api_key
 from aromatwin.services.profile_builder import (
     ProfileDraft,
     approve_profile_draft,
@@ -14,7 +15,7 @@ from aromatwin.services.profile_builder import (
     reject_profile_draft,
 )
 
-router = APIRouter(prefix="/profile-drafts", tags=["profile drafts"])
+router = APIRouter(prefix="/profile-drafts", tags=["profile drafts"], dependencies=[Depends(require_private_api_key)])
 _DRAFTS: list[ProfileDraft] = []
 
 

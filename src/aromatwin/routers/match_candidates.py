@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from aromatwin.schemas.match_candidate import MatchCandidateGenerateRequest, MatchCandidateRead
+from aromatwin.security import require_private_api_key
 
-router = APIRouter(prefix="/match-candidates", tags=["candidate matching"])
+router = APIRouter(prefix="/match-candidates", tags=["candidate matching"], dependencies=[Depends(require_private_api_key)])
 _CANDIDATES: list[MatchCandidateRead] = []
 
 

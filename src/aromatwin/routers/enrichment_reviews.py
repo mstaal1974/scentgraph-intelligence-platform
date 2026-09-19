@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from aromatwin.schemas.enrichment_review import (
     EnrichmentReviewDecisionRequest,
@@ -9,6 +9,7 @@ from aromatwin.schemas.enrichment_review import (
     EnrichmentSourceCreate,
     EnrichmentSourceRead,
 )
+from aromatwin.security import require_private_api_key
 from aromatwin.services.enrichment_review import (
     EnrichmentReview,
     EnrichmentSource,
@@ -18,7 +19,7 @@ from aromatwin.services.enrichment_review import (
     reject_enrichment_review,
 )
 
-router = APIRouter(tags=["independent enrichment"])
+router = APIRouter(tags=["independent enrichment"], dependencies=[Depends(require_private_api_key)])
 _REVIEWS: list[EnrichmentReview] = []
 _SOURCES: list[EnrichmentSource] = []
 

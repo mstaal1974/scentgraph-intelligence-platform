@@ -6,6 +6,7 @@ import json
 import os
 import re
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -15,15 +16,22 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from aromatwin.services.profile_enrichment import (  # noqa: E402
+    EVIDENCE_PROVENANCE,
     MISSING_KEY_WARNING,
+    MODEL_PROVENANCE,
     OPENAI_FALLBACK_SUMMARY,
     OfflineHeuristicEnrichmentProvider,
-    OpenAIEnrichmentProvider,
     OpenAIError,
+    build_provider,
     configured_provider,
 )
 from aromatwin.services.review_decisions import apply_review_decision  # noqa: E402
 from aromatwin.services.review_gates import ALLOWED_DECISIONS  # noqa: E402
+
+PROVENANCE_LABELS = {
+    EVIDENCE_PROVENANCE: "✅ supplier evidence",
+    MODEL_PROVENANCE: "⚠️ model proposal — unverified",
+}
 
 PRIVATE_ROOT = (REPOSITORY_ROOT / "data" / "private").resolve()
 DEFAULT_RUN_ID = "first_private_supplier_profile_run_20260917"
@@ -207,11 +215,31 @@ def save_enrichments(
     return destination
 
 
-def enrichment_provider(provider_name: str, openai_key: str | None):
-    """Select a provider, falling back deterministically when no key exists."""
-    if provider_name == "openai":
-        return OpenAIEnrichmentProvider(api_key=openai_key)
-    return OfflineHeuristicEnrichmentProvider()
+# Which secrets each provider setting needs before it can do anything but keyword inference.
+# "chain" needs only one of the two, because either vendor can carry the batch alone.
+PROVIDER_KEYS = {
+    "offline": (),
+    "openai": ("OPENAI_API_KEY",),
+    "anthropic": ("ANTHROPIC_API_KEY",),
+    "chain": ("OPENAI_API_KEY", "ANTHROPIC_API_KEY"),
+}
+
+
+def enrichment_provider(provider_name: str, keys: Mapping[str, str | None] | None = None):
+    """Select a provider, falling back deterministically when no key exists.
+
+    Keys are passed through the process environment rather than as arguments, because the
+    chained provider builds its members itself. Nothing is written back to the environment
+    unless the console actually found a value for it.
+    """
+    required = PROVIDER_KEYS.get(provider_name, ())
+    for name in required:
+        value = (keys or {}).get(name)
+        if value:
+            os.environ[name] = value
+    if required and not any(os.environ.get(name) for name in required):
+        return OfflineHeuristicEnrichmentProvider()
+    return build_provider(provider_name)
 
 
 def batch_enrichment_limit(*, cloud_demo: bool, requested: int = 1) -> int:
@@ -225,17 +253,27 @@ def _options(rows: Iterable[dict[str, Any]], field: str) -> list[str]:
     return sorted({str(row.get(field)) for row in rows if row.get(field) is not None})
 
 
-def streamlit_openai_key(secrets: Any) -> str | None:
-    """Read the key from Streamlit secrets, then the process environment, and nowhere else."""
+def streamlit_api_key(secrets: Any, name: str) -> str | None:
+    """Read a key from Streamlit secrets, then the process environment, and nowhere else."""
     try:
-        secret_key = secrets["OPENAI_API_KEY"]
+        secret_key = secrets[name]
     except (KeyError, FileNotFoundError):
         secret_key = None
     if secret_key:
         return str(secret_key)
-    if "OPENAI_API_KEY" in os.environ:
-        return os.environ["OPENAI_API_KEY"]
+    if name in os.environ:
+        return os.environ[name]
     return None
+
+
+def streamlit_openai_key(secrets: Any) -> str | None:
+    """Read the OpenAI key. Retained as the named entry point for the OpenAI surface."""
+    return streamlit_api_key(secrets, "OPENAI_API_KEY")
+
+
+def streamlit_anthropic_key(secrets: Any) -> str | None:
+    """Read the Claude key, so the console can use the same backup provider as the CLI."""
+    return streamlit_api_key(secrets, "ANTHROPIC_API_KEY")
 
 
 def main() -> None:
@@ -264,10 +302,14 @@ def main() -> None:
     except ValueError as exc:
         st.error(str(exc))
         st.stop()
-    openai_key = streamlit_openai_key(st.secrets)
-    if not openai_key:
+    keys = {
+        "OPENAI_API_KEY": streamlit_openai_key(st.secrets),
+        "ANTHROPIC_API_KEY": streamlit_anthropic_key(st.secrets),
+    }
+    required = PROVIDER_KEYS.get(provider_name, ())
+    if required and not any(keys.get(name) for name in required):
         st.info(MISSING_KEY_WARNING)
-    provider = enrichment_provider(provider_name, openai_key)
+    provider = enrichment_provider(provider_name, keys)
 
     latest = {str(row.get("review_item_id")): row for row in decisions}
     packet_by_draft = {str(row.get("profile_draft_id")): row for row in packets}
@@ -397,11 +439,35 @@ def main() -> None:
         scent_fields = ("fragrance_family", "top_notes", "heart_notes", "base_notes", "accords",
                         "mood_tags", "occasion_tags", "season_tags", "strength_band",
                         "longevity_band", "projection_band", "draft_scent_description")
-        st.json({field: selected.get(field) for field in scent_fields})
+        provenance = selected.get("field_provenance") or {}
+        asserted = [field for field in scent_fields
+                    if provenance.get(field) == MODEL_PROVENANCE]
+        if asserted:
+            st.warning(
+                f"{len(asserted)} of these fields are unverified model proposals with no source "
+                "evidence. Approving this profile approves each of them as fact.",
+                icon="⚠️",
+            )
+        # A field-by-field table, not one JSON blob: the reviewer should be able to see at a
+        # glance which specific claims carry evidence and which are the model's guess.
+        st.dataframe(
+            [
+                {
+                    "field": field,
+                    "value": selected.get(field),
+                    "basis": PROVENANCE_LABELS.get(
+                        provenance.get(field, ""), "not populated"
+                    ),
+                }
+                for field in scent_fields
+            ],
+            width="stretch",
+            hide_index=True,
+        )
     with evidence:
         st.json({field: selected.get(field) for field in (
             "ai_confidence_band", "enrichment_sources", "provenance_notes",
-            "fields_requiring_human_review")})
+            "fields_requiring_human_review", "field_provenance")})
     with review:
         st.subheader("Record internal decision")
         if st.button("Mark for enrichment"):

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from aromatwin.routers.catalogue import _CATALOGUE
 from aromatwin.schemas.scent_vector import (
@@ -8,6 +8,7 @@ from aromatwin.schemas.scent_vector import (
     ScentVectorSimilarityRequest,
     ScentVectorSimilarityResult,
 )
+from aromatwin.security import require_private_api_key
 from aromatwin.services.scent_vector_engine import (
     ScentVector,
     approve_scent_vector,
@@ -17,7 +18,9 @@ from aromatwin.services.scent_vector_engine import (
     similarity,
 )
 
-router = APIRouter(tags=["scent vectors"])
+router = APIRouter(
+    tags=["scent vectors"], dependencies=[Depends(require_private_api_key)]
+)
 _VECTORS: list[ScentVector] = []
 
 

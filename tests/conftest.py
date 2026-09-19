@@ -1,11 +1,17 @@
+import os
 from collections.abc import Callable, Iterator
 from typing import Any
 
-import pytest
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
+# Authentication fails closed, so the offline suite opts the local environment in before any
+# aromatwin import builds Settings. Deployed environments cannot set this: Settings validation
+# rejects it outside LOCAL_ENVIRONMENTS.
+os.environ.setdefault("AROMATWIN_ALLOW_INSECURE_LOCAL_AUTH", "true")
 
-from aromatwin.main import app as application
+import pytest  # noqa: E402
+from fastapi import FastAPI  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
+
+from aromatwin.main import app as application  # noqa: E402
 
 PRIVATE_SUPPLIER_FIELDS = {
     "aed",

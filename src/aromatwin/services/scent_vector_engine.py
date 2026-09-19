@@ -20,11 +20,17 @@ VECTOR_DIMENSIONS = (
     "gourmand", "citrus", "aromatic", "amber", "musky", "luxury", "projection",
     "longevity",
 )
-PUBLIC_SOURCE_FIELDS = (
-    "family", "notes", "accords", "season", "occasion", "mood", "description_original",
-    "description", "concentration",
-)
-GENERATION_METHOD = "public_catalogue_keyword_v1"
+# Reviewed classification carries far more signal than prose, so the two are weighted apart
+# rather than concatenated into one bag of words.
+STRUCTURED_SOURCE_FIELDS = ("family", "notes", "accords", "season", "occasion", "mood")
+NARRATIVE_SOURCE_FIELDS = ("description_original", "description", "concentration")
+PUBLIC_SOURCE_FIELDS = STRUCTURED_SOURCE_FIELDS + NARRATIVE_SOURCE_FIELDS
+STRUCTURED_WEIGHT = 1.0
+NARRATIVE_WEIGHT = 0.4
+# Weighted evidence needed for a dimension to saturate at 1.0. Two or three reviewed taxonomy
+# terms is strong evidence; a single passing mention in prose is not.
+SATURATION = 2.5
+GENERATION_METHOD = "public_catalogue_keyword_v2"
 APPROVAL_CONFIDENCE_THRESHOLD = 0.70
 
 _LEXICON = {
@@ -51,6 +57,25 @@ _LEXICON = {
     "luxury": "luxury luxurious opulent refined elegant".split(),
     "projection": "projection radiant powerful bold intense".split(),
     "longevity": "longevity lasting persistent enduring intense".split(),
+}
+
+
+# Suffixes stripped so reviewed vocabulary unifies across its inflected forms ("woods",
+# "woody" -> "wood"). Matching stays exact after stemming: a shared-prefix rule would let
+# the "season" column collide with the "sea" marine keyword on every record.
+_SUFFIXES = ("iness", "ness", "ing", "ies", "es", "ed", "s", "y")
+_MIN_STEM = 4
+
+
+def _stem(word: str) -> str:
+    for suffix in _SUFFIXES:
+        if word.endswith(suffix) and len(word) - len(suffix) >= _MIN_STEM:
+            return word[: -len(suffix)]
+    return word
+
+
+_LEXICON_STEMS = {
+    dimension: {_stem(word) for word in words} for dimension, words in _LEXICON.items()
 }
 
 
@@ -125,7 +150,22 @@ def _fingerprint(data: Mapping[str, object]) -> str:
 
 
 def _tokens(data: Mapping[str, object]) -> set[str]:
-    return set(re.findall(r"[a-z]+", " ".join(_source_payload(data).values())))
+    return {
+        _stem(token) for token in re.findall(r"[a-z]+", " ".join(_source_payload(data).values()))
+    }
+
+
+def _weighted_fields(data: Mapping[str, object]) -> list[tuple[set[str], float]]:
+    """Return stemmed vocabulary per source field alongside its evidential weight."""
+    payload = _source_payload(data)
+    return [
+        ({_stem(token) for token in re.findall(r"[a-z]+", payload[field])}, weight)
+        for fields, weight in (
+            (STRUCTURED_SOURCE_FIELDS, STRUCTURED_WEIGHT),
+            (NARRATIVE_SOURCE_FIELDS, NARRATIVE_WEIGHT),
+        )
+        for field in fields
+    ]
 
 
 def generate_scent_vector(
@@ -140,9 +180,14 @@ def generate_scent_vector(
         return prior
 
     tokens = _tokens(data)
+    weighted = _weighted_fields(data)
     values = {
-        dimension: round(min(1.0, len(tokens.intersection(words)) / 3), 3)
-        for dimension, words in _LEXICON.items()
+        dimension: round(
+            min(1.0, sum(weight * len(field_stems & stems) for field_stems, weight in weighted)
+                / SATURATION),
+            3,
+        )
+        for dimension, stems in _LEXICON_STEMS.items()
     }
     populated = sum(bool(data.get(field)) for field in PUBLIC_SOURCE_FIELDS)
     confidence = round(min(1.0, 0.35 + populated * 0.07 + min(len(tokens), 30) / 100), 3)

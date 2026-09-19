@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from aromatwin.schemas.fragrance import FragranceRead, SimilarityMatch
+from aromatwin.security import require_private_api_key
 
-router = APIRouter(tags=["catalogue"])
+router = APIRouter(tags=["catalogue"], dependencies=[Depends(require_private_api_key)])
 
 
 @router.get("/fragrances", response_model=list[FragranceRead])

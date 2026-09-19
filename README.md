@@ -8,11 +8,20 @@ Maison Obsidian is the first intended customer, not a code, catalogue, or brandi
 
 ```bash
 cp .env.example .env
-docker compose up -d postgres
 python -m venv .venv && source .venv/bin/activate
-pip install -e '.[dev]'
+pip install -e ".[dev]"
 pytest
-uvicorn aromatwin.main:app --reload
+```
+
+Postgres is optional. With no `AROMATWIN_PERSISTENCE_DATABASE_URL` set, the app falls back to a
+local SQLite file, so the quick start needs nothing running on port 5432. Start
+`docker compose up -d postgres` only when you want to exercise the Postgres path.
+
+Authentication fails closed: a surface with no configured key authenticates nobody. For a local
+run, either set the keys in `.env`, or opt into the insecure local path explicitly:
+
+```bash
+AROMATWIN_ALLOW_INSECURE_LOCAL_AUTH=true uvicorn aromatwin.main:app --reload
 ```
 
 OpenAPI documentation is served at `http://localhost:8000/docs`.
@@ -28,6 +37,50 @@ The console reads private profile runs and records internal review decisions und
 
 See [Development and testing](docs/development-and-testing.md) for the cloud, local, and CI test
 workflow.
+
+## Fragrance profile library
+
+The repository ships a first-party library of 48 original profiles across 12 fictional houses,
+with reviewed taxonomy, scent vectors, recommendations, and inspired-by relationships, so the
+whole pipeline runs end to end on realistic data:
+
+```bash
+python scripts/build_profile_library.py
+python scripts/build_scent_vectors.py --approve
+python scripts/build_recommendations.py
+```
+
+Everything in it is original AromaTwin content about fictional houses. A library of real-brand
+profiles is a separate commercial step requiring a permitted source. See
+[Fragrance profile library](docs/profile-library.md).
+
+## Generating scent profiles
+
+Supplier drafts can be enriched into full scent profiles with a model-backed provider:
+
+```bash
+export OPENAI_API_KEY=... ANTHROPIC_API_KEY=...
+python scripts/enrich_private_profile_batch.py --run-id fatima-001 --provider chain
+```
+
+`--provider` accepts `offline`, `openai`, `anthropic`, or `chain`; `chain` runs OpenAI first and
+falls back to Claude before the offline provider, so one vendor rate-limiting does not drop a
+batch to keyword inference.
+
+Only an allow-listed identity payload leaves the application, and model output is never trusted:
+it is validated against controlled vocabularies, stripped of private and restricted fields, marked
+per field as supplier evidence or model inference, and always returned needing human review. See
+[Model-backed scent profile generation](docs/ai-profile-generation.md), which also sets out the
+provenance risk this approach carries.
+
+## Authentication
+
+Authentication fails closed. `/maison`, `/products`, and `/scentprint-quiz` require
+`X-API-Key`; the operator surfaces require `X-Private-API-Key` or `X-Admin-API-Key`; only
+`/health`, `/deployment/health`, and the OpenAPI documents are anonymous. A non-local
+`AROMATWIN_ENVIRONMENT` refuses to start while any key is unset. For local development without
+keys, set `AROMATWIN_ALLOW_INSECURE_LOCAL_AUTH=true` explicitly. See
+[Security and deployment](docs/security-and-deployment.md).
 
 ## Foundation scope
 
