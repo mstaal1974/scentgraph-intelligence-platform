@@ -8,11 +8,20 @@ Maison Obsidian is the first intended customer, not a code, catalogue, or brandi
 
 ```bash
 cp .env.example .env
-docker compose up -d postgres
 python -m venv .venv && source .venv/bin/activate
-pip install -e '.[dev]'
+pip install -e ".[dev]"
 pytest
-uvicorn aromatwin.main:app --reload
+```
+
+Postgres is optional. With no `AROMATWIN_PERSISTENCE_DATABASE_URL` set, the app falls back to a
+local SQLite file, so the quick start needs nothing running on port 5432. Start
+`docker compose up -d postgres` only when you want to exercise the Postgres path.
+
+Authentication fails closed: a surface with no configured key authenticates nobody. For a local
+run, either set the keys in `.env`, or opt into the insecure local path explicitly:
+
+```bash
+AROMATWIN_ALLOW_INSECURE_LOCAL_AUTH=true uvicorn aromatwin.main:app --reload
 ```
 
 OpenAPI documentation is served at `http://localhost:8000/docs`.
@@ -51,7 +60,7 @@ Supplier drafts can be enriched into full scent profiles with a model-backed pro
 
 ```bash
 export OPENAI_API_KEY=... ANTHROPIC_API_KEY=...
-python scripts/enrich_private_profile_batch.py --run-id <run> --provider chain
+python scripts/enrich_private_profile_batch.py --run-id fatima-001 --provider chain
 ```
 
 `--provider` accepts `offline`, `openai`, `anthropic`, or `chain`; `chain` runs OpenAI first and

@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 """Run every available repository validation/privacy audit without private inputs."""
 
+import argparse
 import json
 import os
 import subprocess
 import sys
 from pathlib import Path
+
+# A run summary is a local artifact, not repository content. Writing it under a tracked
+# sample path let a local run silently rewrite a committed file, which flipped audits from
+# "failed" to "passed" in the working tree.
+DEFAULT_SUMMARY_PATH = Path("artifacts/safe_audit_summary.json")
 
 COMMANDS = [
     ["scripts/validate_data.py", "data"],
@@ -61,10 +67,19 @@ def run_all(root: Path = Path(".")) -> tuple[int, list[dict[str, str]]]:
     return int(failed), results
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=DEFAULT_SUMMARY_PATH,
+        help=f"Where to write the run summary (default: {DEFAULT_SUMMARY_PATH}).",
+    )
+    args = parser.parse_args(argv)
     code, results = run_all()
-    target = Path("data/samples/platform_completion_audit_summary.json")
-    target.write_text(json.dumps({"audits": results}, indent=2) + "\n", encoding="utf-8")
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps({"audits": results}, indent=2) + "\n", encoding="utf-8")
+    print(f"Summary written to {args.output}")
     return code
 
 

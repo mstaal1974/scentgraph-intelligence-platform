@@ -10,7 +10,7 @@ default and asserts no notes at all.
 ```bash
 export OPENAI_API_KEY=...
 export ANTHROPIC_API_KEY=...      # only for --provider anthropic or chain
-python scripts/enrich_private_profile_batch.py --run-id <run> --provider chain --max-profiles 25
+python scripts/enrich_private_profile_batch.py --run-id fatima-001 --provider chain --max-profiles 25
 ```
 
 `--provider` accepts `offline`, `openai`, `anthropic`, or `chain`.

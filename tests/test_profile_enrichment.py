@@ -6,7 +6,9 @@ import pytest
 
 from apps.private_profile_review_console import (
     demo_review_data,
+    enrichment_provider,
     load_console_data,
+    streamlit_anthropic_key,
     streamlit_openai_key,
 )
 from aromatwin.services.profile_enrichment import (
@@ -102,7 +104,7 @@ def test_missing_key_falls_back_without_crashing(monkeypatch: pytest.MonkeyPatch
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     assert streamlit_openai_key({}) is None
     assert MISSING_KEY_WARNING == (
-        "OpenAI API key is not configured. Using offline demo enrichment."
+        "No model API key is configured. Using offline demo enrichment."
     )
     assert OfflineHeuristicEnrichmentProvider().enrich(_draft())["fragrance_family"] == "citrus"
 
@@ -111,6 +113,32 @@ def test_key_is_read_only_from_streamlit_secrets_or_environment(monkeypatch: pyt
     monkeypatch.setenv("OPENAI_API_KEY", "environment-secret")
     assert streamlit_openai_key({}) == "environment-secret"
     assert streamlit_openai_key({"OPENAI_API_KEY": "streamlit-secret"}) == "streamlit-secret"
+
+
+def test_console_reads_the_claude_key_the_same_way(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    assert streamlit_anthropic_key({}) is None
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "environment-secret")
+    assert streamlit_anthropic_key({}) == "environment-secret"
+    assert streamlit_anthropic_key({"ANTHROPIC_API_KEY": "streamlit-secret"}) == "streamlit-secret"
+
+
+def test_console_provider_uses_claude_when_only_the_claude_key_exists(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "claude-secret")
+    provider = enrichment_provider("chain", {"ANTHROPIC_API_KEY": "claude-secret"})
+    assert isinstance(provider, ChainedEnrichmentProvider)
+
+
+def test_console_provider_falls_back_to_offline_without_any_key(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    provider = enrichment_provider("chain", {})
+    assert isinstance(provider, OfflineHeuristicEnrichmentProvider)
 
 
 class _FakeResponses:

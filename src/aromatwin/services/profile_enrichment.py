@@ -110,7 +110,7 @@ ANTHROPIC_FALLBACK_SUMMARY = (
 ANTHROPIC_BACKUP_SUMMARY = (
     "Primary provider was unavailable; Claude generated this draft for human review."
 )
-MISSING_KEY_WARNING = "OpenAI API key is not configured. Using offline demo enrichment."
+MISSING_KEY_WARNING = "No model API key is configured. Using offline demo enrichment."
 ANTHROPIC_MODEL = "claude-opus-5"
 # "chain" runs OpenAI first and falls back to Claude before the offline provider, so a rate
 # limit on one vendor does not drop a whole batch to keyword inference.
